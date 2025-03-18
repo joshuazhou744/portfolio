@@ -67,3 +67,84 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Windows 98 specific styles */
+.win98-button {
+  position: relative;
+  display: inline-block;
+  padding: 4px 10px;
+  background-color: #c0c0c0;
+  color: #000;
+  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
+  font-size: 11px;
+  border: none;
+  border-radius: 0;
+  box-shadow:
+    inset -1px -1px 0 0 #0a0a0a,
+    inset 1px 1px 0 0 #ffffff,
+    inset -2px -2px 0 0 #808080,
+    inset 2px 2px 0 0 #dfdfdf;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.win98-button:hover {
+  box-shadow:
+    inset -1px -1px 0 0 #0a0a0a,
+    inset 1px 1px 0 0 #ffffff,
+    inset -2px -2px 0 0 #808080,
+    inset 2px 2px 0 0 #dfdfdf;
+  background-color: #c0c0c0;
+}
+
+.win98-button:active {
+  box-shadow:
+    inset 1px 1px 0 0 #0a0a0a,
+    inset -1px -1px 0 0 #ffffff,
+    inset 2px 2px 0 0 #808080,
+    inset -2px -2px 0 0 #dfdfdf;
+  background-color: #c0c0c0;
+  padding: 5px 9px 3px 11px;
+}
+
+.win98-menu-item {
+  margin: 0;
+  padding: 5px 10px;
+  cursor: pointer;
+  background-color: #c0c0c0;
+  border: 1px solid transparent;
+  transition: transform 0.1s, box-shadow 0.1s;
+  padding: 5px 10px;
+}
+
+.win98-menu-item + .win98-menu-item {
+  margin-left: -1px;
+}
+
+.win98-menu-item:hover {
+  box-shadow: inset -1px -1px 0 0 #0a0a0a,
+              inset 1px 1px 0 0 #ffffff,
+              inset -2px -2px 0 0 #808080,
+              inset 2px 2px 0 0 #dfdfdf;
+}
+
+/* Window toolbar button styles */
+.win98-toolbar-button {
+  padding: 4px 8px;
+  margin-right: 2px;
+  border: 1px solid transparent;
+  background-color: #c0c0c0;
+  cursor: pointer;
+}
+
+.win98-toolbar-button:hover {
+  border: 1px solid;
+  border-color: #dfdfdf #808080 #808080 #dfdfdf;
+}
+
+.win98-toolbar-button:active {
+  border: 1px solid;
+  border-color: #808080 #dfdfdf #dfdfdf #808080;
+  padding: 5px 7px 3px 9px; /* Subtle shift */
+}

@@ -1,9 +1,34 @@
-import Link from 'next/link'
-import { MusicPlayer } from '../components/music-player'
-import { NewsWindow } from '../components/news-window'
-import { Taskbar } from '../components/taskbar'
+'use client'
+
+import { useState, useEffect } from 'react'
+import { MediaPlayer } from '@/components/media-player'
+import { InfoPanel } from '@/components/info-panel'
+import { StatusBar } from '@/components/status-bar'
+import { Loader } from '@/components/loader'
+import '98.css/dist/98.css'
 
 export default function Home() {
+  const [showMediaPlayer, setShowMediaPlayer] = useState(false)
+  const [showInfoPanel, setShowInfoPanel] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  const handleMediaPlayerClick = () => {
+    setShowMediaPlayer(true)
+  }
+
+  const handleInfoClick = () => {
+    setShowInfoPanel(true)
+  }
+
+  const handleLoaderComplete = () => {
+    setIsLoading(false)
+    setShowMediaPlayer(true)
+    // Delay showing InfoPanel by 1 second
+    setTimeout(() => {
+      setShowInfoPanel(true)
+    }, 1000)
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center p-4 relative"
           style={{
@@ -14,15 +39,28 @@ export default function Home() {
             height: '100vh',
             overflow: 'hidden'
           }}>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 z-10">
-        <div className="col-span-1">
-          <MusicPlayer />
-        </div>
-        <div className="col-span-1">
-          <NewsWindow />
-        </div>
-      </div>
-      <Taskbar />
+      {isLoading ? (
+        <Loader onComplete={handleLoaderComplete} />
+      ) : (
+        <>
+          <MediaPlayer 
+            isVisible={showMediaPlayer}
+            onVisibilityChange={setShowMediaPlayer}
+          />
+          <InfoPanel 
+            isVisible={showInfoPanel}
+            onVisibilityChange={setShowInfoPanel}
+          />
+          <StatusBar 
+            onMediaPlayerClick={handleMediaPlayerClick}
+            onInfoClick={handleInfoClick}
+            showMediaPlayer={showMediaPlayer}
+            showInfoPanel={showInfoPanel}
+            onMinimizeMediaPlayer={() => setShowMediaPlayer(false)}
+            onMinimizeInfoPanel={() => setShowInfoPanel(false)}
+          />
+        </>
+      )}
     </main>
   )
 }

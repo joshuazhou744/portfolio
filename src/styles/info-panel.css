@@ -1,0 +1,15 @@
+.main {
+    font-size: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 14px;
+    word-spacing: 3px;
+    justify-content: center;
+    align-items: center;
+
+    h4 {
+        font-size: 16px;
+    }
+}

@@ -4,12 +4,13 @@ import './globals.css'
 import 'normalize.css'
 import '98.css/dist/98.css'
 import { ClientBody } from './ClientBody'
+import Script from 'next/script'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Nightwave Plaza - Online Vaporwave Radio',
-  description: 'Nightwave Plaza is an advertisement-free 24/7 radio station dedicated to Vaporwave; bringing aesthetics and dream-like music to your device wherever you have Internet connectivity.',
+  title: 'template',
+  description: 'template description.',
 }
 
 export const viewport: Viewport = {
@@ -25,6 +26,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <Script src="https://sdk.scdn.co/spotify-player.js" strategy="beforeInteractive" />
+      </head>
       <body className={inter.className} style={{ margin: 0, padding: 0, overflow: 'hidden' }}>
         <ClientBody>
           {children}
