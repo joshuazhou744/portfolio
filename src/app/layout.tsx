@@ -4,7 +4,6 @@ import './globals.css'
 import 'normalize.css'
 import '98.css/dist/98.css'
 import { ClientBody } from './ClientBody'
-import Script from 'next/script'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -27,9 +26,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <Script src="https://sdk.scdn.co/spotify-player.js" strategy="beforeInteractive" />
       </head>
-      <body className={inter.className} style={{ margin: 0, padding: 0, overflow: 'hidden' }}>
+      <body className={inter.className} style={{
+        margin: 0,
+        padding: 0,
+        overflow: 'hidden',
+        isolation: 'isolate'
+      }}>
         <ClientBody>
           {children}
         </ClientBody>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { MediaPlayer } from '@/components/media-player'
+import MediaPlayer from '@/components/media-player'
 import { InfoPanel } from '@/components/info-panel'
 import { StatusBar } from '@/components/status-bar'
 import { Loader } from '@/components/loader'
@@ -43,10 +43,7 @@ export default function Home() {
         <Loader onComplete={handleLoaderComplete} />
       ) : (
         <>
-          <MediaPlayer 
-            isVisible={showMediaPlayer}
-            onVisibilityChange={setShowMediaPlayer}
-          />
+          <MediaPlayer initiallyVisible={showMediaPlayer} />
           <InfoPanel 
             isVisible={showInfoPanel}
             onVisibilityChange={setShowInfoPanel}
