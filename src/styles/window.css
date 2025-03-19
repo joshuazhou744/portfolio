@@ -1,0 +1,123 @@
+/* Common styles for all window components */
+.window {
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.window .content {
+  padding: 10px;
+}
+
+.window h4 {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+/* About Me Window */
+.about-me-window {
+  width: 400px;
+}
+
+/* Contact Window */
+.contact-window {
+  width: 350px;
+}
+
+/* Project List Window */
+.project-list-window {
+  width: 450px;
+}
+
+.project-item {
+  border: 1px solid transparent;
+}
+
+.project-item:hover {
+  border: 1px dashed #000080;
+}
+
+.project-item.selected:hover {
+  border: 1px solid #000080;
+}
+
+/* Resume Window */
+.resume-window {
+  width: 600px;
+  height: 500px;
+}
+
+/* Media query for tablets */
+@media screen and (max-width: 768px) {
+  .about-me-window {
+    width: 350px;
+  }
+  
+  .contact-window {
+    width: 320px;
+  }
+  
+  .project-list-window {
+    width: 400px;
+  }
+  
+  .resume-window {
+    width: 500px;
+    height: 450px;
+  }
+  
+  .window .content {
+    padding: 8px;
+  }
+  
+  .window h4 {
+    margin-bottom: 12px;
+  }
+}
+
+/* Media query for mobile phones */
+@media screen and (max-width: 480px) {
+  .about-me-window,
+  .contact-window,
+  .project-list-window,
+  .resume-window {
+    width: 90vw;
+    top: 15px !important;
+    left: 5vw !important;
+    transform: none !important;
+  }
+  
+  .resume-window {
+    height: 80vh;
+  }
+  
+  .window .content {
+    padding: 6px;
+    font-size: 14px;
+  }
+  
+  .window h4 {
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+  
+  .project-item {
+    padding: 6px !important;
+  }
+}
+
+/* Media query for very small devices */
+@media screen and (max-width: 320px) {
+  .window .content {
+    padding: 4px;
+    font-size: 12px;
+  }
+  
+  .window h4 {
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+  
+  .project-item {
+    padding: 4px !important;
+  }
+} 

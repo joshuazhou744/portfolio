@@ -1,0 +1,110 @@
+/* Base styles */
+:root {
+  --window-width: 500px;
+  --window-min-height: 140px;
+  --cover-size: 100px;
+}
+
+/* Media query for tablets */
+@media screen and (max-width: 768px) {
+  :root {
+    --window-width: 90vw;
+    --window-min-height: 130px;
+    --cover-size: 80px;
+  }
+
+  .window {
+    width: var(--window-width) !important;
+    margin: 0 auto;
+    left: 50% !important;
+    transform: translateX(-50%);
+  }
+
+  .window-body menu[role="menubar"] {
+    flex-wrap: wrap;
+    gap: 2px !important;
+  }
+
+  .win98-menu-item {
+    font-size: 14px;
+    padding: 2px 6px;
+  }
+}
+
+/* Media query for mobile phones */
+@media screen and (max-width: 480px) {
+  :root {
+    --window-width: 95vw;
+    --window-min-height: 120px;
+    --cover-size: 70px;
+  }
+
+  .window {
+    top: 10px !important;
+  }
+
+  .window-body {
+    padding: 4px !important;
+  }
+
+  .media-player-content {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .cover-container {
+    width: 35% !important;
+    min-width: var(--cover-size) !important;
+    margin: 0 auto;
+  }
+
+  .track-info {
+    text-align: center;
+  }
+
+  .time-volume-controls {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .time-display {
+    width: 180px !important;
+    min-width: 180px !important;
+  }
+
+  .volume-control {
+    margin-left: 0 !important;
+    justify-content: center !important;
+  }
+
+  .playback-controls {
+    justify-content: center !important;
+  }
+
+  .status-bar {
+    font-size: 12px;
+  }
+}
+
+/* Media query for very small devices */
+@media screen and (max-width: 320px) {
+  :root {
+    --window-width: 100vw;
+    --window-min-height: 110px;
+    --cover-size: 60px;
+  }
+
+  .window {
+    border-radius: 0;
+  }
+
+  .time-display {
+    width: 150px !important;
+    min-width: 150px !important;
+  }
+
+  .win98-toolbar-button {
+    padding: 2px 4px;
+  }
+} 

@@ -13,3 +13,59 @@
         font-size: 16px;
     }
 }
+
+.info-panel {
+  position: fixed;
+  bottom: 40px;
+  right: 20px;
+  width: 300px;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+}
+
+.info-panel.minimized {
+  transform: translateY(calc(100% - 30px));
+}
+
+/* Media query for tablets */
+@media screen and (max-width: 768px) {
+  .info-panel {
+    width: 250px;
+    right: 10px;
+    bottom: 30px;
+  }
+}
+
+/* Media query for mobile phones */
+@media screen and (max-width: 480px) {
+  .info-panel {
+    width: 90vw;
+    right: 5px;
+    bottom: 20px;
+  }
+
+  .info-panel .window-body {
+    padding: 8px;
+  }
+
+  .info-panel .content {
+    font-size: 14px;
+  }
+}
+
+/* Media query for very small devices */
+@media screen and (max-width: 320px) {
+  .info-panel {
+    width: 95vw;
+    right: 2.5vw;
+    bottom: 10px;
+  }
+
+  .info-panel .window-body {
+    padding: 6px;
+  }
+
+  .info-panel .content {
+    font-size: 12px;
+  }
+}

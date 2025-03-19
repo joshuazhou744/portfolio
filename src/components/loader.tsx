@@ -38,23 +38,21 @@ export function Loader({ onComplete }: LoaderProps) {
   }, [progress, onComplete])
 
   return (
-    <div className="win98">
-      <div className="loader-container">
-        <div className="title-bar">
-          <div className="title-bar-text">Loading...</div>
-        </div>
-        <div className="window-body" style={{ padding: '10px' }}>
-          <div className="loader-bar">
-            {[0, 1, 2].map((index) => (
-              <div
-                key={index}
-                className="loader-block"
-                style={{
-                  left: `${(progress + (index * 9))}px`,
-                }}
-              />
-            ))}
-          </div>
+    <div className="loader-container">
+      <div className="title-bar">
+        <div className="title-bar-text">Loading...</div>
+      </div>
+      <div className="window-body" style={{ padding: '10px' }}>
+        <div className="loader-bar">
+          {[0, 1, 2].map((index) => (
+            <div
+              key={index}
+              className="loader-block"
+              style={{
+                left: `${(progress + (index * 9))}px`,
+              }}
+            />
+          ))}
         </div>
       </div>
     </div>
