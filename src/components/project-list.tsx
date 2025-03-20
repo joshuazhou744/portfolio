@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import '98.css/dist/98.css'
 import '../styles/window.css'
+import { useWindow } from '../contexts/WindowContext'
 
 interface WindowPosition {
   x: number;
@@ -23,12 +24,17 @@ interface Project {
 }
 
 export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps) {
-  const [position, setPosition] = useState<WindowPosition>({ x: 100, y: 100 });
+  const [position, setPosition] = useState<WindowPosition>(() => {
+    const x = 50; // Left with margin
+    const y = window.innerHeight - 450; // Bottom with margin for window height
+    return { x, y };
+  });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState<WindowPosition>({ x: 0, y: 0 });
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
   
   const windowRef = useRef<HTMLDivElement>(null);
+  const { bringToFront, getZIndex } = useWindow();
   
   // Sample project data
   const projects: Project[] = [
@@ -63,10 +69,13 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
   ];
   
   useEffect(() => {
-    const x = (window.innerWidth - 450) / 2;
-    const y = (window.innerHeight - 400) / 3;
-    setPosition({ x, y });
-  }, []);
+    if (isVisible) {
+      // Use setTimeout to avoid calling during render
+      setTimeout(() => {
+        bringToFront('project-list');
+      }, 0);
+    }
+  }, [isVisible, bringToFront]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (e.target instanceof HTMLElement && e.target.closest('.title-bar')) {
@@ -131,10 +140,14 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
         position: 'fixed',
         left: position.x,
         top: position.y,
-        zIndex: isDragging ? 1000 : 100,
-        display: isVisible ? 'block' : 'none'
+        zIndex: getZIndex('project-list'),
+        display: isVisible ? 'block' : 'none',
+        userSelect: 'none'
       }}
-      onMouseDown={handleMouseDown}
+      onMouseDown={(e) => {
+        handleMouseDown(e);
+        bringToFront('project-list');
+      }}
     >
       <div className="title-bar">
         <div className="title-bar-text">Project List</div>

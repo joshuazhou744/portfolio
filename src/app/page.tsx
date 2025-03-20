@@ -9,9 +9,11 @@ import { AboutMe } from '@/components/about-me'
 import { Contact } from '@/components/contact'
 import { ProjectList } from '@/components/project-list'
 import { Resume } from '@/components/resume'
+import { WindowProvider, useWindow } from '@/contexts/WindowContext'
 import '98.css/dist/98.css'
 
-export default function Home() {
+// Internal component to use window context
+function AppContent() {
   const [showMediaPlayer, setShowMediaPlayer] = useState(false)
   const [showInfoPanel, setShowInfoPanel] = useState(false)
   const [showAboutMe, setShowAboutMe] = useState(false)
@@ -19,39 +21,65 @@ export default function Home() {
   const [showProjectList, setShowProjectList] = useState(false)
   const [showResume, setShowResume] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const { bringToFront } = useWindow()
 
-  const handleMediaPlayerClick = () => {
-    setShowMediaPlayer(true)
-  }
+  // Effect to ensure windows are properly stacked when they become visible
+  useEffect(() => {
+    if (showMediaPlayer) bringToFront('media-player');
+  }, [showMediaPlayer, bringToFront]);
+  
+  useEffect(() => {
+    if (showInfoPanel) bringToFront('info-panel');
+  }, [showInfoPanel, bringToFront]);
+  
+  useEffect(() => {
+    if (showAboutMe) bringToFront('about-me');
+  }, [showAboutMe, bringToFront]);
+  
+  useEffect(() => {
+    if (showContact) bringToFront('contact');
+  }, [showContact, bringToFront]);
+  
+  useEffect(() => {
+    if (showProjectList) bringToFront('project-list');
+  }, [showProjectList, bringToFront]);
+  
+  useEffect(() => {
+    if (showResume) bringToFront('resume');
+  }, [showResume, bringToFront]);
 
-  const handleInfoClick = () => {
-    setShowInfoPanel(true)
-  }
+  // Consolidated window display handler
+  const showWindow = (windowId: string, setVisibility: (visible: boolean) => void) => {
+    setVisibility(true);
+    
+    // Add a small delay to ensure the window is rendered before bringing to front
+    setTimeout(() => {
+      bringToFront(windowId);
+    }, 50);
+  };
 
-  const handleAboutMeClick = () => {
-    setShowAboutMe(true)
-  }
-
-  const handleContactClick = () => {
-    setShowContact(true)
-  }
-
-  const handleProjectListClick = () => {
-    setShowProjectList(true)
-  }
-
-  const handleResumeClick = () => {
-    setShowResume(true)
-  }
+  const handleMediaPlayerClick = () => showWindow('media-player', setShowMediaPlayer);
+  const handleInfoClick = () => showWindow('info-panel', setShowInfoPanel);
+  const handleAboutMeClick = () => showWindow('about-me', setShowAboutMe);
+  const handleContactClick = () => showWindow('contact', setShowContact);
+  const handleProjectListClick = () => showWindow('project-list', setShowProjectList);
+  const handleResumeClick = () => showWindow('resume', setShowResume);
 
   const handleLoaderComplete = () => {
-    setIsLoading(false)
-    setShowMediaPlayer(true)
+    setIsLoading(false);
+    setShowMediaPlayer(true);
+    
     // Delay showing InfoPanel by 1 second
     setTimeout(() => {
-      setShowInfoPanel(true)
-    }, 1000)
-  }
+      setShowInfoPanel(true);
+      bringToFront('media-player');
+      
+      // Bring info panel to front after media player
+      setTimeout(() => {
+        bringToFront('info-panel');
+      }, 100);
+    }, 1000);
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center p-4 relative"
@@ -118,5 +146,14 @@ export default function Home() {
         </>
       )}
     </main>
+  )
+}
+
+// Main app component
+export default function Home() {
+  return (
+    <WindowProvider>
+      <AppContent />
+    </WindowProvider>
   )
 }

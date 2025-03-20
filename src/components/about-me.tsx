@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import '98.css/dist/98.css'
 import '../styles/window.css'
+import { useWindow } from '../contexts/WindowContext'
 
 interface WindowPosition {
   x: number;
@@ -15,18 +16,13 @@ interface AboutMeProps {
 }
 
 export function AboutMe({ isVisible, onVisibilityChange }: AboutMeProps) {
-  const [position, setPosition] = useState<WindowPosition>({ x: 50, y: 50 });
+  const [position, setPosition] = useState<WindowPosition>({ x: 200, y: 50 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState<WindowPosition>({ x: 0, y: 0 });
   
   const windowRef = useRef<HTMLDivElement>(null);
+  const { bringToFront, getZIndex } = useWindow();
   
-  useEffect(() => {
-    const x = (window.innerWidth - 400) / 2;
-    const y = (window.innerHeight - 350) / 3;
-    setPosition({ x, y });
-  }, []);
-
   const handleMouseDown = (e: React.MouseEvent) => {
     if (e.target instanceof HTMLElement && e.target.closest('.title-bar')) {
       setIsDragging(true);
@@ -73,6 +69,15 @@ export function AboutMe({ isVisible, onVisibilityChange }: AboutMeProps) {
     onVisibilityChange(false);
   };
 
+  useEffect(() => {
+    if (isVisible) {
+      const timeoutId = setTimeout(() => {
+        bringToFront('about-me');
+      }, 0);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isVisible, bringToFront]);
+
   if (!isVisible) {
     return null;
   }
@@ -82,14 +87,18 @@ export function AboutMe({ isVisible, onVisibilityChange }: AboutMeProps) {
       ref={windowRef}
       className="window about-me-window" 
       style={{ 
-        width: '400px',
+        width: '500px',
         position: 'fixed',
         left: position.x,
         top: position.y,
-        zIndex: isDragging ? 1000 : 100,
-        display: isVisible ? 'block' : 'none'
+        zIndex: getZIndex('about-me'),
+        display: isVisible ? 'block' : 'none',
+        userSelect: 'none'
       }}
-      onMouseDown={handleMouseDown}
+      onMouseDown={(e) => {
+        handleMouseDown(e);
+        bringToFront('about-me');
+      }}
     >
       <div className="title-bar">
         <div className="title-bar-text">About Me</div>
@@ -101,28 +110,18 @@ export function AboutMe({ isVisible, onVisibilityChange }: AboutMeProps) {
       <div className="window-body">
         <div className="content">
           <h4>Hello, I'm Joshua Zhou</h4>
-          <p>
-            I'm a software engineer specializing in web development and data engineering. 
-            I have a passion for creating interactive, accessible, and responsive web applications.
-          </p>
-          <p>
-            My technical skills include:
-          </p>
           <ul>
-            <li>Frontend: React, Next.js, TypeScript, HTML5/CSS3</li>
-            <li>Backend: Node.js, Python, FastAPI</li>
-            <li>Data: MongoDB, PostgreSQL, Data Analysis</li>
-            <li>Tools: Git, Docker, AWS</li>
+            <li>I am a first year Software Engineering (Co-op) student at McGill University.</li>
+            <li>I like making fun and cool things with code.</li>
+            <li>I don't like studying subjects I find boring and uninteresting. (ex. physics)</li>
+            <li>I like bouldering and basketball and video games.</li>
+            <li>I like listening to music; my favorite artists are Gorillaz, Denzel Curry, Sonder and NewJeans.</li>
           </ul>
-          <p>
-            When I'm not coding, I enjoy listening to music, exploring new technologies, 
-            and contributing to open-source projects.
-          </p>
         </div>
       </div>
-      <div className="status-bar">
+      {/*<div className="status-bar">
         <p className="status-bar-field">About Me</p>
-      </div>
+      </div>*/}
     </div>
   );
 } 

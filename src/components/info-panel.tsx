@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import '98.css/dist/98.css'
 import "../styles/info-panel.css"
+import { useWindow } from '../contexts/WindowContext'
 
 interface WindowPosition {
   x: number;
@@ -26,6 +27,7 @@ export function InfoPanel({ isVisible, onVisibilityChange }: InfoPanelProps) {
   const [isDragging, setIsDragging] = useState(false)
   const [dragOffset, setDragOffset] = useState<WindowPosition>({ x: 0, y: 0 })
   const windowRef = useRef<HTMLDivElement>(null)
+  const { bringToFront, getZIndex } = useWindow();
 
   // Handle window dragging
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -70,20 +72,38 @@ export function InfoPanel({ isVisible, onVisibilityChange }: InfoPanelProps) {
     onVisibilityChange(false)
   }
 
+  const handleClose = () => {
+    onVisibilityChange(false)
+  }
+
+  useEffect(() => {
+    if (isVisible) {
+      // Use setTimeout to avoid calling during render
+      setTimeout(() => {
+        bringToFront('info-panel');
+      }, 0);
+    }
+  }, [isVisible, bringToFront]);
+
   return (
     <div className="win98">
       <div 
         ref={windowRef}
-        className="window" 
+        className="window info-panel" 
         style={{ 
           width: '300px',
+          height: '150px',
           position: 'fixed',
           left: position.x,
           top: position.y,
+          zIndex: getZIndex('info-panel'),
           display: isVisible ? 'block' : 'none',
-          zIndex: isDragging ? 1000 : 1
+          userSelect: 'none',
         }}
-        onMouseDown={handleMouseDown}
+        onMouseDown={(e) => {
+          handleMouseDown(e);
+          bringToFront('info-panel');
+        }}
       >
         <div className="title-bar">
           <div className="title-bar-text">Information</div>
@@ -92,12 +112,16 @@ export function InfoPanel({ isVisible, onVisibilityChange }: InfoPanelProps) {
               aria-label="Minimize" 
               onClick={handleMinimize}
             ></button>
-            <button aria-label="Maximize"></button>
+            <button 
+              aria-label="Close" 
+              onClick={handleClose}
+            ></button>
           </div>
         </div>
-        <div className="main">
+        <div className="main" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <h4>Welcome to my portfolio</h4>
           <p>Enjoy your stay</p>
+          <p>(This is also my study app)</p>
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import '98.css/dist/98.css'
 import '../styles/window.css'
+import { useWindow } from '../contexts/WindowContext'
 
 interface WindowPosition {
   x: number;
@@ -15,17 +16,25 @@ interface ContactProps {
 }
 
 export function Contact({ isVisible, onVisibilityChange }: ContactProps) {
-  const [position, setPosition] = useState<WindowPosition>({ x: 80, y: 80 });
+  const [position, setPosition] = useState<WindowPosition>(() => {
+    // Position at top-right of screen
+    const x = window.innerWidth - 500; // Window width is 350px, with some margin
+    const y = 50; // Top with margin
+    return { x, y };
+  });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState<WindowPosition>({ x: 0, y: 0 });
   
   const windowRef = useRef<HTMLDivElement>(null);
+  const { bringToFront, getZIndex } = useWindow();
   
   useEffect(() => {
-    const x = (window.innerWidth - 350) / 2;
-    const y = (window.innerHeight - 300) / 3;
-    setPosition({ x, y });
-  }, []);
+    if (isVisible) {
+      setTimeout(() => {
+        bringToFront('contact');
+      }, 0);
+    }
+  }, [isVisible, bringToFront]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (e.target instanceof HTMLElement && e.target.closest('.title-bar')) {
@@ -86,10 +95,14 @@ export function Contact({ isVisible, onVisibilityChange }: ContactProps) {
         position: 'fixed',
         left: position.x,
         top: position.y,
-        zIndex: isDragging ? 1000 : 100,
-        display: isVisible ? 'block' : 'none'
+        zIndex: getZIndex('contact'),
+        display: isVisible ? 'block' : 'none',
+        userSelect: 'none'
       }}
-      onMouseDown={handleMouseDown}
+      onMouseDown={(e) => {
+        handleMouseDown(e);
+        bringToFront('contact');
+      }}
     >
       <div className="title-bar">
         <div className="title-bar-text">Contact</div>
@@ -103,29 +116,21 @@ export function Contact({ isVisible, onVisibilityChange }: ContactProps) {
           <h4>Get in Touch</h4>
           <div className="field-row-stacked">
             <label htmlFor="email">Email:</label>
-            <a href="mailto:contact@joshuazhou.com" id="email">contact@joshuazhou.com</a>
+            <p>joshua.c.zhou@gmail.com</p>
           </div>
           <div className="field-row-stacked">
-            <label htmlFor="linkedin">LinkedIn:</label>
-            <a href="https://linkedin.com/in/joshuazhou" id="linkedin" target="_blank" rel="noopener noreferrer">linkedin.com/in/joshuazhou</a>
+            <label htmlFor="phone-number">Phone Number:</label>
+              <p>587-926-9574</p>
           </div>
           <div className="field-row-stacked">
-            <label htmlFor="github">GitHub:</label>
-            <a href="https://github.com/joshuazhou" id="github" target="_blank" rel="noopener noreferrer">github.com/joshuazhou</a>
-          </div>
-          <hr />
-          <div className="field-row-stacked" style={{ marginTop: '15px' }}>
-            <label htmlFor="message">Send me a message:</label>
-            <textarea id="message" rows={3} placeholder="Type your message here..."></textarea>
-            <div className="field-row" style={{ justifyContent: 'flex-end', marginTop: '8px' }}>
-              <button disabled>Submit</button>
-            </div>
+            <label htmlFor="github">LinkedIn:</label>
+            <a href="https://www.linkedin.com/in/joshuazhou1" id="github" target="_blank" rel="noopener noreferrer">linkedin.com/in/joshuazhou1</a>
           </div>
         </div>
       </div>
-      <div className="status-bar">
-        <p className="status-bar-field">Contact</p>
-      </div>
+      {/*<div className="status-bar">
+        <p className="status-bar-field">...</p>
+      </div>*/}
     </div>
   );
 } 

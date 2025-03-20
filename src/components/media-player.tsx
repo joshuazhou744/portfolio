@@ -5,6 +5,7 @@ import { useWavesurfer } from '@wavesurfer/react'
 import Image from 'next/image'
 import '98.css/dist/98.css'
 import '../styles/responsive.css'
+import { useWindow } from '../contexts/WindowContext'
 
 interface Track {
   id: string;
@@ -47,20 +48,25 @@ export default function MediaPlayer({
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingAudio, setIsLoadingAudio] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [position, setPosition] = useState<WindowPosition>({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState<WindowPosition>({ x: 0, y: 0 });
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(1);
+  const [volume, setVolume] = useState(0.5);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [isTrackChanging, setIsTrackChanging] = useState(false);  // Track if we're in the middle of a track change
+  const [isTrackReady, setIsTrackReady] = useState(false);  // Track whether the current track is fully ready for playback
+  const [cooldownSeconds, setCooldownSeconds] = useState(0); // Countdown timer after loading a new track
   
   const windowRef = useRef<HTMLDivElement>(null);
   const waveformRef = useRef<HTMLDivElement | null>(null);
   const hasLoadedInitialTrack = useRef(false);
   const isLoadingTrack = useRef(false);
   const wasPlayingBeforeLoad = useRef(false);
+  const wasPlayingBeforeMinimize = useRef(false);
   const preloadedTracksCache = useRef<Map<number, string>>(new Map());
   
   // Hidden WaveSurfer container for audio processing
@@ -81,10 +87,23 @@ export default function MediaPlayer({
     backend: 'WebAudio',
   });
   
-  // Update visibility when initiallyVisible prop changes
+  const { bringToFront, getZIndex } = useWindow();
+  
+  // Update visibility when initiallyVisible prop changes - with fixed dependency array
   useEffect(() => {
+    // Only update visibility state - no pausing at all
     setIsVisible(initiallyVisible);
-  }, [initiallyVisible]);
+    
+    // If becoming visible and wavesurfer exists, ensure it continues playing
+    if (initiallyVisible && !isVisible && wavesurfer) {
+      console.log('Ensuring playback continues after showing player');
+      setTimeout(() => {
+        if (wavesurfer && !wavesurfer.isPlaying() && isPlaying) {
+          wavesurfer.play();
+        }
+      }, 50);
+    }
+  }, [initiallyVisible, isVisible, wavesurfer, isPlaying]); // Include isPlaying from the start
 
   useEffect(() => {
     const x = (window.innerWidth - 500) / 2;
@@ -112,25 +131,42 @@ export default function MediaPlayer({
     const handleReady = () => {
       const audioDuration = wavesurfer.getDuration();
       console.log('WaveSurfer ready, duration:', audioDuration, 'wasPlayingBeforeLoad:', wasPlayingBeforeLoad.current);
+      
+      // Mark audio as not ready yet and start the cooldown timer
+      setIsTrackReady(false);
+      setCooldownSeconds(4); // Reduced from 3 to 1 second cooldown
+
+      // Clear loading state when audio is ready
+      setIsLoadingAudio(false);
       setDuration(audioDuration);
       setIsLoading(false);
+      setIsTrackChanging(false); // Track is now loaded 
       
-      if (wasPlayingBeforeLoad.current) {
-        console.log('Auto-playing after track loaded');
-        // Force immediate play without waiting
-        try {
-          wavesurfer.play();
-          // Backup check to ensure play started
-          setTimeout(() => {
-            if (wavesurfer && !wavesurfer.isPlaying()) {
-              console.log('Backup play attempt');
-              wavesurfer.play();
+      // Start cooldown interval - preventing immediate playback
+      const cooldownInterval = setInterval(() => {
+        setCooldownSeconds(prev => {
+          const newValue = prev - 1;
+          if (newValue <= 0) {
+            clearInterval(cooldownInterval);
+            // Only mark track as ready after cooldown completes
+            console.log('Cooldown complete, track ready for playback');
+            setIsTrackReady(true);
+            
+            // Auto-play if necessary, but only after cooldown
+            if (wasPlayingBeforeLoad.current) {
+              console.log('Auto-playing after cooldown');
+              if (wavesurfer) {
+                wavesurfer.play();
+              }
             }
-          }, 300);
-        } catch (e) {
-          console.error('Error auto-playing:', e);
-        }
-      }
+            return 0;
+          }
+          return newValue;
+        });
+      }, 1000);
+      
+      // Clear interval on component unmount
+      return () => clearInterval(cooldownInterval);
     };
     
     const handleAudioProcess = () => {
@@ -180,6 +216,7 @@ export default function MediaPlayer({
           
           // Set the audio URL to trigger loading
           console.log('Setting next track audio URL for auto-play:', url);
+          setIsLoadingAudio(true);
           setAudioUrl(url);
         } else {
           console.error('Invalid next track or missing audio file ID');
@@ -205,9 +242,10 @@ export default function MediaPlayer({
     return () => {
       console.log('Cleaning up WaveSurfer event listeners');
       if (wavesurfer) {
-        if (wavesurfer.isPlaying()) {
-          wavesurfer.pause();
-        }
+        // DON'T automatically pause when cleaning up - this was causing pauses
+        // if (wavesurfer.isPlaying()) {
+        //   wavesurfer.pause();
+        // }
         wavesurfer.un('play', handlePlayPause);
         wavesurfer.un('pause', handlePlayPause);
         wavesurfer.un('ready', handleReady);
@@ -282,6 +320,8 @@ export default function MediaPlayer({
     
     try {
       setIsLoading(true);
+      setIsTrackReady(false); // Mark track as not ready yet
+      setCooldownSeconds(1); // Reduced from 3 to 1 second cooldown
       setError(null);
       
       // Reset time display
@@ -289,8 +329,20 @@ export default function MediaPlayer({
       setDuration(0);
       
       // Stop current audio if playing
-      if (wavesurfer && wavesurfer.isPlaying()) {
-        wavesurfer.pause();
+      if (wavesurfer) {
+        // Always pause regardless of current state to prevent overlap
+        if (wavesurfer.isPlaying()) {
+          console.log('Pausing current track before loading new one');
+          wavesurfer.pause();
+        }
+        
+        // Also reset the wavesurfer to ensure clean state
+        try {
+          wavesurfer.empty();
+          console.log('Cleared wavesurfer to prevent audio overlap');
+        } catch (e) {
+          console.error('Error clearing wavesurfer:', e);
+        }
       }
 
       // Validate track index
@@ -326,6 +378,8 @@ export default function MediaPlayer({
           
           console.log('Setting audio URL:', url);
           
+          // Set loading state when starting to load audio
+          setIsLoadingAudio(true);
           // Set the audio URL for WaveSurfer to load
           setAudioUrl(url);
           
@@ -441,12 +495,32 @@ export default function MediaPlayer({
       return;
     }
     
+    // Prevent rapid track changes
+    if (isTrackChanging || isLoadingAudio) {
+      console.log('Track change already in progress, ignoring request');
+      return;
+    }
+    
     console.log('Manual previous track requested');
+    setIsTrackChanging(true);
     
     // CRITICAL: Set auto-play flag to TRUE - explicitly set for consistency
-    wasPlayingBeforeLoad.current = true;
+    wasPlayingBeforeLoad.current = isPlaying;
     
     try {
+      // Ensure current audio is stopped completely
+      if (wavesurfer) {
+        if (wavesurfer.isPlaying()) {
+          wavesurfer.pause();
+        }
+        try {
+          wavesurfer.empty();
+          console.log('Cleared wavesurfer before loading previous track');
+        } catch (e) {
+          console.error('Error clearing wavesurfer:', e);
+        }
+      }
+      
       // Calculate previous index with wraparound
       const prevIndex = currentTrackIndex > 0 ? currentTrackIndex - 1 : filteredTracks.length - 1;
       console.log(`Will load previous track at index ${prevIndex}`);
@@ -468,6 +542,7 @@ export default function MediaPlayer({
         
         // Set the audio URL to trigger loading
         console.log('Setting previous track audio URL:', url);
+        setIsLoadingAudio(true);
         setAudioUrl(url);
       } else {
         console.error('Invalid previous track or missing audio file ID');
@@ -485,12 +560,32 @@ export default function MediaPlayer({
       return;
     }
     
+    // Prevent rapid track changes
+    if (isTrackChanging || isLoadingAudio) {
+      console.log('Track change already in progress, ignoring request');
+      return;
+    }
+    
     console.log('Manual next track requested');
+    setIsTrackChanging(true);
     
     // CRITICAL: Set auto-play flag to TRUE - explicitly set to true for consistency
-    wasPlayingBeforeLoad.current = true;
+    wasPlayingBeforeLoad.current = isPlaying;
     
     try {
+      // Ensure current audio is stopped completely
+      if (wavesurfer) {
+        if (wavesurfer.isPlaying()) {
+          wavesurfer.pause();
+        }
+        try {
+          wavesurfer.empty();
+          console.log('Cleared wavesurfer before loading next track');
+        } catch (e) {
+          console.error('Error clearing wavesurfer:', e);
+        }
+      }
+      
       // Calculate next index with wraparound
       const nextIndex = (currentTrackIndex + 1) % filteredTracks.length;
       console.log(`Will load next track at index ${nextIndex}`);
@@ -512,6 +607,7 @@ export default function MediaPlayer({
         
         // Set the audio URL to trigger loading
         console.log('Setting next track audio URL (manual next):', url);
+        setIsLoadingAudio(true);
         setAudioUrl(url);
       } else {
         console.error('Invalid next track or missing audio file ID');
@@ -529,7 +625,20 @@ export default function MediaPlayer({
       return;
     }
     
+    // Don't allow play/pause while track is changing or loading or not fully ready
+    if (isTrackChanging || isLoadingAudio || !isTrackReady) {
+      console.log('Cannot play/pause - track not fully ready yet');
+      return;
+    }
+    
     console.log('Play/pause button clicked, current state:', wavesurfer.isPlaying() ? 'playing' : 'paused');
+    
+    // If current track is playing but UI doesn't reflect it, synchronize the state
+    if (wavesurfer.isPlaying() !== isPlaying) {
+      console.log('Synchronizing play state with WaveSurfer');
+      setIsPlaying(wavesurfer.isPlaying());
+    }
+    
     wavesurfer.playPause();
   };
 
@@ -545,6 +654,43 @@ export default function MediaPlayer({
     setVolume(newVolume);
   };
 
+  // Handle menu clicks with window focus
+  const handleMenuClick = (handler: (() => void) | undefined, windowId: string) => {
+    return () => {
+      if (handler) {
+        handler();
+        // Use setTimeout to ensure window has rendered
+        setTimeout(() => {
+          bringToFront(windowId);
+        }, 100);
+      }
+    };
+  };
+
+  // Update handle minimize function to NOT pause the music
+  const handleMinimize = () => {
+    console.log('Minimizing player without pausing music');
+    
+    // Call the passed onMinimize function without pausing music
+    if (onMinimize) {
+      onMinimize();
+    }
+  };
+
+  // Add close handler that pauses music and hides the player
+  const handleClose = () => {
+    // Only the close button should pause music
+    if (wavesurfer && wavesurfer.isPlaying()) {
+      console.log('Closing player and pausing music');
+      wavesurfer.pause();
+    }
+    
+    // Hide the player
+    if (onMinimize) {
+      onMinimize();
+    }
+  };
+
   if (!isVisible) {
     return null;
   }
@@ -552,22 +698,26 @@ export default function MediaPlayer({
   return (
     <div 
       ref={windowRef}
-      className="window" 
+      className="window media-player-window" 
       style={{ 
         width: '500px',
         position: 'fixed',
         left: position.x,
         top: position.y,
-        zIndex: isDragging ? 1000 : 1,
-        display: isVisible ? 'block' : 'none'
+        zIndex: getZIndex('media-player'),
+        display: isVisible ? 'block' : 'none',
+        userSelect: 'none'
       }}
-      onMouseDown={handleMouseDown}
+      onMouseDown={(e) => {
+        handleMouseDown(e);
+        bringToFront('media-player');
+      }}
     >
       <div className="title-bar">
         <div className="title-bar-text">Joshua Zhou</div>
         <div className="title-bar-controls">
-          <button aria-label="Minimize" onClick={onMinimize}></button>
-          <button aria-label="Maximize"></button>
+          <button aria-label="Minimize" onClick={handleMinimize}></button>
+          <button aria-label="Close" onClick={handleClose}></button>
         </div>
       </div>
       <div className="window-body">
@@ -579,7 +729,7 @@ export default function MediaPlayer({
           <li 
             role="menuitem" 
             className="win98-menu-item"
-            onClick={onAboutMeClick}
+            onClick={handleMenuClick(onAboutMeClick, 'about-me')}
             style={{ cursor: 'pointer' }}
           >
             <u>A</u>bout Me
@@ -587,7 +737,7 @@ export default function MediaPlayer({
           <li 
             role="menuitem" 
             className="win98-menu-item"
-            onClick={onContactClick}
+            onClick={handleMenuClick(onContactClick, 'contact')}
             style={{ cursor: 'pointer' }}
           >
             <u>C</u>ontact
@@ -595,7 +745,7 @@ export default function MediaPlayer({
           <li 
             role="menuitem" 
             className="win98-menu-item"
-            onClick={onProjectListClick}
+            onClick={handleMenuClick(onProjectListClick, 'project-list')}
             style={{ cursor: 'pointer' }}
           >
             <u>P</u>roject List
@@ -603,7 +753,7 @@ export default function MediaPlayer({
           <li 
             role="menuitem" 
             className="win98-menu-item"
-            onClick={onResumeClick}
+            onClick={handleMenuClick(onResumeClick, 'resume')}
             style={{ cursor: 'pointer' }}
           >
             <u>R</u>esume
@@ -653,13 +803,13 @@ export default function MediaPlayer({
                 )}
               </div>
               <div className="track-info" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
+                  <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
                   {currentTrack.title || 'Unknown Title'}
                 </div>
                 <div>{currentTrack.artist || 'Unknown Artist'}</div>
                 <div className="time-volume-controls" style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', fontSize: '14px' }}>
                   <div className="time-display"
-                    style={{ 
+                    style={{
                       fontFamily: 'monospace',
                       border: '2px inset #c0c0c0',
                       padding: '2px 6px',
@@ -679,9 +829,15 @@ export default function MediaPlayer({
                       justifyContent: 'center',
                       whiteSpace: 'nowrap'
                     }}>
-                      <span>{formatTime(currentTime)}</span>
-                      <span style={{ margin: '0 4px' }}>/</span>
-                      <span>{formatTime(duration)}</span>
+                      {isLoadingAudio || duration <= 0 ? (
+                        <span>Loading...</span>
+                      ) : (
+                        <>
+                          <span>{formatTime(currentTime)}</span>
+                          <span style={{ margin: '0 4px' }}>/</span>
+                          <span>{formatTime(duration)}</span>
+                        </>
+                      )}
                     </div>
                   </div>
                   <div className="volume-control" style={{ 
@@ -706,7 +862,13 @@ export default function MediaPlayer({
                   <button 
                     onClick={handlePlayPause}
                     className="win98-toolbar-button"
-                    style={{ width: '60px' }}
+                    style={{ 
+                      width: '60px',
+                      opacity: isTrackReady ? 1 : 0.5, // Visual indicator that the button isn't ready
+                      position: 'relative',
+                    }}
+                    disabled={isLoading || isLoadingAudio || duration <= 0 || isTrackChanging || !isTrackReady}
+                    title={!isTrackReady ? `Please wait ${cooldownSeconds} seconds...` : ""}
                   >
                     {isPlaying ? 'Pause' : 'Play'}
                   </button>
@@ -714,7 +876,7 @@ export default function MediaPlayer({
                     onClick={handlePrevTrack}
                     className="win98-toolbar-button"
                     style={{ width: '40px' }}
-                    disabled={isLoading || filteredTracks.length <= 1}
+                    disabled={isLoading || filteredTracks.length <= 1 || isTrackChanging || isLoadingAudio}
                   >
                     ⏮
                   </button>
@@ -722,7 +884,7 @@ export default function MediaPlayer({
                     onClick={handleNextTrack}
                     className="win98-toolbar-button"
                     style={{ width: '40px' }}
-                    disabled={isLoading || filteredTracks.length <= 1}
+                    disabled={isLoading || filteredTracks.length <= 1 || isTrackChanging || isLoadingAudio}
                   >
                     ⏭
                   </button>
@@ -733,12 +895,12 @@ export default function MediaPlayer({
                     ⚙️
                   </button>
                 </div>
-              </div>
             </div>
+          </div>
           ) : (
             <div style={{ textAlign: 'center', padding: '20px' }}>
               No tracks available with audio. Please add audio to your tracks.
-            </div>
+          </div>
           )}
         </div>
       </div>

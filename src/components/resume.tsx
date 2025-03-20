@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import '98.css/dist/98.css'
 import '../styles/window.css'
+import { useWindow } from '../contexts/WindowContext'
 
 interface WindowPosition {
   x: number;
@@ -15,18 +16,32 @@ interface ResumeProps {
 }
 
 export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
-  const [position, setPosition] = useState<WindowPosition>({ x: 120, y: 120 });
+  const [position, setPosition] = useState<WindowPosition>(() => {
+    const x = window.innerWidth - 650; // Right with margin for window width
+    const y = window.innerHeight - 550; // Bottom with margin for window height
+    return { x, y };
+  });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState<WindowPosition>({ x: 0, y: 0 });
   const [pdfExists, setPdfExists] = useState<boolean | null>(null);
+  const [size, setSize] = useState({ width: 600, height: 500 });
+  const [isResizing, setIsResizing] = useState(false);
+  const [resizeOffset, setResizeOffset] = useState<WindowPosition>({ x: 0, y: 0 });
+  const [isMaximized, setIsMaximized] = useState(false);
+  const [originalPosition, setOriginalPosition] = useState<WindowPosition>({ x: 120, y: 120 });
+  const [originalSize, setOriginalSize] = useState({ width: 600, height: 500 });
+  const { bringToFront, getZIndex } = useWindow();
   
   const windowRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    const x = (window.innerWidth - 600) / 2;
-    const y = (window.innerHeight - 500) / 3;
-    setPosition({ x, y });
-  }, []);
+    if (isVisible) {
+      // Use setTimeout to avoid calling during render
+      setTimeout(() => {
+        bringToFront('resume');
+      }, 0);
+    }
+  }, [isVisible, bringToFront]);
 
   useEffect(() => {
     // Check if the PDF exists
@@ -42,14 +57,25 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
   }, [isVisible, pdfExists]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (e.target instanceof HTMLElement && e.target.closest('.title-bar')) {
-      setIsDragging(true);
-      const rect = windowRef.current?.getBoundingClientRect();
-      if (rect) {
-        setDragOffset({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top
-        });
+    if (e.target instanceof HTMLElement) {
+      if (e.target.closest('.title-bar')) {
+        setIsDragging(true);
+        const rect = windowRef.current?.getBoundingClientRect();
+        if (rect) {
+          setDragOffset({
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
+          });
+        }
+      } else if (e.target.closest('.resize-handle')) {
+        setIsResizing(true);
+        const rect = windowRef.current?.getBoundingClientRect();
+        if (rect) {
+          setResizeOffset({
+            x: e.clientX - rect.right,
+            y: e.clientY - rect.bottom
+          });
+        }
       }
     }
   };
@@ -60,15 +86,23 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
         x: e.clientX - dragOffset.x,
         y: e.clientY - dragOffset.y
       });
+    } else if (isResizing) {
+      const newWidth = e.clientX - position.x;
+      const newHeight = e.clientY - position.y;
+      setSize({
+        width: Math.max(400, newWidth),
+        height: Math.max(300, newHeight)
+      });
     }
-  }, [isDragging, dragOffset]);
+  }, [isDragging, isResizing, dragOffset, resizeOffset, position]);
 
   const handleMouseUp = () => {
     setIsDragging(false);
+    setIsResizing(false);
   };
 
   useEffect(() => {
-    if (isDragging) {
+    if (isDragging || isResizing) {
       window.addEventListener('mousemove', handleMouseMove);
       window.addEventListener('mouseup', handleMouseUp);
     }
@@ -77,7 +111,7 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging, dragOffset, handleMouseMove]);
+  }, [isDragging, isResizing, handleMouseMove]);
 
   const handleClose = () => {
     onVisibilityChange(false);
@@ -85,6 +119,21 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
 
   const handleMinimize = () => {
     onVisibilityChange(false);
+  };
+
+  const handleMaximize = () => {
+    if (!isMaximized) {
+      // Store current position and size before maximizing
+      setOriginalPosition(position);
+      setOriginalSize(size);
+      setPosition({ x: 0, y: 0 });
+      setSize({ width: window.innerWidth, height: window.innerHeight - 30 });
+    } else {
+      // Restore original position and size
+      setPosition(originalPosition);
+      setSize(originalSize);
+    }
+    setIsMaximized(!isMaximized);
   };
 
   const handleDownload = () => {
@@ -106,20 +155,25 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
       ref={windowRef}
       className="window resume-window" 
       style={{ 
-        width: '600px',
-        height: '500px',
+        width: size.width,
+        height: size.height,
         position: 'fixed',
         left: position.x,
         top: position.y,
-        zIndex: isDragging ? 1000 : 100,
-        display: isVisible ? 'block' : 'none'
+        zIndex: getZIndex('resume'),
+        display: isVisible ? 'block' : 'none',
+        userSelect: 'none'
       }}
-      onMouseDown={handleMouseDown}
+      onMouseDown={(e) => {
+        handleMouseDown(e);
+        bringToFront('resume');
+      }}
     >
       <div className="title-bar">
         <div className="title-bar-text">Resume</div>
         <div className="title-bar-controls">
           <button aria-label="Minimize" onClick={handleMinimize}></button>
+          <button aria-label="Maximize" onClick={handleMaximize}></button>
           <button aria-label="Close" onClick={handleClose}></button>
         </div>
       </div>
@@ -156,7 +210,7 @@ cp /path/to/your/resume.pdf public/resume.pdf`}
             </div>
           ) : (
             <iframe
-              src="/resume.pdf"
+              src="/resume.pdf#toolbar=0"
               style={{ 
                 width: '100%', 
                 height: '100%', 
@@ -168,6 +222,14 @@ cp /path/to/your/resume.pdf public/resume.pdf`}
           )}
         </div>
       </div>
+      <div className="resize-handle" style={{
+        position: 'absolute',
+        right: 0,
+        bottom: 0,
+        width: '20px',
+        height: '20px',
+        cursor: 'se-resize'
+      }} />
       <div className="status-bar">
         <p className="status-bar-field">Resume - PDF Viewer</p>
       </div>
