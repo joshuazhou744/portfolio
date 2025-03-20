@@ -94,7 +94,7 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
         height: Math.max(300, newHeight)
       });
     }
-  }, [isDragging, isResizing, dragOffset, resizeOffset, position]);
+  }, [isDragging, isResizing, dragOffset, position]);
 
   const handleMouseUp = () => {
     setIsDragging(false);

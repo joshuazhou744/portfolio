@@ -91,8 +91,8 @@ export function InfoPanel({ isVisible, onVisibilityChange }: InfoPanelProps) {
         ref={windowRef}
         className="window info-panel" 
         style={{ 
-          width: '300px',
-          height: '150px',
+          width: '350px',
+          height: '130px',
           position: 'fixed',
           left: position.x,
           top: position.y,
@@ -106,7 +106,7 @@ export function InfoPanel({ isVisible, onVisibilityChange }: InfoPanelProps) {
         }}
       >
         <div className="title-bar">
-          <div className="title-bar-text">Information</div>
+          <div className="title-bar-text">Enjoy your stay</div>
           <div className="title-bar-controls">
             <button 
               aria-label="Minimize" 
@@ -119,9 +119,8 @@ export function InfoPanel({ isVisible, onVisibilityChange }: InfoPanelProps) {
           </div>
         </div>
         <div className="main" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <h4>Welcome to my portfolio</h4>
-          <p>Enjoy your stay</p>
-          <p>(This is also my study app)</p>
+          <h4>Welcome to Joshua Zhou's portfolio</h4>
+          <p>This was originally my study app</p>
         </div>
       </div>
     </div>

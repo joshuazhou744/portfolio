@@ -714,7 +714,7 @@ export default function MediaPlayer({
       }}
     >
       <div className="title-bar">
-        <div className="title-bar-text">Joshua Zhou</div>
+        <div className="title-bar-text">Media Player</div>
         <div className="title-bar-controls">
           <button aria-label="Minimize" onClick={handleMinimize}></button>
           <button aria-label="Close" onClick={handleClose}></button>

@@ -21,12 +21,14 @@ interface Project {
   description: string;
   technologies: string[];
   year: number;
+  github: string;
+  live?: string;
 }
 
 export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps) {
   const [position, setPosition] = useState<WindowPosition>(() => {
     const x = 50; // Left with margin
-    const y = window.innerHeight - 450; // Bottom with margin for window height
+    const y = window.innerHeight - 500; // Bottom with margin for window height
     return { x, y };
   });
   const [isDragging, setIsDragging] = useState(false);
@@ -41,31 +43,55 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
     {
       id: 1,
       name: "Portfolio Website",
-      description: "Personal portfolio website with Windows 98 theme using Next.js and React.",
-      technologies: ["React", "Next.js", "TypeScript", "CSS"],
-      year: 2023
+      description: "Personal portfolio website and study app in a Windows 98 theme",
+      technologies: ["React", "NextJS", "TypeScript", "FastAPI", "MongoDB"],
+      year: 2025,
+      github: "https://github.com/joshuazhou744/portfolio",
+      live: "https://www.youtube.com/"
     },
     {
       id: 2,
-      name: "Music Streaming App",
-      description: "Music streaming application with API integration and custom audio player.",
-      technologies: ["React", "FastAPI", "MongoDB", "WaveSurfer.js"],
-      year: 2023
+      name: "ImaginArray | ConUHacks IX",
+      description: "Algorithm and array manipulation visualization tool",
+      technologies: ["React", "Flask", "Framer Motion"],
+      year: 2025,
+      github: "https://github.com/joshuazhou744/imaginarray",
+      live: "https://imaginarray.vercel.app"
     },
     {
       id: 3,
-      name: "Data Visualization Dashboard",
-      description: "Interactive dashboard for visualizing complex datasets with filtering capabilities.",
-      technologies: ["D3.js", "React", "Node.js", "PostgreSQL"],
-      year: 2022
+      name: "McHacks 12 Live Site",
+      description: "Fullstack web application and neural network to reflect sleep quality",
+      technologies: ["React", "Node", "Express", "MongoDB", "Figma", "TailwindCSS"],
+      year: 2025,
+      github: "https://github.com/hackmcgill/mchacks12",
+      live: "https://mchacks.ca"
     },
     {
       id: 4,
-      name: "E-commerce Platform",
-      description: "Full-stack e-commerce platform with product management and order processing.",
-      technologies: ["React", "Express", "MongoDB", "Stripe"],
-      year: 2022
-    }
+      name: "Snooze Scribe and Snooze Model",
+      description: "Fullstack web application and neural network to reflect sleep quality",
+      technologies: ["React", "PyTorch", "FastAPI", "MongoDB", "WaveSurfer"],
+      year: 2024,
+      github: "https://github.com/joshuazhou744/snooze_scribe",
+      live: "https://snooze-scribe.vercel.app"
+    },
+    {
+      id: 5,
+      name: "CheckMate | HackTheNorth 2023",
+      description: "Fullstack banking application using RBC's custom API",
+      technologies: ["React", "Node", "Express"],
+      year: 2023,
+      github: "https://github.com/Dennisonung/CheckMate"
+    },
+    {
+      id: 6,
+      name: "GoSkye Aim Trainer",
+      description: "First person aim trainer with simulated in game graphics to VALORANT",
+      technologies: ["Python", "PyGame"],
+      year: 2023,
+      github: "https://github.com/joshuazhou744/Go_Skye-CSE3910-Project"
+    },
   ];
   
   useEffect(() => {
@@ -142,7 +168,10 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
         top: position.y,
         zIndex: getZIndex('project-list'),
         display: isVisible ? 'block' : 'none',
-        userSelect: 'none'
+        userSelect: 'none',
+        wordSpacing: '0.1em',
+        justifyContent: 'center',
+        alignItems: 'center'
       }}
       onMouseDown={(e) => {
         handleMouseDown(e);
@@ -203,14 +232,30 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
           </div>
           <div className="field-row" style={{ justifyContent: 'space-around', marginTop: '5px' }}>
             <button disabled={!selectedProject}>View Details</button>
-            <button disabled={!selectedProject}>GitHub</button>
-            <button disabled={!selectedProject}>Live Demo</button>
+            <button 
+              disabled={!selectedProject || !projects.find(p => p.id === selectedProject)?.github} 
+              onClick={() => {
+                const project = projects.find(p => p.id === selectedProject);
+                if (project?.github) window.open(project.github, '_blank');
+              }}
+            >
+              GitHub
+            </button>
+            <button 
+              disabled={!selectedProject || !projects.find(p => p.id === selectedProject)?.live}
+              onClick={() => {
+                const project = projects.find(p => p.id === selectedProject);
+                if (project?.live) window.open(project.live, '_blank');
+              }}
+            >
+              Live
+            </button>
           </div>
         </div>
       </div>
-      <div className="status-bar">
+      {/*<div className="status-bar">
         <p className="status-bar-field">Projects: {projects.length}</p>
-      </div>
+      </div>*/}
     </div>
   );
 } 

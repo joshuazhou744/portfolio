@@ -105,7 +105,7 @@ export function Contact({ isVisible, onVisibilityChange }: ContactProps) {
       }}
     >
       <div className="title-bar">
-        <div className="title-bar-text">Contact</div>
+        <div className="title-bar-text">Contact and Links</div>
         <div className="title-bar-controls">
           <button aria-label="Minimize" onClick={handleMinimize}></button>
           <button aria-label="Close" onClick={handleClose}></button>
@@ -113,7 +113,6 @@ export function Contact({ isVisible, onVisibilityChange }: ContactProps) {
       </div>
       <div className="window-body">
         <div className="content">
-          <h4>Get in Touch</h4>
           <div className="field-row-stacked">
             <label htmlFor="email">Email:</label>
             <p>joshua.c.zhou@gmail.com</p>
@@ -123,8 +122,12 @@ export function Contact({ isVisible, onVisibilityChange }: ContactProps) {
               <p>587-926-9574</p>
           </div>
           <div className="field-row-stacked">
-            <label htmlFor="github">LinkedIn:</label>
+            <label htmlFor="linkedin">LinkedIn:</label>
             <a href="https://www.linkedin.com/in/joshuazhou1" id="github" target="_blank" rel="noopener noreferrer">linkedin.com/in/joshuazhou1</a>
+          </div>
+          <div className="field-row-stacked">
+            <label htmlFor="github">Github:</label>
+            <a href="https://github.com/joshuazhou744" id="github" target="_blank" rel="noopener noreferrer">github.com/joshuazhou744</a>
           </div>
         </div>
       </div>
