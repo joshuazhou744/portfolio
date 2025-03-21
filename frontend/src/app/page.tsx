@@ -78,9 +78,6 @@ function AppContent() {
       }, 100);
     }, 1000);
   };
-
-  const baseUrl = process.env.NEXT_PUBLIC_URL || '';
-
   return (
     <main className="flex min-h-screen flex-col items-center p-4 relative"
           style={{
