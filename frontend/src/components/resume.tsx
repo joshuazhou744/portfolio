@@ -153,8 +153,8 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
       const width = windowRef.current?.offsetWidth || 600;
       const height = windowRef.current?.offsetHeight || 500;
       
-      const constrainedX = Math.min(Math.max(newX, -width + 80), windowWidth - 80);
-      const constrainedY = Math.min(Math.max(newY, 0), windowHeight - 50);
+      const constrainedX = Math.min(Math.max(newX, -width + 400), windowWidth - 400);
+      const constrainedY = Math.min(Math.max(newY, 0), windowHeight - 300);
       
       setPosition({
         x: constrainedX,

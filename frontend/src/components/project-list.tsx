@@ -98,8 +98,8 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
       const width = windowRef.current?.offsetWidth || 450;
       const height = windowRef.current?.offsetHeight || 400;
       
-      const constrainedX = Math.min(Math.max(newX, -width + 80), windowWidth - 80);
-      const constrainedY = Math.min(Math.max(newY, 0), windowHeight - 50);
+      const constrainedX = Math.min(Math.max(newX, -width + 300), windowWidth - 300);
+      const constrainedY = Math.min(Math.max(newY, 0), windowHeight - 300);
       
       setPosition({
         x: constrainedX,

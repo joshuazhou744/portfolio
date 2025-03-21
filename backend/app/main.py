@@ -5,7 +5,7 @@ from bson import ObjectId
 from typing import List, Optional, Dict, Any, Tuple
 import os
 from dotenv import load_dotenv
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, FileResponse, JSONResponse
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import io
@@ -18,11 +18,16 @@ from googleapiclient.discovery import build
 import urllib.parse
 from ytmusicapi import YTMusic
 import random
+import logging
 
 from pydantic import BaseModel
 
 # load environment variables
 load_dotenv()
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # YouTube API and ytmusicapi setup
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
@@ -57,6 +62,52 @@ spotify = spotipy.Spotify(
         client_secret=os.getenv("SPOTIFY_CLIENT_SECRET")
     )
 )
+
+# Global variables for API clients
+youtube = None
+spotify = None
+ytmusic = None
+
+def get_youtube_client():
+    global youtube
+    if youtube is None:
+        api_key = os.getenv("YOUTUBE_API_KEY")
+        if not api_key:
+            raise HTTPException(status_code=500, detail="YouTube API key not configured")
+        try:
+            youtube = build('youtube', 'v3', developerKey=api_key)
+        except Exception as e:
+            logger.error(f"Failed to initialize YouTube client: {str(e)}")
+            raise HTTPException(status_code=500, detail="Failed to initialize YouTube client")
+    return youtube
+
+def get_spotify_client():
+    global spotify
+    if spotify is None:
+        client_id = os.getenv("SPOTIFY_CLIENT_ID")
+        client_secret = os.getenv("SPOTIFY_CLIENT_SECRET")
+        if not client_id or not client_secret:
+            raise HTTPException(status_code=500, detail="Spotify credentials not configured")
+        try:
+            client_credentials_manager = SpotifyClientCredentials(
+                client_id=client_id,
+                client_secret=client_secret
+            )
+            spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+        except Exception as e:
+            logger.error(f"Failed to initialize Spotify client: {str(e)}")
+            raise HTTPException(status_code=500, detail="Failed to initialize Spotify client")
+    return spotify
+
+def get_ytmusic_client():
+    global ytmusic
+    if ytmusic is None:
+        try:
+            ytmusic = YTMusic()
+        except Exception as e:
+            logger.error(f"Failed to initialize YTMusic client: {str(e)}")
+            raise HTTPException(status_code=500, detail="Failed to initialize YTMusic client")
+    return ytmusic
 
 # helper function to check if a collection exists
 async def check_collection_exists(collection_name: str) -> Tuple[bool, str]:
@@ -717,8 +768,51 @@ async def delete_project(project_id: str):
 
 @app.get("/health")
 async def health_check():
+    health_status = {
+        "status": "healthy",
+        "timestamp": datetime.utcnow().isoformat(),
+        "services": {
+            "mongodb": "healthy",
+            "youtube": "healthy",
+            "spotify": "healthy",
+            "ytmusic": "healthy"
+        }
+    }
+    
     try:
+        # Check MongoDB connection
         await client.admin.command('ping')
-        return {"status": "healthy", "database": "connected"}
     except Exception as e:
-        raise HTTPException(status_code=503, detail=f"Database connection failed: {str(e)}") 
+        health_status["services"]["mongodb"] = "unhealthy"
+        health_status["status"] = "degraded"
+        logger.error(f"MongoDB health check failed: {str(e)}")
+    
+    try:
+        # Check YouTube API
+        youtube = get_youtube_client()
+        youtube.channels().list(part="snippet", id="UC_x5XG1OV2P6uZZ5FSM9Ttw").execute()
+    except Exception as e:
+        health_status["services"]["youtube"] = "unhealthy"
+        health_status["status"] = "degraded"
+        logger.error(f"YouTube API health check failed: {str(e)}")
+    
+    try:
+        # Check Spotify API
+        spotify = get_spotify_client()
+        spotify.artist("4tZwfgrHOc3mvqYlEYSvVi")
+    except Exception as e:
+        health_status["services"]["spotify"] = "unhealthy"
+        health_status["status"] = "degraded"
+        logger.error(f"Spotify API health check failed: {str(e)}")
+    
+    try:
+        # Check YTMusic API
+        ytmusic = get_ytmusic_client()
+        ytmusic.get_song("dQw4w9WgXcQ")
+    except Exception as e:
+        health_status["services"]["ytmusic"] = "unhealthy"
+        health_status["status"] = "degraded"
+        logger.error(f"YTMusic API health check failed: {str(e)}")
+    
+    return health_status
+
