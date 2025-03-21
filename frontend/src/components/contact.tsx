@@ -17,9 +17,8 @@ interface ContactProps {
 
 export function Contact({ isVisible, onVisibilityChange }: ContactProps) {
   const [position, setPosition] = useState<WindowPosition>(() => {
-    // Position at top-right of screen
-    const x = window.innerWidth - 500; // Window width is 350px, with some margin
-    const y = 50; // Top with margin
+    const x = window.innerWidth - (Math.random() * (500-300) + 300);
+    const y = Math.random() * (75-50) + 50;
     return { x, y };
   });
   const [isDragging, setIsDragging] = useState(false);

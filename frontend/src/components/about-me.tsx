@@ -16,7 +16,11 @@ interface AboutMeProps {
 }
 
 export function AboutMe({ isVisible, onVisibilityChange }: AboutMeProps) {
-  const [position, setPosition] = useState<WindowPosition>({ x: 200, y: 50 });
+  const [position, setPosition] = useState<WindowPosition>(() => { 
+    const x = Math.random() * (200-100) + 100;
+    const y = Math.random() * (75-50) + 50;
+    return { x, y };
+  });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState<WindowPosition>({ x: 0, y: 0 });
   
@@ -113,7 +117,7 @@ export function AboutMe({ isVisible, onVisibilityChange }: AboutMeProps) {
           <ul>
             <li>I am a first year Software Engineering (Co-op) student at McGill University.</li>
             <li>I like making fun and cool things with code.</li>
-            <li>I don't like studying subjects I find boring and uninteresting. (ex. physics)</li>
+            <li>I don't like studying subjects I find boring and uninteresting.</li>
             <li>I like bouldering and basketball and video games.</li>
             <li>I like listening to music; my favorite artists are Gorillaz, Denzel Curry, Sonder and NewJeans.</li>
           </ul>

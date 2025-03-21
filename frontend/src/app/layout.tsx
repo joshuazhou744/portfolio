@@ -8,7 +8,7 @@ import { ClientBody } from './ClientBody'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'template',
+  title: 'Joshua Zhou',
   description: 'template description.',
 }
 

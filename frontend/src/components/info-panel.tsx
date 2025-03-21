@@ -17,9 +17,8 @@ interface InfoPanelProps {
 
 export function InfoPanel({ isVisible, onVisibilityChange }: InfoPanelProps) {
   const [position, setPosition] = useState<WindowPosition>(() => {
-    // Random position within screen bounds
-    const maxX = window.innerWidth - 300  // 300px is window width
-    const maxY = window.innerHeight - 200 // 200px is approximate window height
+    const maxX = window.innerWidth - 300
+    const maxY = window.innerHeight - 200
     const x = Math.random() * maxX
     const y = Math.random() * maxY
     return { x, y }
@@ -29,7 +28,6 @@ export function InfoPanel({ isVisible, onVisibilityChange }: InfoPanelProps) {
   const windowRef = useRef<HTMLDivElement>(null)
   const { bringToFront, getZIndex } = useWindow();
 
-  // Handle window dragging
   const handleMouseDown = (e: React.MouseEvent) => {
     if (e.target instanceof HTMLElement && e.target.closest('.title-bar')) {
       setIsDragging(true)
@@ -78,7 +76,6 @@ export function InfoPanel({ isVisible, onVisibilityChange }: InfoPanelProps) {
 
   useEffect(() => {
     if (isVisible) {
-      // Use setTimeout to avoid calling during render
       setTimeout(() => {
         bringToFront('info-panel');
       }, 0);

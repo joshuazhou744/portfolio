@@ -12,8 +12,8 @@ export function Loader({ onComplete }: LoaderProps) {
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
-    const duration = 1000 // 1 second
-    const interval = 50 // Update every 50ms
+    const duration = 1000
+    const interval = 50
     const steps = duration / interval
     const increment = 100 / steps
 

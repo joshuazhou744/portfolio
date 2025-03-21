@@ -2,7 +2,7 @@ from fastapi import FastAPI, UploadFile, File, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Tuple
 import os
 from dotenv import load_dotenv
 from fastapi.responses import StreamingResponse
@@ -17,20 +17,26 @@ from motor.motor_asyncio import AsyncIOMotorGridFSBucket
 from googleapiclient.discovery import build
 import urllib.parse
 from ytmusicapi import YTMusic
+import random
 
-# Load environment variables
+from pydantic import BaseModel
+
+# load environment variables
 load_dotenv()
 
-# YouTube API setup
+# YouTube API and ytmusicapi setup
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 youtube = build('youtube', 'v3', developerKey=YOUTUBE_API_KEY)
+ytmusic = YTMusic()
 
 app = FastAPI(title="Portfolio Music API")
 
-# CORS middleware
+# get the frontend URL from environment variable or use localhost for development
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[FRONTEND_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -52,8 +58,15 @@ spotify = spotipy.Spotify(
     )
 )
 
-# Pydantic models for request/response
-from pydantic import BaseModel
+# helper function to check if a collection exists
+async def check_collection_exists(collection_name: str) -> Tuple[bool, str]:
+    try:
+        collections = await db.list_collection_names()
+        if collection_name not in collections:
+            return False, f"Collection '{collection_name}' does not exist"
+        return True, ""
+    except Exception as e:
+        return False, f"Error checking collection: {str(e)}"
 
 class Song(BaseModel):
     title: str
@@ -88,12 +101,28 @@ class Playlist(BaseModel):
     created_at: datetime = datetime.utcnow()
     updated_at: datetime = datetime.utcnow()
 
-# Initialize YTMusic
-ytmusic = YTMusic()
+class ResumeMetadata(BaseModel):
+    filename: str
+    file_id: str
+    upload_date: datetime = datetime.utcnow()
+    content_type: str
+
+class Project(BaseModel):
+    name: str
+    description: str
+    technologies: List[str]
+    year: int
+    github: Optional[str] = None
+    demo_url: Optional[str] = None
+
+class ProjectResponse(Project):
+    id: str
+
+    class Config:
+        from_attributes = True
 
 @app.on_event("startup")
 async def startup_db_client():
-    # Remove automatic index creation for playlist collection
     pass
 
 @app.on_event("shutdown")
@@ -101,12 +130,11 @@ async def shutdown_db_client():
     client.close()
 
 @app.get("/songs/{collection_name}", response_model=List[SongResponse])
-async def get_songs(collection_name: str):
+async def get_songs(collection_name: str, noshuffle: bool = False):
     try:
-        # Check if collection exists
-        collections = await db.list_collection_names()
-        if collection_name not in collections:
-            raise HTTPException(status_code=404, detail=f"Collection '{collection_name}' does not exist")
+        exists, error_message = await check_collection_exists(collection_name)
+        if not exists:
+            raise HTTPException(status_code=404, detail=error_message)
         
         songs = []
         cursor = db[collection_name].find()
@@ -114,17 +142,22 @@ async def get_songs(collection_name: str):
             song["id"] = str(song["_id"])
             del song["_id"]
             songs.append(song)
+        
+        if not noshuffle:
+            random.shuffle(songs)
+            
         return songs
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch songs: {str(e)}")
 
 @app.get("/songs/{collection_name}/{song_id}", response_model=SongResponse)
 async def get_song(collection_name: str, song_id: str):
     try:
-        # Check if collection exists
-        collections = await db.list_collection_names()
-        if collection_name not in collections:
-            raise HTTPException(status_code=404, detail=f"Collection '{collection_name}' does not exist")
+        exists, error_message = await check_collection_exists(collection_name)
+        if not exists:
+            raise HTTPException(status_code=404, detail=error_message)
         
         if not ObjectId.is_valid(song_id):
             raise HTTPException(status_code=400, detail="Invalid song ID")
@@ -136,16 +169,17 @@ async def get_song(collection_name: str, song_id: str):
         song["id"] = str(song["_id"])
         del song["_id"]
         return song
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch song: {str(e)}")
 
 @app.get("/songs/{collection_name}/{song_id}/audio")
 async def get_song_audio(collection_name: str, song_id: str):
     try:
-        # Check if collection exists
-        collections = await db.list_collection_names()
-        if collection_name not in collections:
-            raise HTTPException(status_code=404, detail=f"Collection '{collection_name}' does not exist")
+        exists, error_message = await check_collection_exists(collection_name)
+        if not exists:
+            raise HTTPException(status_code=404, detail=error_message)
         
         if not ObjectId.is_valid(song_id):
             raise HTTPException(status_code=400, detail="Invalid song ID")
@@ -164,16 +198,17 @@ async def get_song_audio(collection_name: str, song_id: str):
                 "Content-Disposition": f'attachment; filename="{grid_out.filename}"'
             }
         )
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch song audio: {str(e)}")
 
 @app.delete("/songs/{collection_name}/{song_id}")
 async def delete_song(collection_name: str, song_id: str):
     try:
-        # Check if collection exists
-        collections = await db.list_collection_names()
-        if collection_name not in collections:
-            raise HTTPException(status_code=404, detail=f"Collection '{collection_name}' does not exist")
+        exists, error_message = await check_collection_exists(collection_name)
+        if not exists:
+            raise HTTPException(status_code=404, detail=error_message)
         
         if not ObjectId.is_valid(song_id):
             raise HTTPException(status_code=400, detail="Invalid song ID")
@@ -182,36 +217,34 @@ async def delete_song(collection_name: str, song_id: str):
         if not song:
             raise HTTPException(status_code=404, detail="Song not found")
         
-        # Delete audio file from GridFS if it exists
         if song.get("audio_file_id"):
             await fs.delete(ObjectId(song["audio_file_id"]))
         
-        # Delete song document
         await db[collection_name].delete_one({"_id": ObjectId(song_id)})
         return {"message": "Song deleted successfully"}
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to delete song: {str(e)}")
 
 @app.get("/spotify/playlist/{playlist_id}", response_model=List[SpotifyTrack])
 async def get_spotify_playlist(playlist_id: str):
-    try:
-        # Get playlist tracks
+    try:    
         results = spotify.playlist_tracks(playlist_id)
         tracks = []
         
-        # Process each track
         for item in results['items']:
             track = item['track']
-            if track:  # Skip if track is None (can happen with deleted tracks)
-                # Check for duplicates
+            if track:  
+                # check for duplicates
                 existing_song = await db.playlist.find_one({"spotify_id": track['id']})
                 if existing_song:
                     continue
                 
-                # Get the first artist
+                # get the first artist
                 artist = track['artists'][0]['name']
                 
-                # Get the album cover image (prefer large size)
+                # get the album cover image
                 cover_image = track['album']['images'][0]['url'] if track['album']['images'] else None
                 
                 tracks.append(SpotifyTrack(
@@ -232,31 +265,28 @@ async def attach_youtube_audio(
     youtube_url: str = Query(..., description="YouTube URL for the audio")
 ):
     try:
-        # Check if collection exists
-        collections = await db.list_collection_names()
-        if collection_name not in collections:
-            raise HTTPException(status_code=404, detail=f"Collection '{collection_name}' does not exist")
+        exists, error_message = await check_collection_exists(collection_name)
+        if not exists:
+            raise HTTPException(status_code=404, detail=error_message)
         
-        # Check if song exists in collection
         song = await db[collection_name].find_one({"spotify_id": spotify_id})
         if not song:
             raise HTTPException(status_code=404, detail="Song not found in collection")
         
-        # Check if song already has audio
+        # check if song already has audio
         if song.get("audio_file_id"):
             raise HTTPException(status_code=400, detail="Song already has audio attached")
         
-        # Create a thread pool for running yt-dlp operations
         executor = ThreadPoolExecutor()
         
         try:
-            # Download audio using yt-dlp in a separate thread
+            # download audio using yt-dlp
             def download_audio():
                 try:
                     import tempfile
                     import os
                     
-                    # Create a temporary directory
+                    # create a temporary directory
                     with tempfile.TemporaryDirectory() as temp_dir:
                         output_template = os.path.join(temp_dir, '%(title)s.%(ext)s')
                         
@@ -272,29 +302,29 @@ async def attach_youtube_audio(
                             'no_warnings': True
                         }
                         
-                        # Download the file
+                        # download the file
                         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                             ydl.download([youtube_url])
                             
-                            # Find the downloaded file (should be the only file in temp_dir)
+                            # find the downloaded file
                             files = os.listdir(temp_dir)
                             if not files:
                                 raise Exception("No audio file was downloaded")
                                 
                             audio_file_path = os.path.join(temp_dir, files[0])
                             
-                            # Read the file into memory
+                            # read the file
                             with open(audio_file_path, 'rb') as f:
                                 return f.read()
                         
                 except Exception as e:
                     raise Exception(f"Failed to download audio: {str(e)}")
             
-            # Run the download in a thread pool with timeout
+            # run the download with timeout
             try:
                 audio_data = await asyncio.wait_for(
                     asyncio.get_event_loop().run_in_executor(executor, download_audio),
-                    timeout=60.0  # 60 second timeout
+                    timeout=60.0
                 )
             except asyncio.TimeoutError:
                 raise HTTPException(
@@ -302,7 +332,7 @@ async def attach_youtube_audio(
                     detail="Download timed out. Please try again."
                 )
             
-            # Upload to GridFS using the correct method
+            # upload to GridFS
             filename = f"{song['title']}.mp3"
             grid_in = await fs.upload_from_stream(
                 filename,
@@ -310,7 +340,7 @@ async def attach_youtube_audio(
                 metadata={"contentType": "audio/mp3"}
             )
             
-            # Update song document with audio file ID
+            # update song document with audio file ID
             await db[collection_name].update_one(
                 {"_id": song["_id"]},
                 {"$set": {"audio_file_id": str(grid_in)}}
@@ -334,13 +364,9 @@ async def attach_youtube_audio(
 @app.post("/songs/collection/{collection_name}")
 async def add_songs_to_collection(collection_name: str, songs: List[Dict[str, Any]]):
     try:
-        # Check if collection exists
-        collections = await db.list_collection_names()
-
-        # Insert all songs into the specified collection
         result = await db[collection_name].insert_many(songs)
         
-        # Convert ObjectIds to strings for JSON serialization
+        # convert ObjectIds to strings for JSON serialization
         inserted_ids = [str(id) for id in result.inserted_ids]
         
         return {
@@ -354,12 +380,11 @@ async def add_songs_to_collection(collection_name: str, songs: List[Dict[str, An
 @app.post("/songs/{collection_name}/process-missing")
 async def process_songs_without_audio(collection_name: str):
     try:
-        # Check if collection exists
-        collections = await db.list_collection_names()
-        if collection_name not in collections:
-            raise HTTPException(status_code=404, detail=f"Collection '{collection_name}' does not exist")
+        exists, error_message = await check_collection_exists(collection_name)
+        if not exists:
+            raise HTTPException(status_code=404, detail=error_message)
         
-        # Find all songs without youtube_link or audio_file_id
+        # find all songs without youtube_link or audio_file_id
         cursor = db[collection_name].find({
             "$or": [
                 {"youtube_link": {"$exists": False}},
@@ -372,13 +397,13 @@ async def process_songs_without_audio(collection_name: str):
         
         async for song in cursor:
             try:
-                # Search for the song on YouTube Music
+                # search for the song on YouTube Music
                 search_query = f"{song['title']} {song['artist']}"
                 
-                # Call YTMusic API to search for the video
+                # call YTMusic API to search for the video
                 search_results = ytmusic.search(search_query, filter='songs')
                 
-                # Check if we got any results
+                # check if we got any results
                 if not search_results:
                     failed_songs.append({
                         "title": song['title'],
@@ -387,13 +412,13 @@ async def process_songs_without_audio(collection_name: str):
                     })
                     continue
                 
-                # Get the first result
+                # get the first result
                 first_result = search_results[0]
                 print(first_result)
                 youtube_id = first_result['videoId']
                 youtube_url = f"https://www.youtube.com/watch?v={youtube_id}"
                 
-                # Download the audio using yt-dlp
+                # download the audio using yt-dlp
                 executor = ThreadPoolExecutor()
                 
                 try:
@@ -432,13 +457,13 @@ async def process_songs_without_audio(collection_name: str):
                         except Exception as e:
                             raise Exception(f"Failed to download audio: {str(e)}")
                     
-                    # Download with timeout
+                    # download with timeout
                     audio_data = await asyncio.wait_for(
                         asyncio.get_event_loop().run_in_executor(executor, download_audio),
                         timeout=60.0
                     )
                     
-                    # Upload to GridFS
+                    # upload to GridFS
                     filename = f"{song['title']}.mp3"
                     grid_in = await fs.upload_from_stream(
                         filename,
@@ -446,7 +471,7 @@ async def process_songs_without_audio(collection_name: str):
                         metadata={"contentType": "audio/mp3"}
                     )
                     
-                    # Update song with youtube_link and audio_file_id
+                    # update song with youtube_link and audio_file_id
                     await db[collection_name].update_one(
                         {"_id": song["_id"]},
                         {"$set": {
@@ -486,4 +511,214 @@ async def process_songs_without_audio(collection_name: str):
         }
         
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to process songs: {str(e)}") 
+        raise HTTPException(status_code=500, detail=f"Failed to process songs: {str(e)}")
+
+@app.post("/resume/upload", response_model=Dict[str, str])
+async def upload_resume(file: UploadFile = File(...)):
+    try:
+        if not file.content_type == "application/pdf":
+            raise HTTPException(status_code=400, detail="Only PDF files are allowed")
+
+        content = await file.read()
+
+        grid_in = await fs.upload_from_stream(
+            file.filename,
+            io.BytesIO(content),
+            metadata={"contentType": file.content_type}
+        )
+
+        resume_data = ResumeMetadata(
+            filename=file.filename,
+            file_id=str(grid_in),
+            content_type=file.content_type
+        )
+
+        await db.resume.delete_many({})
+
+        await db.resume.insert_one(resume_data.dict())
+
+        return {"message": "Resume uploaded successfully", "file_id": str(grid_in)}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to upload resume: {str(e)}")
+
+@app.get("/resume", response_model=Optional[ResumeMetadata])
+async def get_resume():
+    try:
+        resume = await db.resume.find_one()
+        if not resume:
+            raise HTTPException(status_code=404, detail="No resume found")
+        
+        resume["id"] = str(resume["_id"])
+        del resume["_id"]
+        return resume
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch resume: {str(e)}")
+
+@app.get("/resume/view")
+async def view_resume():
+    try:
+        resume = await db.resume.find_one()
+        if not resume:
+            raise HTTPException(status_code=404, detail="No resume found")
+
+        grid_out = await fs.open_download_stream(ObjectId(resume["file_id"]))
+        
+        return StreamingResponse(
+            grid_out,
+            media_type="application/pdf"
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to view resume: {str(e)}")
+
+@app.get("/resume/download")
+async def download_resume():
+    try:
+
+        resume = await db.resume.find_one()
+        if not resume:
+            raise HTTPException(status_code=404, detail="No resume found")
+
+
+        grid_out = await fs.open_download_stream(ObjectId(resume["file_id"]))
+        
+        return StreamingResponse(
+            grid_out,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f'attachment; filename="{resume["filename"]}"'
+            }
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to download resume: {str(e)}")
+
+@app.post("/projects", response_model=Dict[str, str])
+async def add_project(project: Project):
+    try:
+        project_dict = project.dict()
+        
+
+        result = await db.projects.insert_one(project_dict)
+        
+        return {
+            "message": "Project added successfully",
+            "id": str(result.inserted_id)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to add project: {str(e)}")
+
+@app.post("/projects/bulk", response_model=Dict[str, Any])
+async def add_projects(projects: List[Project]):
+    try:
+        project_dicts = [project.dict() for project in projects]
+        
+        result = await db.projects.insert_many(project_dicts)
+        
+        inserted_ids = [str(id) for id in result.inserted_ids]
+        
+        return {
+            "message": f"Added {len(inserted_ids)} projects",
+            "inserted_ids": inserted_ids
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to add projects: {str(e)}")
+
+@app.get("/projects", response_model=List[ProjectResponse])
+async def get_projects():
+    try:
+        projects = []
+        cursor = db.projects.find()
+        
+        async for project in cursor:
+            project["id"] = str(project["_id"])
+            del project["_id"]
+            projects.append(project)
+            
+        return projects
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch projects: {str(e)}")
+
+@app.get("/projects/{project_id}", response_model=ProjectResponse)
+async def get_project(project_id: str):
+    try:
+        if not ObjectId.is_valid(project_id):
+            raise HTTPException(status_code=400, detail="Invalid project ID")
+        
+        project = await db.projects.find_one({"_id": ObjectId(project_id)})
+        if not project:
+            raise HTTPException(status_code=404, detail="Project not found")
+        
+        project["id"] = str(project["_id"])
+        del project["_id"]
+        
+        return project
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch project: {str(e)}")
+
+@app.put("/projects/{project_id}", response_model=ProjectResponse)
+async def update_project(project_id: str, project: Project):
+    try:
+        if not ObjectId.is_valid(project_id):
+            raise HTTPException(status_code=400, detail="Invalid project ID")
+        
+        existing_project = await db.projects.find_one({"_id": ObjectId(project_id)})
+        if not existing_project:
+            raise HTTPException(status_code=404, detail="Project not found")
+        
+        update_result = await db.projects.update_one(
+            {"_id": ObjectId(project_id)},
+            {"$set": project.dict()}
+        )
+        
+        if update_result.modified_count == 0:
+            raise HTTPException(status_code=400, detail="Project was not updated")
+        
+        updated_project = await db.projects.find_one({"_id": ObjectId(project_id)})
+        updated_project["id"] = str(updated_project["_id"])
+        del updated_project["_id"]
+        
+        return updated_project
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update project: {str(e)}")
+
+@app.delete("/projects/{project_id}")
+async def delete_project(project_id: str):
+    try:
+        if not ObjectId.is_valid(project_id):
+            raise HTTPException(status_code=400, detail="Invalid project ID")
+        
+        existing_project = await db.projects.find_one({"_id": ObjectId(project_id)})
+        if not existing_project:
+            raise HTTPException(status_code=404, detail="Project not found")
+        
+        delete_result = await db.projects.delete_one({"_id": ObjectId(project_id)})
+        
+        if delete_result.deleted_count == 0:
+            raise HTTPException(status_code=400, detail="Project was not deleted")
+        
+        return {"message": "Project deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete project: {str(e)}")
+
+@app.get("/health")
+async def health_check():
+    try:
+        await client.admin.command('ping')
+        return {"status": "healthy", "database": "connected"}
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=f"Database connection failed: {str(e)}") 

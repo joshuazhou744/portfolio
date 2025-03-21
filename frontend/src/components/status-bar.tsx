@@ -4,19 +4,19 @@ import { useState, useEffect } from 'react'
 import '98.css/dist/98.css'
 
 interface StatusBarProps {
-  onMediaPlayerClick: () => void;
+  onMediaPlayerClick?: () => void;
   onInfoClick: () => void;
   onAboutMeClick: () => void;
   onContactClick: () => void;
   onProjectListClick: () => void;
   onResumeClick: () => void;
-  showMediaPlayer: boolean;
+  showMediaPlayer?: boolean;
   showInfoPanel: boolean;
   showAboutMe: boolean;
   showContact: boolean;
   showProjectList: boolean;
   showResume: boolean;
-  onMinimizeMediaPlayer: () => void;
+  onMinimizeMediaPlayer?: () => void;
   onMinimizeInfoPanel: () => void;
   onMinimizeAboutMe: () => void;
   onMinimizeContact: () => void;
@@ -58,10 +58,13 @@ export function StatusBar({
   }, [])
 
   const handleMediaPlayerClick = () => {
+    // Skip if no handlers provided
+    if (!onMediaPlayerClick && !onMinimizeMediaPlayer) return;
+    
     if (showMediaPlayer) {
-      onMinimizeMediaPlayer()
+      onMinimizeMediaPlayer?.();
     } else {
-      onMediaPlayerClick()
+      onMediaPlayerClick?.();
     }
   }
 
@@ -123,20 +126,6 @@ export function StatusBar({
       }}
     >
       <div className="field-row" style={{ margin: 0, overflowX: 'auto', flexWrap: 'nowrap' }}>
-        <button 
-          className={`win98-toolbar-button ${showMediaPlayer ? 'active' : ''}`}
-          onClick={handleMediaPlayerClick}
-          style={{ 
-            marginRight: '1px',
-            padding: '4px 12px',
-            whiteSpace: 'nowrap',
-            background: showMediaPlayer ? '#dfdfdf' : '#c0c0c0',
-            border: showMediaPlayer ? 'inset 2px' : 'outset 2px',
-            boxShadow: showMediaPlayer ? 'inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf' : 'outset -1px -1px #0a0a0a, outset 1px 1px #dfdfdf'
-          }}
-        >
-          Media Player
-        </button>
         <button 
           className={`win98-toolbar-button ${showInfoPanel ? 'active' : ''}`}
           onClick={handleInfoClick}

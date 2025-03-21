@@ -14,7 +14,7 @@ import '98.css/dist/98.css'
 
 // Internal component to use window context
 function AppContent() {
-  const [showMediaPlayer, setShowMediaPlayer] = useState(false)
+  // Remove showMediaPlayer state since media player is always visible
   const [showInfoPanel, setShowInfoPanel] = useState(false)
   const [showAboutMe, setShowAboutMe] = useState(false)
   const [showContact, setShowContact] = useState(false)
@@ -23,10 +23,7 @@ function AppContent() {
   const [isLoading, setIsLoading] = useState(true)
   const { bringToFront } = useWindow()
 
-  // Effect to ensure windows are properly stacked when they become visible
-  useEffect(() => {
-    if (showMediaPlayer) bringToFront('media-player');
-  }, [showMediaPlayer, bringToFront]);
+  // No need for media player effect since it's always visible
   
   useEffect(() => {
     if (showInfoPanel) bringToFront('info-panel');
@@ -58,7 +55,7 @@ function AppContent() {
     }, 50);
   };
 
-  const handleMediaPlayerClick = () => showWindow('media-player', setShowMediaPlayer);
+  // Remove media player handler
   const handleInfoClick = () => showWindow('info-panel', setShowInfoPanel);
   const handleAboutMeClick = () => showWindow('about-me', setShowAboutMe);
   const handleContactClick = () => showWindow('contact', setShowContact);
@@ -67,12 +64,13 @@ function AppContent() {
 
   const handleLoaderComplete = () => {
     setIsLoading(false);
-    setShowMediaPlayer(true);
+    
+    // Set media player to front without needing to set visibility
+    bringToFront('media-player');
     
     // Delay showing InfoPanel by 1 second
     setTimeout(() => {
       setShowInfoPanel(true);
-      bringToFront('media-player');
       
       // Bring info panel to front after media player
       setTimeout(() => {
@@ -96,8 +94,6 @@ function AppContent() {
       ) : (
         <>
           <MediaPlayer 
-            initiallyVisible={showMediaPlayer} 
-            onMinimize={() => setShowMediaPlayer(false)}
             onAboutMeClick={handleAboutMeClick}
             onContactClick={handleContactClick}
             onProjectListClick={handleProjectListClick}
@@ -124,19 +120,16 @@ function AppContent() {
             onVisibilityChange={setShowResume}
           />
           <StatusBar 
-            onMediaPlayerClick={() => setShowMediaPlayer(!showMediaPlayer)}
             onInfoClick={handleInfoClick}
             onAboutMeClick={handleAboutMeClick}
             onContactClick={handleContactClick}
             onProjectListClick={handleProjectListClick}
             onResumeClick={handleResumeClick}
-            showMediaPlayer={showMediaPlayer}
             showInfoPanel={showInfoPanel}
             showAboutMe={showAboutMe}
             showContact={showContact}
             showProjectList={showProjectList}
             showResume={showResume}
-            onMinimizeMediaPlayer={() => setShowMediaPlayer(false)}
             onMinimizeInfoPanel={() => setShowInfoPanel(false)}
             onMinimizeAboutMe={() => setShowAboutMe(false)}
             onMinimizeContact={() => setShowContact(false)}
