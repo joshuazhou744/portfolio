@@ -1,6 +1,7 @@
 'use client'
 
 import { BaseWindow } from './base-window'
+import { useState } from 'react'
 
 interface ContactProps {
   isVisible: boolean;
@@ -8,6 +9,20 @@ interface ContactProps {
 }
 
 export function Contact({ isVisible, onVisibilityChange }: ContactProps) {
+  const [copyStatus, setCopyStatus] = useState<{ [key: string]: string }>({});
+
+  const handleCopy = async (text: string, field: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyStatus({ [field]: 'Copied!' });
+      setTimeout(() => {
+        setCopyStatus({ [field]: '' });
+      }, 2000);
+    } catch (err) {
+      setCopyStatus({ [field]: 'Failed to copy' });
+    }
+  };
+
   return (
     <BaseWindow
       isVisible={isVisible}
@@ -21,21 +36,63 @@ export function Contact({ isVisible, onVisibilityChange }: ContactProps) {
       }}
     >
       <div className="content">
-        <div className="field-row-stacked">
+        <div className="field-row-stacked" style={{ marginBottom: '10px' }}>
           <label htmlFor="email">Email:</label>
-          <p>joshua.c.zhou@gmail.com</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <p>joshua.c.zhou@gmail.com</p>
+            <button
+              className="win98-button"
+              onClick={() => handleCopy('joshua.c.zhou@gmail.com', 'email')}
+              style={{ whiteSpace: 'nowrap', minWidth: '60px', marginBottom: '8px' }}
+            >
+              {copyStatus['email'] || 'Copy'}
+            </button>
+          </div>
         </div>
-        <div className="field-row-stacked">
+        <div className="field-row-stacked" style={{ marginBottom: '10px' }}>
           <label htmlFor="phone-number">Phone Number:</label>
-          <p>587-926-9574</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <p>587-926-9574</p>
+            <button
+              className="win98-button"
+              onClick={() => handleCopy('587-926-9574', 'phone')}
+              style={{ whiteSpace: 'nowrap', minWidth: '60px', marginBottom: '8px' }}
+            >
+              {copyStatus['phone'] || 'Copy'}
+            </button>
+          </div>
         </div>
-        <div className="field-row-stacked">
+        <div className="field-row-stacked" style={{ marginBottom: '10px' }}>
           <label htmlFor="linkedin">LinkedIn:</label>
-          <a href="https://www.linkedin.com/in/joshuazhou1" id="github" target="_blank" rel="noopener noreferrer">linkedin.com/in/joshuazhou1</a>
+          <a 
+            href="https://www.linkedin.com/in/joshuazhou1" 
+            id="linkedin" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{
+              color: '#0000EE',
+              textDecoration: 'underline',
+              cursor: 'pointer'
+            }}
+          >
+            linkedin.com/in/joshuazhou1
+          </a>
         </div>
         <div className="field-row-stacked">
           <label htmlFor="github">Github:</label>
-          <a href="https://github.com/joshuazhou744" id="github" target="_blank" rel="noopener noreferrer">github.com/joshuazhou744</a>
+          <a 
+            href="https://github.com/joshuazhou744" 
+            id="github" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{
+              color: '#0000EE',
+              textDecoration: 'underline',
+              cursor: 'pointer'
+            }}
+          >
+            github.com/joshuazhou744
+          </a>
         </div>
       </div>
     </BaseWindow>
