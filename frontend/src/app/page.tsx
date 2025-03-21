@@ -79,11 +79,13 @@ function AppContent() {
     }, 1000);
   };
 
+  const baseUrl = process.env.NEXT_PUBLIC_URL || '';
+
   return (
     <main className="flex min-h-screen flex-col items-center p-4 relative"
           style={{
             backgroundColor: 'rgb(0, 128, 128)',
-            backgroundImage: 'url("https://web-assets.same.dev/1418452815/388079722.gif")',
+            backgroundImage: 'url("/assets/bg1.gif")',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             height: '100vh',
