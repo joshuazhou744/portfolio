@@ -10,6 +10,9 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Joshua Zhou',
   description: 'my portfolio',
+  icons: {
+    icon: '/assets/penguin.jpg',
+  }
 }
 
 export const viewport: Viewport = {
