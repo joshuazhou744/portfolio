@@ -1,6 +1,6 @@
 # Portfolio Website
 
-A personal portfolio website with a Windows 98 theme, built with Next.js and FastAPI.
+A personal portfolio website built with Next.js and FastAPI.
 
 ## Project Structure
 
