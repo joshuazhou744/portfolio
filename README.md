@@ -2,19 +2,12 @@
 
 A personal portfolio website built with Next.js and FastAPI.
 
-## Project Structure
+## Docker Quickstart
 
-```
-/portfolio
-  /frontend        # Next.js frontend
-    /src           # React components and pages
-    /public        # Static assets
-    package.json   # Frontend dependencies
-    ...
-  /backend         # FastAPI backend
-    /app           # API endpoints and business logic
-    requirements.txt
-    railway.toml   # Railway.app configuration
+```bash
+docker compose --env-file ./backend/.env up --build
+# assuming all env variables are in env files in frontend and backend
+
 ```
 
 ## Development Setup
@@ -101,6 +94,8 @@ NEXT_PUBLIC_API_URL=https://your-railway-app-url
 - Next.js frontend
 
 ## Tech Stack
+
+- Docker
 
 - Frontend:
   - Next.js
