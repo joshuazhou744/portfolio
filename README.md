@@ -2,10 +2,18 @@ my portfolio website
 
 ## Docker Quickstart
 
+1. Setup env variables in .env files in frontend and backend
+
+2. Run docker compose
 ```bash
 # only use --build flag after changes are made
 # assuming all env variables are in env files in frontend and backend
 docker compose --env-file ./backend/.env up --build
+
+OR
+
+npm run dev docker:build
+npm run dev docker:up
 
 ```
 

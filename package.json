@@ -9,7 +9,10 @@
     "build:frontend": "cd frontend && npm run build",
     "deploy:backend": "cd backend && railway up",
     "deploy:frontend": "cd frontend && vercel --prod",
-    "deploy": "npm run deploy:backend && npm run deploy:frontend"
+    "deploy": "npm run deploy:backend && npm run deploy:frontend",
+    "docker:build": "docker compose --env-file ./backend/.env up --build",
+    "docker:up": "docker compose --env-file ./backend/.env up",
+    "docker:down": "docker compose down"  
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
