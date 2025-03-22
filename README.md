@@ -1,12 +1,11 @@
-# Portfolio Website
-
-A personal portfolio website built with Next.js and FastAPI.
+my portfolio website
 
 ## Docker Quickstart
 
 ```bash
-docker compose --env-file ./backend/.env up --build
+# only use --build flag after changes are made
 # assuming all env variables are in env files in frontend and backend
+docker compose --env-file ./backend/.env up --build
 
 ```
 
@@ -14,18 +13,18 @@ docker compose --env-file ./backend/.env up --build
 
 1. Install dependencies:
 ```bash
-# Install frontend dependencies
+# install frontend dependencies
 cd frontend
 npm install
 
-# Install backend dependencies
+# install backend dependencies
 cd ../backend
 python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-2. Set up environment variables:
+2. Set up environment variables for development:
 
 Frontend (.env.local):
 ```
@@ -38,14 +37,14 @@ MONGODB_URL=your_mongodb_url
 SPOTIFY_CLIENT_ID=your_spotify_client_id
 SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
 YOUTUBE_API_KEY=your_youtube_api_key
+FRONTEND_URL=fronted_url_for_cors
 ```
 
 3. Run development servers:
 ```bash
-# Run both frontend and backend
+# run both frontend and backend
 npm run dev
-
-# Or run them separately
+# seperate
 npm run dev:frontend
 npm run dev:backend
 ```
@@ -67,7 +66,7 @@ railway init
 railway up
 ```
 
-3. Set environment variables in Railway dashboard
+3. Set env variables in Railway dashboard
 
 ### Frontend (Vercel)
 
@@ -77,37 +76,7 @@ cd frontend
 vercel
 ```
 
-2. Set environment variables in Vercel dashboard:
-```
-NEXT_PUBLIC_API_URL=https://your-railway-app-url
-```
-
-## Features
-
-- Windows 98 themed UI
-- Project showcase
-- Resume viewer
-- Music player with Spotify integration
-- Responsive design
-- MongoDB database
-- FastAPI backend
-- Next.js frontend
-
-## Tech Stack
-
-- Docker
-
-- Frontend:
-  - Next.js
-  - React
-  - TypeScript
-  - 98.css
-
-- Backend:
-  - FastAPI
-  - MongoDB
-  - GridFS
-  - Python
+2. Set api url env variable
 
 ## License
 
