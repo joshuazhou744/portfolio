@@ -170,7 +170,6 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
       </div>
       <div className="window-body">
         <div className="content" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <h4>My Projects</h4>
           <div className="projects-container" style={{ maxHeight: '300px', overflow: 'auto', border: '2px inset #c0c0c0', padding: '5px' }}>
             {isLoading ? (
               <div style={{ padding: '10px', textAlign: 'center' }}>Loading projects...</div>
