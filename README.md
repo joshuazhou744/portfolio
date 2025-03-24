@@ -1,5 +1,7 @@
 my portfolio website
 
+ui inspired by plaza.one
+
 ## Docker Quickstart
 
 1. Setup env variables in .env files in frontend and backend

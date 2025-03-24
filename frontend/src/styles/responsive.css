@@ -1,23 +1,25 @@
-/* Base styles */
 :root {
   --window-width: 500px;
   --window-min-height: 140px;
   --cover-size: 100px;
+  --window-margin: 20px;
 }
 
-/* Media query for tablets */
 @media screen and (max-width: 768px) {
   :root {
     --window-width: 90vw;
     --window-min-height: 130px;
     --cover-size: 80px;
+    --window-margin: 15px;
   }
 
-  .window {
+  .base-window {
     width: var(--window-width) !important;
-    margin: 0 auto;
+    margin: var(--window-margin) auto !important;
     left: 50% !important;
-    transform: translateX(-50%);
+    transform: translateX(-50%) !important;
+    position: relative !important;
+    top: 0 !important;
   }
 
   .window-body menu[role="menubar"] {
@@ -29,24 +31,36 @@
     font-size: 14px;
     padding: 2px 6px;
   }
+
+  .resume-container {
+    max-height: 70vh !important;
+  }
+
+  .resume-controls {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
 }
 
-/* Media query for mobile phones */
 @media screen and (max-width: 480px) {
   :root {
     --window-width: 95vw;
     --window-min-height: 120px;
     --cover-size: 70px;
+    --window-margin: 10px;
   }
 
-  .window {
-    top: 10px !important;
+  .base-window {
+    width: var(--window-width) !important;
+    margin: var(--window-margin) auto !important;
   }
 
   .window-body {
     padding: 4px !important;
   }
 
+  /* Media player specific */
   .media-player-content {
     flex-direction: column !important;
     gap: 8px !important;
@@ -82,21 +96,50 @@
     justify-content: center !important;
   }
 
+  /* About me specific */
+  .about-me-content {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .profile-image {
+    width: 120px !important;
+    height: 120px !important;
+  }
+
+  /* Contact specific */
+  .contact-form {
+    padding: 8px !important;
+  }
+
+  .contact-input {
+    width: 100% !important;
+  }
+
+  /* Project list specific */
+  .project-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
   .status-bar {
     font-size: 12px;
+    padding: 2px 4px !important;
   }
 }
-
-/* Media query for very small devices */
+  
 @media screen and (max-width: 320px) {
   :root {
     --window-width: 100vw;
     --window-min-height: 110px;
     --cover-size: 60px;
+    --window-margin: 5px;
   }
 
-  .window {
-    border-radius: 0;
+  .base-window {
+    border-radius: 0 !important;
+    margin: var(--window-margin) 0 !important;
   }
 
   .time-display {
@@ -106,5 +149,24 @@
 
   .win98-toolbar-button {
     padding: 2px 4px;
+    font-size: 12px !important;
+  }
+
+  .window-title {
+    font-size: 12px !important;
+  }
+
+  /* Resume specific */
+  .resume-container {
+    max-height: 60vh !important;
+  }
+
+  .zoom-controls {
+    gap: 4px !important;
+  }
+
+  .zoom-button {
+    padding: 2px 4px !important;
+    font-size: 12px !important;
   }
 } 

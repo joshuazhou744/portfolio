@@ -21,7 +21,8 @@ export function AboutMe({ isVisible, onVisibilityChange }: AboutMeProps) {
       }}
     >
       <div className="content">
-        <h4>Hello, I'm Joshua Zhou</h4>
+        <p>Hello, I'm Joshua Zhou</p>
+        <br/>
         <ul>
           <li>I am a first year Software Engineering (Co-op) student at McGill University.</li>
           <li>I like making fun and cool things with code.</li>
