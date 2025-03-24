@@ -20,6 +20,8 @@
     transform: translateX(-50%) !important;
     position: relative !important;
     top: 0 !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
   }
 
   .window-body menu[role="menubar"] {
@@ -54,16 +56,25 @@
   .base-window {
     width: var(--window-width) !important;
     margin: var(--window-margin) auto !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    position: relative !important;
+    top: 0 !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
   }
 
   .window-body {
     padding: 4px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
-  /* Media player specific */
   .media-player-content {
     flex-direction: column !important;
     gap: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .cover-container {
@@ -74,12 +85,16 @@
 
   .track-info {
     text-align: center;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .time-volume-controls {
     flex-direction: column !important;
     align-items: center !important;
     gap: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .time-display {
@@ -90,17 +105,22 @@
   .volume-control {
     margin-left: 0 !important;
     justify-content: center !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .playback-controls {
     justify-content: center !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
-  /* About me specific */
   .about-me-content {
     flex-direction: column !important;
     align-items: center !important;
     text-align: center !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .profile-image {
@@ -108,24 +128,29 @@
     height: 120px !important;
   }
 
-  /* Contact specific */
   .contact-form {
     padding: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .contact-input {
     width: 100% !important;
+    box-sizing: border-box !important;
   }
 
-  /* Project list specific */
   .project-grid {
     grid-template-columns: 1fr !important;
     gap: 10px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .status-bar {
     font-size: 12px;
     padding: 2px 4px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 }
   
@@ -139,7 +164,19 @@
 
   .base-window {
     border-radius: 0 !important;
-    margin: var(--window-margin) 0 !important;
+    margin: var(--window-margin) auto !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    position: relative !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+  }
+
+  .window-body {
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .time-display {
@@ -156,13 +193,16 @@
     font-size: 12px !important;
   }
 
-  /* Resume specific */
   .resume-container {
     max-height: 60vh !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .zoom-controls {
     gap: 4px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .zoom-button {
