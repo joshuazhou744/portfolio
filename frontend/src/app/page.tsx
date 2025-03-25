@@ -12,18 +12,53 @@ import { Resume } from '@/components/resume'
 import { WindowProvider, useWindow } from '@/contexts/WindowContext'
 import '98.css/dist/98.css'
 
-// Internal component to use window context
+// small screen size alert
+function MobileAlert() {
+  return (
+    <div className="window" style={{
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      zIndex: 9999,
+      width: '90%',
+      maxWidth: '300px'
+    }}>
+      <div className="title-bar">
+        <div className="title-bar-text">Notice</div>
+      </div>
+      <div className="window-body" style={{ textAlign: 'center', padding: '1rem' }}>
+        <p>This site is designed for PC/larger screens.</p>
+        <p style={{ marginTop: '0.5rem', fontSize: '0.9em', marginBlock: '1rem' }}>For the best experience, please view on a desktop or tablet.</p>
+        <button onClick={() => document.cookie = "hideMobileAlert=true; max-age=86400"}>
+          Don't show again today
+        </button>
+      </div>
+    </div>
+  )
+}
+
 function AppContent() {
-  // Remove showMediaPlayer state since media player is always visible
   const [showInfoPanel, setShowInfoPanel] = useState(false)
   const [showAboutMe, setShowAboutMe] = useState(false)
   const [showContact, setShowContact] = useState(false)
   const [showProjectList, setShowProjectList] = useState(false)
   const [showResume, setShowResume] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [showMobileAlert, setShowMobileAlert] = useState(false)
   const { bringToFront } = useWindow()
 
-  // No need for media player effect since it's always visible
+  useEffect(() => {
+    const checkMobile = () => {
+      const isMobile = window.innerWidth <= 768
+      const alertHidden = document.cookie.includes('hideMobileAlert=true')
+      setShowMobileAlert(isMobile && !alertHidden)
+    }
+
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
   
   useEffect(() => {
     if (showInfoPanel) bringToFront('info-panel');
@@ -45,17 +80,13 @@ function AppContent() {
     if (showResume) bringToFront('resume');
   }, [showResume, bringToFront]);
 
-  // Consolidated window display handler
   const showWindow = (windowId: string, setVisibility: (visible: boolean) => void) => {
     setVisibility(true);
-    
-    // Add a small delay to ensure the window is rendered before bringing to front
     setTimeout(() => {
       bringToFront(windowId);
     }, 50);
   };
 
-  // Remove media player handler
   const handleInfoClick = () => showWindow('info-panel', setShowInfoPanel);
   const handleAboutMeClick = () => showWindow('about-me', setShowAboutMe);
   const handleContactClick = () => showWindow('contact', setShowContact);
@@ -64,20 +95,15 @@ function AppContent() {
 
   const handleLoaderComplete = () => {
     setIsLoading(false);
-    
-    // Set media player to front without needing to set visibility
     bringToFront('media-player');
-    
-    // Delay showing InfoPanel by 1 second
     setTimeout(() => {
       setShowInfoPanel(true);
-      
-      // Bring info panel to front after media player
       setTimeout(() => {
         bringToFront('info-panel');
       }, 100);
     }, 1000);
   };
+
   return (
     <main className="flex min-h-screen flex-col items-center p-4 relative"
           style={{
@@ -88,6 +114,7 @@ function AppContent() {
             height: '100vh',
             overflow: 'hidden'
           }}>
+      {showMobileAlert && <MobileAlert />}
       {isLoading ? (
         <Loader onComplete={handleLoaderComplete} />
       ) : (
@@ -141,7 +168,6 @@ function AppContent() {
   )
 }
 
-// Main app component
 export default function Home() {
   return (
     <WindowProvider>
