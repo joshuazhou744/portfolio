@@ -30,7 +30,7 @@ function MobileAlert({ onClose }: { onClose: () => void }) {
       <div className="window-body" style={{ textAlign: 'center', padding: '1rem' }}>
         <p>This site is designed for PC/larger screens.</p>
         <p style={{ marginTop: '0.5rem', fontSize: '0.9em', marginBlock: '1rem' }}>For the best experience, please view on a desktop or tablet.</p>
-        <button style={{width: 'fit-content'}} onClick={() => {
+        <button style={{width: 'fit-content', padding: '0 1em'}} onClick={() => {
           document.cookie = "hideMobileAlert=true; max-age=86400"
           onClose()
         }}>
