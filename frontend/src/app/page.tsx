@@ -13,7 +13,7 @@ import { WindowProvider, useWindow } from '@/contexts/WindowContext'
 import '98.css/dist/98.css'
 
 // small screen size alert
-function MobileAlert() {
+function MobileAlert({ onClose }: { onClose: () => void }) {
   return (
     <div className="window" style={{
       position: 'fixed',
@@ -30,7 +30,10 @@ function MobileAlert() {
       <div className="window-body" style={{ textAlign: 'center', padding: '1rem' }}>
         <p>This site is designed for PC/larger screens.</p>
         <p style={{ marginTop: '0.5rem', fontSize: '0.9em', marginBlock: '1rem' }}>For the best experience, please view on a desktop or tablet.</p>
-        <button onClick={() => document.cookie = "hideMobileAlert=true; max-age=86400"}>
+        <button style={{width: 'fit-content'}} onClick={() => {
+          document.cookie = "hideMobileAlert=true; max-age=86400"
+          onClose()
+        }}>
           Don't show again today
         </button>
       </div>
@@ -114,7 +117,7 @@ function AppContent() {
             height: '100vh',
             overflow: 'hidden'
           }}>
-      {showMobileAlert && <MobileAlert />}
+      {showMobileAlert && <MobileAlert onClose={() => setShowMobileAlert(false)} />}
       {isLoading ? (
         <Loader onComplete={handleLoaderComplete} />
       ) : (
