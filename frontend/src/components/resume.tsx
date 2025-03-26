@@ -25,8 +25,8 @@ interface ResumeProps {
 
 export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
   const [position, setPosition] = useState<WindowPosition>(() => {
-    const x = window.innerWidth - (Math.random() * (750-600) + 600);
-    const y = window.innerHeight - (Math.random() * (650-450) + 450);
+    const x = window.innerWidth - (Math.random() * (700-600) + 600);
+    const y = window.innerHeight - (Math.random() * (500-400) + 400);
     return { x, y };
   });
   const [isDragging, setIsDragging] = useState(false);
