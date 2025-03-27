@@ -116,6 +116,9 @@
   border: 1px solid transparent;
   transition: transform 0.1s, box-shadow 0.1s;
   padding: 5px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .win98-menu-item + .win98-menu-item {

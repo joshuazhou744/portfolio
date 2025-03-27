@@ -177,6 +177,7 @@ interface Props {
   onContactClick?: () => void;
   onProjectListClick?: () => void;
   onResumeClick?: () => void;
+  onExperienceClick?: () => void;
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -188,7 +189,8 @@ export default function MediaPlayer({
   onAboutMeClick,
   onContactClick,
   onProjectListClick,
-  onResumeClick
+  onResumeClick,
+  onExperienceClick
 }: Props) {
 
   // states
@@ -719,7 +721,15 @@ export default function MediaPlayer({
             onClick={handleMenuClick(onProjectListClick, 'project-list')}
             style={{ cursor: 'pointer' }}
           >
-            <u>P</u>roject List
+            <u>P</u>rojects
+          </li>
+          <li 
+            role="menuitem" 
+            className="win98-menu-item"
+            onClick={handleMenuClick(onExperienceClick, 'experience')}
+            style={{ cursor: 'pointer' }}
+          >
+            <u>E</u>xperiences
           </li>
           <li 
             role="menuitem" 

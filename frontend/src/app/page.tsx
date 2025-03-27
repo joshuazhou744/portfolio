@@ -9,6 +9,7 @@ import { AboutMe } from '@/components/about-me'
 import { Contact } from '@/components/contact'
 import { ProjectList } from '@/components/project-list'
 import { Resume } from '@/components/resume'
+import { ExperienceList } from '@/components/experience-list'
 import { WindowProvider, useWindow } from '@/contexts/WindowContext'
 import '98.css/dist/98.css'
 
@@ -47,6 +48,7 @@ function AppContent() {
   const [showContact, setShowContact] = useState(false)
   const [showProjectList, setShowProjectList] = useState(false)
   const [showResume, setShowResume] = useState(false)
+  const [showExperience, setShowExperience] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [showMobileAlert, setShowMobileAlert] = useState(false)
   const { bringToFront } = useWindow()
@@ -95,6 +97,7 @@ function AppContent() {
   const handleContactClick = () => showWindow('contact', setShowContact);
   const handleProjectListClick = () => showWindow('project-list', setShowProjectList);
   const handleResumeClick = () => showWindow('resume', setShowResume);
+  const handleExperienceClick = () => showWindow('experience', setShowExperience);
 
   const handleLoaderComplete = () => {
     setIsLoading(false);
@@ -127,6 +130,7 @@ function AppContent() {
             onContactClick={handleContactClick}
             onProjectListClick={handleProjectListClick}
             onResumeClick={handleResumeClick}
+            onExperienceClick={handleExperienceClick}
           />
           <InfoPanel 
             isVisible={showInfoPanel}
@@ -148,22 +152,29 @@ function AppContent() {
             isVisible={showResume}
             onVisibilityChange={setShowResume}
           />
+          <ExperienceList
+            isVisible={showExperience}
+            onVisibilityChange={setShowExperience}
+          />
           <StatusBar 
             onInfoClick={handleInfoClick}
             onAboutMeClick={handleAboutMeClick}
             onContactClick={handleContactClick}
             onProjectListClick={handleProjectListClick}
             onResumeClick={handleResumeClick}
+            onExperienceClick={handleExperienceClick}
             showInfoPanel={showInfoPanel}
             showAboutMe={showAboutMe}
             showContact={showContact}
             showProjectList={showProjectList}
             showResume={showResume}
+            showExperience={showExperience}
             onMinimizeInfoPanel={() => setShowInfoPanel(false)}
             onMinimizeAboutMe={() => setShowAboutMe(false)}
             onMinimizeContact={() => setShowContact(false)}
             onMinimizeProjectList={() => setShowProjectList(false)}
             onMinimizeResume={() => setShowResume(false)}
+            onMinimizeExperience={() => setShowExperience(false)}
           />
         </>
       )}

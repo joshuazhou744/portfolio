@@ -28,7 +28,7 @@ export function Contact({ isVisible, onVisibilityChange }: ContactProps) {
       isVisible={isVisible}
       onVisibilityChange={onVisibilityChange}
       title="Contact and Links"
-      width="350px"
+      width="25vw"
       windowId="contact"
       initialPosition={{
         x: window.innerWidth - (Math.random() * (500-300) + 300),

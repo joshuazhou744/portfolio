@@ -14,7 +14,7 @@ export function InfoPanel({ isVisible, onVisibilityChange }: InfoPanelProps) {
         isVisible={isVisible}
         onVisibilityChange={onVisibilityChange}
         title="Enjoy your stay"
-        width="400px"
+        width="30vw"
         height="150px"
         windowId="info-panel"
         initialPosition={{

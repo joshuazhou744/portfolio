@@ -10,32 +10,31 @@ interface WindowPosition {
   y: number;
 }
 
-interface Project {
+interface Experience {
   id: string;
-  name: string;
-  description: string;
-  technologies: string[];
-  year: number;
-  github?: string;
-  demo_url?: string;
-  image_url?: string;
+  title: string;
+  company: string;
+  location: string;
+  start_date: string;
+  end_date: string;
+  description: string[];
 }
 
-interface ProjectListProps {
+interface ExperienceListProps {
   isVisible: boolean;
   onVisibilityChange: (isVisible: boolean) => void;
 }
 
-export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps) {
+export function ExperienceList({ isVisible, onVisibilityChange }: ExperienceListProps) {
   const [position, setPosition] = useState<WindowPosition>(() => {
-    const x = Math.random() * (100-50) + 50;
-    const y = window.innerHeight - (Math.random() * (550-400) + 450);
+    const x = Math.random() * (200-150) + 150;
+    const y = window.innerHeight - (Math.random() * (300-200) + 200);
     return { x, y };
   });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState<WindowPosition>({ x: 0, y: 0 });
-  const [selectedProject, setSelectedProject] = useState<string | null>(null);
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [selectedExperience, setSelectedExperience] = useState<string | null>(null);
+  const [experiences, setExperiences] = useState<Experience[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -47,19 +46,19 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
   useEffect(() => {
     if (isVisible) {
       setIsLoading(true);
-      fetch(`${API_URL}/projects`)
+      fetch(`${API_URL}/experiences`)
         .then(response => {
           if (!response.ok) {
-            throw new Error('Failed to fetch projects');
+            throw new Error('Failed to fetch experiences');
           }
           return response.json();
         })
         .then(data => {
-          setProjects(data);
+          setExperiences(data);
           setIsLoading(false);
         })
         .catch(error => {
-          console.error('Error fetching projects:', error);
+          console.error('Error fetching experiences:', error);
           setError(error.message);
           setIsLoading(false);
         });
@@ -69,7 +68,7 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
   useEffect(() => {
     if (isVisible) {
       setTimeout(() => {
-        bringToFront('project-list');
+        bringToFront('experience');
       }, 0);
     }
   }, [isVisible, bringToFront]);
@@ -99,8 +98,8 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
       const height = windowRef.current?.offsetHeight || 400;
       
       const constrainedX = Math.min(Math.max(newX, -width + 300), windowWidth - 300);
-      const constrainedY = Math.min(Math.max(newY, 0), windowHeight - 300);
-      
+      const constrainedY = Math.min(Math.max(newY, 0), windowHeight - 200);
+
       setPosition({
         x: constrainedX,
         y: constrainedY
@@ -132,8 +131,8 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
     onVisibilityChange(false);
   };
 
-  const handleProjectSelect = (id: string) => {
-    setSelectedProject(id === selectedProject ? null : id);
+  const handleExperienceSelect = (id: string) => {
+    setSelectedExperience(id === selectedExperience ? null : id);
   };
 
   if (!isVisible) {
@@ -143,13 +142,13 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
   return (
     <div 
       ref={windowRef}
-      className="window project-list-window" 
+      className="window experience-list-window" 
       style={{ 
-        width: '30vw',
+        width: '35vw',
         position: 'fixed',
         left: position.x,
         top: position.y,
-        zIndex: getZIndex('project-list'),
+        zIndex: getZIndex('experience'),
         display: isVisible ? 'block' : 'none',
         userSelect: 'none',
         wordSpacing: '0.1em',
@@ -158,11 +157,11 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
       }}
       onMouseDown={(e) => {
         handleMouseDown(e);
-        bringToFront('project-list');
+        bringToFront('experience');
       }}
     >
       <div className="title-bar">
-        <div className="title-bar-text">Projects</div>
+        <div className="title-bar-text">Experiences</div>
         <div className="title-bar-controls">
           <button aria-label="Minimize" onClick={handleMinimize}></button>
           <button aria-label="Close" onClick={handleClose}></button>
@@ -170,82 +169,49 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
       </div>
       <div className="window-body">
         <div className="content" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <div className="projects-container" style={{ maxHeight: '300px', overflow: 'auto', border: '2px inset #c0c0c0', padding: '5px' }}>
+          <div className="experiences-container" style={{ maxHeight: '300px', overflow: 'auto', border: '2px inset #c0c0c0', padding: '5px' }}>
             {isLoading ? (
-              <div style={{ padding: '10px', textAlign: 'center' }}>Loading projects...</div>
+              <div style={{ padding: '10px', textAlign: 'center' }}>Loading experiences...</div>
             ) : error ? (
               <div style={{ padding: '10px', color: 'red' }}>{error}</div>
-            ) : projects.length === 0 ? (
-              <div style={{ padding: '10px' }}>No projects found.</div>
+            ) : experiences.length === 0 ? (
+              <div style={{ padding: '10px' }}>No experiences found.</div>
             ) : (
-              projects.map(project => (
+              experiences.map(experience => (
                 <div 
-                  key={project.id} 
-                  className={`project-item ${selectedProject === project.id ? 'selected' : ''}`}
+                  key={experience.id} 
+                  className={`experience-item ${selectedExperience === experience.id ? 'selected' : ''}`}
                   style={{ 
                     padding: '8px', 
                     marginBottom: '5px', 
                     cursor: 'pointer',
-                    background: selectedProject === project.id ? '#000080' : 'transparent',
-                    color: selectedProject === project.id ? 'white' : 'black'
+                    background: selectedExperience === experience.id ? '#000080' : 'transparent',
+                    color: selectedExperience === experience.id ? 'white' : 'black'
                   }}
-                  onClick={() => handleProjectSelect(project.id)}
+                  onClick={() => handleExperienceSelect(experience.id)}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <strong>{project.name}</strong>
-                    <span>{project.year}</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px', fontSize: '1em' }}>
+                    <strong>{experience.title}</strong>
+                    <span>{experience.start_date} - {experience.end_date}</span>
                   </div>
-                  {selectedProject === project.id && (
-                    <div style={{ marginTop: '5px' }}>
-                      <p>{project.description}</p>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '5px' }}>
-                        {project.technologies.map((tech, index) => (
-                          <span 
-                            key={index} 
-                            style={{ 
-                              padding: '2px 5px', 
-                              background: '#c0c0c0', 
-                              color: '#000', 
-                              fontSize: '12px',
-                              border: '1px solid #888'
-                            }}
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
+                  <div style={{ fontSize: '1.1em', color: selectedExperience === experience.id ? '#cccccc' : '#666666' }}>
+                      {experience.company} • {experience.location}
+                  </div>
+                  {selectedExperience === experience.id && (
+                    <div style={{ marginTop: '8px', fontSize: '1em' }}>
+                      {experience.description.map((bullet, index) => (
+                        <div key={index} style={{ marginBottom: '4px' }} 
+                          dangerouslySetInnerHTML={{ __html: `• ${bullet}` }}
+                        />
+                      ))}
                     </div>
                   )}
                 </div>
               ))
             )}
           </div>
-          <div className="field-row" style={{ justifyContent: 'space-around', marginTop: '5px' }}>
-            <button disabled={!selectedProject}>View Details</button>
-            <button 
-              disabled={!selectedProject || !projects.find(p => p.id === selectedProject)?.github} 
-              onClick={() => {
-                const project = projects.find(p => p.id === selectedProject);
-                if (project?.github) window.open(project.github, '_blank');
-              }}
-            >
-              GitHub
-            </button>
-            <button 
-              disabled={!selectedProject || !projects.find(p => p.id === selectedProject)?.demo_url}
-              onClick={() => {
-                const project = projects.find(p => p.id === selectedProject);
-                if (project?.demo_url) window.open(project.demo_url, '_blank');
-              }}
-            >
-              Live
-            </button>
-          </div>
         </div>
       </div>
-      {/*<div className="status-bar">
-        <p className="status-bar-field">Projects: {projects.length}</p>
-      </div>*/}
     </div>
   );
 } 

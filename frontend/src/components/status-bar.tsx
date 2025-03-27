@@ -10,18 +10,21 @@ interface StatusBarProps {
   onContactClick: () => void;
   onProjectListClick: () => void;
   onResumeClick: () => void;
+  onExperienceClick: () => void;
   showMediaPlayer?: boolean;
   showInfoPanel: boolean;
   showAboutMe: boolean;
   showContact: boolean;
   showProjectList: boolean;
   showResume: boolean;
+  showExperience: boolean;
   onMinimizeMediaPlayer?: () => void;
   onMinimizeInfoPanel: () => void;
   onMinimizeAboutMe: () => void;
   onMinimizeContact: () => void;
   onMinimizeProjectList: () => void;
   onMinimizeResume: () => void;
+  onMinimizeExperience: () => void;
 }
 
 export function StatusBar({ 
@@ -31,18 +34,21 @@ export function StatusBar({
   onContactClick,
   onProjectListClick,
   onResumeClick,
+  onExperienceClick,
   showMediaPlayer, 
   showInfoPanel,
   showAboutMe,
   showContact,
   showProjectList,
   showResume,
+  showExperience,
   onMinimizeMediaPlayer,
   onMinimizeInfoPanel,
   onMinimizeAboutMe,
   onMinimizeContact,
   onMinimizeProjectList,
-  onMinimizeResume
+  onMinimizeResume,
+  onMinimizeExperience
 }: StatusBarProps) {
   const [currentTime, setCurrentTime] = useState('')
 
@@ -105,6 +111,14 @@ export function StatusBar({
       onMinimizeResume()
     } else {
       onResumeClick()
+    }
+  }
+
+  const handleExperienceClick = () => {
+    if (showExperience) {
+      onMinimizeExperience()
+    } else {
+      onExperienceClick()
     }
   }
 
@@ -181,6 +195,20 @@ export function StatusBar({
           }}
         >
           Projects
+        </button>
+        <button 
+          className={`win98-toolbar-button ${showExperience ? 'active' : ''}`}
+          onClick={handleExperienceClick}
+          style={{ 
+            marginRight: '1px',
+            padding: '4px 12px',
+            whiteSpace: 'nowrap',
+            background: showExperience ? '#dfdfdf' : '#c0c0c0',
+            border: showExperience ? 'inset 2px' : 'outset 2px',
+            boxShadow: showExperience ? 'inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf' : 'outset -1px -1px #0a0a0a, outset 1px 1px #dfdfdf'
+          }}
+        >
+          Experiences
         </button>
         <button 
           className={`win98-toolbar-button ${showResume ? 'active' : ''}`}

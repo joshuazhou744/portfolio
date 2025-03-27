@@ -173,6 +173,21 @@ class ProjectResponse(Project):
     class Config:
         from_attributes = True
 
+class Experience(BaseModel):
+    title: str
+    company: str
+    location: str
+    start_date: str
+    end_date: str
+    description: List[str]
+    
+
+class ExperienceResponse(Experience):
+    id: str
+
+    class Config:
+        from_attributes = True
+
 @app.on_event("startup")
 async def startup_db_client():
     pass
@@ -766,6 +781,120 @@ async def delete_project(project_id: str):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to delete project: {str(e)}")
+    
+@app.post("/experiences", response_model=Dict[str, str])
+async def add_experience(experience: Experience):
+    try:
+        experience_dict = experience.dict()
+        
+
+        result = await db.experiences.insert_one(experience_dict)
+        
+        return {
+            "message": "Experience added successfully",
+            "id": str(result.inserted_id)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to add experience: {str(e)}")
+
+@app.post("/experiences/bulk", response_model=Dict[str, Any])
+async def add_experiences(experiences: List[Experience]):
+    try:
+        experience_dicts = [experience.dict() for experience in experiences]
+        
+        result = await db.experiences.insert_many(experience_dicts)
+        
+        inserted_ids = [str(id) for id in result.inserted_ids]
+        
+        return {
+            "message": f"Added {len(inserted_ids)} experiences",
+            "inserted_ids": inserted_ids
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to add experiences: {str(e)}")
+
+@app.get("/experiences", response_model=List[ExperienceResponse])
+async def get_experiences():
+    try:
+        experiences = []
+        cursor = db.experiences.find()
+        
+        async for experience in cursor:
+            experience["id"] = str(experience["_id"])
+            del experience["_id"]
+            experiences.append(experience)
+            
+        return experiences
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch experiences: {str(e)}")
+
+@app.get("/experiences/{experience_id}", response_model=ExperienceResponse)
+async def get_experience(experience_id: str):
+    try:
+        if not ObjectId.is_valid(experience_id):
+            raise HTTPException(status_code=400, detail="Invalid experience ID")
+        
+        experience = await db.experiences.find_one({"_id": ObjectId(experience_id)})
+        if not experience:
+            raise HTTPException(status_code=404, detail="Experience not found")
+        
+        experience["id"] = str(experience["_id"])
+        del experience["_id"]
+        
+        return experience
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch experience: {str(e)}")
+
+@app.put("/experiences/{experience_id}", response_model=ExperienceResponse)
+async def update_experience(experience_id: str, experience: Experience):
+    try:
+        if not ObjectId.is_valid(experience_id):
+            raise HTTPException(status_code=400, detail="Invalid experience ID")
+        
+        existing_experience = await db.experiences.find_one({"_id": ObjectId(experience_id)})
+        if not existing_experience:
+            raise HTTPException(status_code=404, detail="Experience not found")
+        
+        update_result = await db.experiences.update_one(
+            {"_id": ObjectId(experience_id)},
+            {"$set": experience.dict()}
+        )
+        
+        if update_result.modified_count == 0:
+            raise HTTPException(status_code=400, detail="Experience was not updated")
+        
+        updated_experience = await db.experiences.find_one({"_id": ObjectId(experience_id)})
+        updated_experience["id"] = str(updated_experience["_id"])
+        del updated_experience["_id"]
+        
+        return updated_experience
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update experience: {str(e)}")
+
+@app.delete("/experiences/{experience_id}")
+async def delete_experience(experience_id: str):
+    try:
+        if not ObjectId.is_valid(experience_id):
+            raise HTTPException(status_code=400, detail="Invalid experience ID")
+        
+        existing_experience = await db.experiences.find_one({"_id": ObjectId(experience_id)})
+        if not existing_experience:
+            raise HTTPException(status_code=404, detail="Experience not found")
+        
+        delete_result = await db.experiences.delete_one({"_id": ObjectId(experience_id)})
+        
+        if delete_result.deleted_count == 0:
+            raise HTTPException(status_code=400, detail="Experience was not deleted")
+        
+        return {"message": "Experience deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete experience: {str(e)}")
 
 @app.get("/health")
 async def health_check():
