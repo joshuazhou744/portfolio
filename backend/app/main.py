@@ -190,11 +190,35 @@ class ExperienceResponse(Experience):
 
 @app.on_event("startup")
 async def startup_db_client():
-    pass
+    try:
+        logger.info("Starting up database connection")
+        logger.info(f"MongoDB URL: {MONGODB_URL}")
+        # Test the connection
+        await db.command("ping")
+        logger.info("Database connection successful")
+    except Exception as e:
+        logger.error(f"Failed to connect to database: {str(e)}")
+        logger.error(f"Error type: {type(e)}")
+        logger.error(f"Error details: {e.__dict__}")
+        raise
 
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    client.close()
+@app.get("/health")
+async def health_check():
+    try:
+        logger.info("Health check started")
+        logger.info(f"MongoDB URL: {MONGODB_URL}")
+        # Test the connection
+        await db.command("ping")
+        logger.info("MongoDB ping successful")
+        return {"status": "healthy", "database": "connected"}
+    except Exception as e:
+        logger.error(f"Health check failed: {str(e)}")
+        logger.error(f"Error type: {type(e)}")
+        logger.error(f"Error details: {e.__dict__}")
+        return JSONResponse(
+            status_code=503,
+            content={"status": "unhealthy", "error": str(e)}
+        )
 
 @app.get("/songs/{collection_name}", response_model=List[SongResponse])
 async def get_songs(collection_name: str, noshuffle: bool = False):
@@ -895,54 +919,4 @@ async def delete_experience(experience_id: str):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to delete experience: {str(e)}")
-
-@app.get("/health")
-async def health_check():
-    health_status = {
-        "status": "healthy",
-        "timestamp": datetime.utcnow().isoformat(),
-        "services": {
-            "mongodb": "healthy",
-            "youtube": "healthy",
-            "spotify": "healthy",
-            "ytmusic": "healthy"
-        }
-    }
-    
-    try:
-        # Check MongoDB connection
-        await client.admin.command('ping')
-    except Exception as e:
-        health_status["services"]["mongodb"] = "unhealthy"
-        health_status["status"] = "degraded"
-        logger.error(f"MongoDB health check failed: {str(e)}")
-    
-    try:
-        # Check YouTube API
-        youtube = get_youtube_client()
-        youtube.channels().list(part="snippet", id="UC_x5XG1OV2P6uZZ5FSM9Ttw").execute()
-    except Exception as e:
-        health_status["services"]["youtube"] = "unhealthy"
-        health_status["status"] = "degraded"
-        logger.error(f"YouTube API health check failed: {str(e)}")
-    
-    try:
-        # Check Spotify API
-        spotify = get_spotify_client()
-        spotify.artist("4tZwfgrHOc3mvqYlEYSvVi")
-    except Exception as e:
-        health_status["services"]["spotify"] = "unhealthy"
-        health_status["status"] = "degraded"
-        logger.error(f"Spotify API health check failed: {str(e)}")
-    
-    try:
-        # Check YTMusic API
-        ytmusic = get_ytmusic_client()
-        ytmusic.get_song("dQw4w9WgXcQ")
-    except Exception as e:
-        health_status["services"]["ytmusic"] = "unhealthy"
-        health_status["status"] = "degraded"
-        logger.error(f"YTMusic API health check failed: {str(e)}")
-    
-    return health_status
 
