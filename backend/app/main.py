@@ -188,33 +188,12 @@ class ExperienceResponse(Experience):
     class Config:
         from_attributes = True
 
-@app.on_event("startup")
-async def startup_db_client():
-    try:
-        logger.info("Starting up database connection")
-        logger.info(f"MongoDB URL: {MONGODB_URL}")
-        # Test the connection
-        await db.command("ping")
-        logger.info("Database connection successful")
-    except Exception as e:
-        logger.error(f"Failed to connect to database: {str(e)}")
-        logger.error(f"Error type: {type(e)}")
-        logger.error(f"Error details: {e.__dict__}")
-        raise
-
 @app.get("/health")
 async def health_check():
     try:
-        logger.info("Health check started")
-        logger.info(f"MongoDB URL: {MONGODB_URL}")
-        # Test the connection
         await db.command("ping")
-        logger.info("MongoDB ping successful")
         return {"status": "healthy", "database": "connected"}
     except Exception as e:
-        logger.error(f"Health check failed: {str(e)}")
-        logger.error(f"Error type: {type(e)}")
-        logger.error(f"Error details: {e.__dict__}")
         return JSONResponse(
             status_code=503,
             content={"status": "unhealthy", "error": str(e)}
