@@ -7,5 +7,6 @@ pydantic==2.10.6
 spotipy==2.23.0
 yt-dlp==2024.3.10 
 pytube==12.1.0
+uvicorn==0.34.0
 ytmusicapi
 google-api-python-client
