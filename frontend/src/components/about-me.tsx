@@ -24,7 +24,8 @@ export function AboutMe({ isVisible, onVisibilityChange }: AboutMeProps) {
         <p>Hello, I'm Joshua Zhou</p>
         <br/>
         <ul>
-          <li>I am a first year Software Engineering (Co-op) student at McGill University.</li>
+          <li>I am a Software Engineering (Co-op) student at McGill University.</li>
+          <li>I am currently a Data Scientist Intern @ IBM.</li>
           <li>I like making fun and cool things with code.</li>
           <li>I don't like studying subjects I find boring and uninteresting.</li>
           <li>I like bouldering and basketball and video games.</li>

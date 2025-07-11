@@ -298,16 +298,18 @@ async def delete_song(collection_name: str, song_id: str):
         raise HTTPException(status_code=500, detail=f"Failed to delete song: {str(e)}")
 
 @app.get("/spotify/playlist/{playlist_id}", response_model=List[SpotifyTrack])
-async def get_spotify_playlist(playlist_id: str):
+async def get_spotify_playlist(playlist_id: str, collection: str = "study"):
     try:    
-        results = spotify.playlist_tracks(playlist_id)
+        # Use the get_spotify_client() function instead of global variable
+        spotify_client = get_spotify_client()
+        results = spotify_client.playlist_tracks(playlist_id)
         tracks = []
         
         for item in results['items']:
             track = item['track']
             if track:  
-                # check for duplicates
-                existing_song = await db.playlist.find_one({"spotify_id": track['id']})
+                # check for duplicates in the specified collection
+                existing_song = await db[collection].find_one({"spotify_id": track['id']})
                 if existing_song:
                     continue
                 
@@ -369,7 +371,17 @@ async def attach_youtube_audio(
                             }],
                             'outtmpl': output_template,
                             'quiet': True,
-                            'no_warnings': True
+                            'no_warnings': True,
+                            # Add bypass options
+                            'cookiefile': 'cookies.txt',  # If you have cookies file
+                            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                            'extractor_retries': 3,
+                            'ignoreerrors': True,
+                            'no_check_certificate': True,
+                            'prefer_insecure': True,
+                            # Add fallback options
+                            'format_sort': ['ext:mp4:m4a', 'res:720', 'codec:h264', 'codec:aac'],
+                            'format_sort_force': True
                         }
                         
                         # download the file
@@ -471,7 +483,8 @@ async def process_songs_without_audio(collection_name: str):
                 search_query = f"{song['title']} {song['artist']}"
                 
                 # call YTMusic API to search for the video
-                search_results = ytmusic.search(search_query, filter='songs')
+                ytmusic_client = get_ytmusic_client()
+                search_results = ytmusic_client.search(search_query, filter='songs')
                 
                 # check if we got any results
                 if not search_results:
@@ -509,7 +522,17 @@ async def process_songs_without_audio(collection_name: str):
                                     }],
                                     'outtmpl': output_template,
                                     'quiet': True,
-                                    'no_warnings': True
+                                    'no_warnings': True,
+                                    # Add bypass options
+                                    'cookiefile': 'cookies.txt',  # If you have cookies file
+                                    'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                                    'extractor_retries': 3,
+                                    'ignoreerrors': True,
+                                    'no_check_certificate': True,
+                                    'prefer_insecure': True,
+                                    # Add fallback options
+                                    'format_sort': ['ext:mp4:m4a', 'res:720', 'codec:h264', 'codec:aac'],
+                                    'format_sort_force': True
                                 }
                                 
                                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -826,6 +849,29 @@ async def get_experiences():
             experience["id"] = str(experience["_id"])
             del experience["_id"]
             experiences.append(experience)
+        
+        # Sort experiences by end_date in descending order (most recent first)
+        def parse_date(date_str):
+            if date_str == "Present":
+                # Give "Present" the highest priority (most recent)
+                return (9999, 12)  # Year 9999, month 12
+            else:
+                # Parse "Month YYYY" format
+                try:
+                    month_str, year_str = date_str.split()
+                    month_map = {
+                        'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6,
+                        'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 'Nov': 11, 'Dec': 12
+                    }
+                    month = month_map.get(month_str, 1)
+                    year = int(year_str)
+                    return (year, month)
+                except:
+                    # If parsing fails, put at the end
+                    return (0, 0)
+        
+        # Sort by end_date descending, then by start_date descending
+        experiences.sort(key=lambda x: (parse_date(x.get('end_date', 'Present')), parse_date(x.get('start_date', ''))), reverse=True)
             
         return experiences
     except Exception as e:

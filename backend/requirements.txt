@@ -5,8 +5,8 @@ python-multipart==0.0.20
 python-dotenv==1.0.1
 pydantic==2.10.6
 spotipy==2.23.0
-yt-dlp==2024.3.10 
+yt-dlp==2025.6.30
 pytube==12.1.0
 uvicorn==0.34.0
-ytmusicapi
-google-api-python-client
+ytmusicapi==1.10.2
+google-api-python-client==2.165.0
