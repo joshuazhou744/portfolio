@@ -656,18 +656,51 @@ export default function MediaPlayer({
 
   const currentTrack = tracks[currentTrackIndex];
 
+  // Use client-side state management to avoid hydration errors
+  const [isMounted, setIsMounted] = useState(false)
+  const [windowDimensions, setWindowDimensions] = useState({ width: 1024, height: 768 })
+  
+  useEffect(() => {
+    setIsMounted(true)
+    
+    const updateDimensions = () => {
+      setWindowDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight
+      })
+    }
+    
+    updateDimensions()
+    window.addEventListener('resize', updateDimensions)
+    
+    return () => window.removeEventListener('resize', updateDimensions)
+  }, [])
+
+  const isMobile = isMounted && windowDimensions.width <= 768
+
+  // Get responsive width after mount to avoid hydration mismatch
+  const getResponsiveWidth = () => {
+    if (!isMounted) return '500px' // SSR fallback
+    if (isMobile) {
+      return windowDimensions.width <= 480 ? '95vw' : '90vw';
+    }
+    return '500px';
+  };
+
   return (
     <div 
       ref={windowRef}
-      className="window media-player-window" 
+      className={`window media-player-window ${isMounted && isMobile ? 'mobile-window' : ''}`}
       style={{ 
-        width: '500px',
+        width: getResponsiveWidth(),
         position: 'fixed',
         left: position.x,
         top: position.y,
         zIndex: getZIndex('media-player'),
         display: 'block',
-        userSelect: 'none'
+        userSelect: 'none',
+        maxWidth: isMounted && isMobile ? '95vw' : undefined,
+        boxSizing: 'border-box'
       }}
       onMouseDown={(e) => {
         handleMouseDown(e);
@@ -696,8 +729,7 @@ export default function MediaPlayer({
       <div className="window-body">
         <menu
           role="menubar"
-          className="mb-4"
-          style={{ display: 'flex', gap: '0px', margin: '-7px 0 5px -7px' }}
+          className="mb-4 media-player-menu"
         >
           <li 
             role="menuitem" 
@@ -758,8 +790,8 @@ export default function MediaPlayer({
               {error}
             </div>
           ) : currentTrack ? (
-            <div className="media-player-content" style={{ display: 'flex', gap: '12px' }}>
-              <div className="cover-container" style={{ width: '25%', minWidth: '100px' }}>
+            <div className="media-player-content">
+              <div className="media-player-cover cover-container">
                 {currentTrack.cover_image_url && (
                   <Image 
                     src={currentTrack.cover_image_url}
@@ -777,27 +809,13 @@ export default function MediaPlayer({
                   />
                 )}
               </div>
-              <div className="track-info" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div className="media-player-track-info track-info">
                 <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
                   {currentTrack.title || 'Unknown Title'}
                 </div>
                 <div>{currentTrack.artist || 'Unknown Artist'}</div>
-                <div className="time-volume-controls" style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', fontSize: '14px' }}>
-                  <div className="time-display"
-                    style={{
-                      fontFamily: 'monospace',
-                      border: '2px inset #c0c0c0',
-                      padding: '2px 6px',
-                      boxShadow: 'inset 1px 1px 2px rgba(0,0,0,0.3)',
-                      background: '#fff',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      minWidth: '140px',
-                      width: '250px',
-                      height: '25px'
-                    }}
-                  >
+                <div className="media-player-time-volume time-volume-controls">
+                  <div className="media-player-time-display time-display">
                     <div style={{ 
                       display: 'flex', 
                       width: '100%', 
@@ -815,12 +833,7 @@ export default function MediaPlayer({
                       )}
                     </div>
                   </div>
-                  <div className="volume-control" style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '4px', 
-                    maxWidth: '80px'
-                  }}>
+                  <div className="media-player-volume volume-control">
                     <span style={{ marginLeft: '-75px' }}>♪</span>
                     <input
                       type="range"
@@ -833,7 +846,7 @@ export default function MediaPlayer({
                     />
                   </div>
                 </div>
-                <div className="playback-controls field-row" style={{ gap: '4px', margin: '4px 0 0 0', justifyContent: 'space-between' }}>
+                <div className="media-player-controls playback-controls field-row">
                   <button 
                     onClick={handlePlayPause}
                     className="win98-toolbar-button"

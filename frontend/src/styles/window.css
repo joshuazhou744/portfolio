@@ -4,6 +4,25 @@
   transition: transform 0.2s ease;
 }
 
+/* Mobile-specific window styles */
+.mobile-window {
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-window .title-bar {
+  min-height: 20px;
+}
+
+.mobile-window .title-bar-controls button {
+  min-width: 20px;
+  min-height: 16px;
+  font-size: 12px;
+}
+
+.mobile-window .window-body {
+  -webkit-overflow-scrolling: touch;
+}
+
 .window .content {
   padding: 10px;
 }
@@ -54,6 +73,7 @@
   height: 500px;
 }
 
+/* Tablet responsive styles */
 @media screen and (max-width: 768px) {
   .about-me-window {
     width: 350px;
@@ -79,15 +99,21 @@
   .window h4 {
     margin-bottom: 12px;
   }
+
+  .mobile-window {
+    max-width: 95vw !important;
+    box-sizing: border-box;
+  }
 }
 
+/* Mobile responsive styles */
 @media screen and (max-width: 480px) {
   .about-me-window,
   .contact-window,
   .project-list-window,
   .resume-window {
     width: 90vw;
-    top: 15px !important;
+    max-width: 90vw;
     left: 5vw !important;
     transform: none !important;
   }
@@ -109,9 +135,37 @@
   .project-item {
     padding: 6px !important;
   }
+
+  .mobile-window {
+    position: fixed !important;
+    top: 20px !important;
+    max-width: 95vw !important;
+    max-height: 85vh !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+  }
+
+  .mobile-window .window-body {
+    max-height: calc(85vh - 30px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Force proper positioning for all window types on mobile */
+  .info-panel-window.mobile-window,
+  .about-me-window.mobile-window,
+  .contact-window.mobile-window,
+  .project-list-window.mobile-window,
+  .resume-window.mobile-window {
+    width: 90vw !important;
+    left: 5vw !important;
+    right: auto !important;
+    transform: none !important;
+    position: fixed !important;
+  }
 }
 
-/* Media query for very small devices */
+/* Very small devices */
 @media screen and (max-width: 320px) {
   .window .content {
     padding: 4px;
@@ -125,5 +179,33 @@
   
   .project-item {
     padding: 4px !important;
+  }
+
+  .mobile-window {
+    max-width: 98vw !important;
+    left: 1vw !important;
+    max-height: 90vh !important;
+  }
+
+  .mobile-window .title-bar {
+    font-size: 11px;
+  }
+
+  .mobile-window .title-bar-text {
+    font-size: 11px;
+  }
+
+  .mobile-window .window-body {
+    font-size: 12px;
+    max-height: calc(90vh - 25px);
+  }
+
+  .info-panel-window.mobile-window,
+  .about-me-window.mobile-window,
+  .contact-window.mobile-window,
+  .project-list-window.mobile-window,
+  .resume-window.mobile-window {
+    width: 98vw !important;
+    left: 1vw !important;
   }
 } 

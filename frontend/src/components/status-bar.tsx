@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import '98.css/dist/98.css'
+import '../styles/mobile-responsive.css'
 
 interface StatusBarProps {
   onMediaPlayerClick?: () => void;
@@ -51,6 +52,8 @@ export function StatusBar({
   onMinimizeExperience
 }: StatusBarProps) {
   const [currentTime, setCurrentTime] = useState('')
+  const [isMounted, setIsMounted] = useState(false)
+  const [windowDimensions, setWindowDimensions] = useState({ width: 1024, height: 768 })
 
   useEffect(() => {
     const updateTime = () => {
@@ -62,6 +65,24 @@ export function StatusBar({
     const timer = setInterval(updateTime, 1000)
     return () => clearInterval(timer)
   }, [])
+
+  useEffect(() => {
+    setIsMounted(true)
+    
+    const updateDimensions = () => {
+      setWindowDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight
+      })
+    }
+    
+    updateDimensions()
+    window.addEventListener('resize', updateDimensions)
+    
+    return () => window.removeEventListener('resize', updateDimensions)
+  }, [])
+
+  const isMobile = isMounted && windowDimensions.width <= 768
 
   const handleMediaPlayerClick = () => {
     // Skip if no handlers provided
@@ -122,119 +143,32 @@ export function StatusBar({
     }
   }
 
+  // Button data for easier responsive handling
+  const buttons = [
+    { label: 'Information', handler: handleInfoClick, isActive: showInfoPanel, shortLabel: 'Info' },
+    { label: 'About Me', handler: handleAboutMeClick, isActive: showAboutMe, shortLabel: 'About' },
+    { label: 'Contact', handler: handleContactClick, isActive: showContact, shortLabel: 'Contact' },
+    { label: 'Projects', handler: handleProjectListClick, isActive: showProjectList, shortLabel: 'Projects' },
+    { label: 'Experiences', handler: handleExperienceClick, isActive: showExperience, shortLabel: 'Exp.' },
+    { label: 'Resume', handler: handleResumeClick, isActive: showResume, shortLabel: 'Resume' }
+  ]
+
   return (
-    <div
-      className="win98"
-      style={{
-        position: 'fixed',
-        bottom: '0',
-        left: '0',
-        right: '0',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '2px 4px',
-        backgroundColor: '#c0c0c0',
-        borderTop: '1px solid #fff',
-        boxShadow: 'inset 0 1px 0 0 #dfdfdf, inset 0 0 0 1px #9e9e9e'
-      }}
-    >
-      <div className="field-row" style={{ margin: 0, overflowX: 'auto', flexWrap: 'nowrap' }}>
-        <button 
-          className={`win98-toolbar-button ${showInfoPanel ? 'active' : ''}`}
-          onClick={handleInfoClick}
-          style={{ 
-            marginRight: '1px',
-            padding: '4px 12px',
-            whiteSpace: 'nowrap',
-            background: showInfoPanel ? '#dfdfdf' : '#c0c0c0',
-            border: showInfoPanel ? 'inset 2px' : 'outset 2px',
-            boxShadow: showInfoPanel ? 'inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf' : 'outset -1px -1px #0a0a0a, outset 1px 1px #dfdfdf'
-          }}
-        >
-          Information
-        </button>
-        <button 
-          className={`win98-toolbar-button ${showAboutMe ? 'active' : ''}`}
-          onClick={handleAboutMeClick}
-          style={{ 
-            marginRight: '1px',
-            padding: '4px 12px',
-            whiteSpace: 'nowrap',
-            background: showAboutMe ? '#dfdfdf' : '#c0c0c0',
-            border: showAboutMe ? 'inset 2px' : 'outset 2px',
-            boxShadow: showAboutMe ? 'inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf' : 'outset -1px -1px #0a0a0a, outset 1px 1px #dfdfdf'
-          }}
-        >
-          About Me
-        </button>
-        <button 
-          className={`win98-toolbar-button ${showContact ? 'active' : ''}`}
-          onClick={handleContactClick}
-          style={{ 
-            marginRight: '1px',
-            padding: '4px 12px',
-            whiteSpace: 'nowrap',
-            background: showContact ? '#dfdfdf' : '#c0c0c0',
-            border: showContact ? 'inset 2px' : 'outset 2px',
-            boxShadow: showContact ? 'inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf' : 'outset -1px -1px #0a0a0a, outset 1px 1px #dfdfdf'
-          }}
-        >
-          Contact
-        </button>
-        <button 
-          className={`win98-toolbar-button ${showProjectList ? 'active' : ''}`}
-          onClick={handleProjectListClick}
-          style={{ 
-            marginRight: '1px',
-            padding: '4px 12px',
-            whiteSpace: 'nowrap',
-            background: showProjectList ? '#dfdfdf' : '#c0c0c0',
-            border: showProjectList ? 'inset 2px' : 'outset 2px',
-            boxShadow: showProjectList ? 'inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf' : 'outset -1px -1px #0a0a0a, outset 1px 1px #dfdfdf'
-          }}
-        >
-          Projects
-        </button>
-        <button 
-          className={`win98-toolbar-button ${showExperience ? 'active' : ''}`}
-          onClick={handleExperienceClick}
-          style={{ 
-            marginRight: '1px',
-            padding: '4px 12px',
-            whiteSpace: 'nowrap',
-            background: showExperience ? '#dfdfdf' : '#c0c0c0',
-            border: showExperience ? 'inset 2px' : 'outset 2px',
-            boxShadow: showExperience ? 'inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf' : 'outset -1px -1px #0a0a0a, outset 1px 1px #dfdfdf'
-          }}
-        >
-          Experiences
-        </button>
-        <button 
-          className={`win98-toolbar-button ${showResume ? 'active' : ''}`}
-          onClick={handleResumeClick}
-          style={{ 
-            marginRight: '1px',
-            padding: '4px 12px',
-            whiteSpace: 'nowrap',
-            background: showResume ? '#dfdfdf' : '#c0c0c0',
-            border: showResume ? 'inset 2px' : 'outset 2px',
-            boxShadow: showResume ? 'inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf' : 'outset -1px -1px #0a0a0a, outset 1px 1px #dfdfdf'
-          }}
-        >
-          Resume
-        </button>
+    <div className={`win98 status-bar ${isMounted && isMobile ? 'status-bar-mobile' : ''}`}>
+      <div className="status-bar-buttons">
+        {buttons.map((button, index) => (
+          <button
+            key={index}
+            className={`win98-toolbar-button status-bar-button ${button.isActive ? 'active' : ''}`}
+            onClick={button.handler}
+            title={button.label} // Tooltip for truncated text
+          >
+            {isMounted && isMobile && windowDimensions.width <= 480 ? button.shortLabel : button.label}
+          </button>
+        ))}
       </div>
-      <div style={{
-        minWidth: '60px',
-        textAlign: 'center',
-        padding: '3px 8px',
-        margin: '0 -2px',
-        border: '1px solid #888',
-        background: '#B0B0B0',
-        fontSize: '12px'
-      }}>
-        {currentTime}
+      <div className="status-bar-time">
+        {isMounted && isMobile ? currentTime.substring(0, 5) : currentTime}
       </div>
     </div>
   )

@@ -1,68 +1,92 @@
-.main {
-    font-size: 12px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    font-size: 14px;
-    word-spacing: 3px;
-    justify-content: center;
-    align-items: center;
-
-    h4 {
-        font-size: 16px;
-    }
+/* Info Panel Main Content */
+.info-panel-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px 10px;
+  font-size: 14px;
+  word-spacing: 3px;
+  gap: 10px;
 }
 
-.info-panel {
-  position: fixed;
-  bottom: 40px;
-  right: 20px;
-  width: 300px;
+.info-panel-title {
+  font-size: 20px;
+  margin: 0 0 10px 0;
+  line-height: 1.3;
+}
+
+.info-panel-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.info-panel-container {
+  /* Ensure proper z-index for mobile */
   z-index: 1000;
-  transition: transform 0.3s ease;
 }
 
-.info-panel.minimized {
-  transform: translateY(calc(100% - 30px));
-}
-
+/* Tablet responsive styles */
 @media screen and (max-width: 768px) {
-  .info-panel {
-    width: 250px;
-    right: 10px;
-    bottom: 30px;
+  .info-panel-main {
+    padding: 25px 20px; /* Generous tablet padding */
+    min-height: 120px;
+  }
+
+  .info-panel-title {
+    font-size: 15px;
+  }
+
+  .info-panel-subtitle {
+    font-size: 13px;
   }
 }
 
+/* Mobile responsive styles */
 @media screen and (max-width: 480px) {
-  .info-panel {
-    width: 90vw;
-    right: 5px;
-    bottom: 20px;
+  .info-panel-main {
+    padding: 20px 18px; /* Good mobile padding */
+    min-height: 100px;
+    gap: 12px;
   }
 
-  .info-panel .window-body {
-    padding: 8px;
-  }
-
-  .info-panel .content {
+  .info-panel-title {
     font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .info-panel-subtitle {
+    font-size: 12px;
+  }
+
+  /* Override BaseWindow positioning on mobile */
+  .info-panel-container .window {
+    max-width: 90vw !important;
+    box-sizing: border-box;
   }
 }
 
+/* Very small screens */
 @media screen and (max-width: 320px) {
-  .info-panel {
-    width: 95vw;
-    right: 2.5vw;
-    bottom: 10px;
+  .info-panel-main {
+    padding: 18px 15px; /* Still generous for small screens */
+    min-height: 90px;
+    gap: 10px;
   }
 
-  .info-panel .window-body {
-    padding: 6px;
+  .info-panel-title {
+    font-size: 13px;
+    line-height: 1.5;
   }
 
-  .info-panel .content {
-    font-size: 12px;
+  .info-panel-subtitle {
+    font-size: 11px;
+  }
+
+  .info-panel-container .window {
+    max-width: 95vw !important;
+    margin: 0 auto;
   }
 }
