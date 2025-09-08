@@ -45,9 +45,6 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
   
   const windowRef = useRef<HTMLDivElement>(null);
   
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
-  const API_KEY = process.env.NEXT_API_KEY; 
-  
   const handleZoomIn = useCallback(() => {
     setZoomLevel(prevZoom => Math.min(prevZoom + 25, 300));
   }, []);
@@ -91,11 +88,7 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
   useEffect(() => {
     if (isVisible && !resumeMetadata) {
       setIsLoading(true);
-      fetch(`${API_URL}/resume`, {
-        headers: {
-          'X-API-Key': API_KEY
-        }
-      })
+      fetch(`/api/resume`)
         .then(response => {
           if (!response.ok) {
             throw new Error('Resume not found');
@@ -256,11 +249,7 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
   const handleDownload = () => {
     if (!resumeMetadata) return;
     
-    fetch(`${API_URL}/resume/download`, {
-      headers: {
-        'X-API-Key': API_KEY
-      }
-    })
+    fetch(`/api/resume/download`)
       .then(response => response.blob())
       .then(blob => {
         const url = window.URL.createObjectURL(blob);

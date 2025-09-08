@@ -40,9 +40,6 @@ export function ExperienceList({ isVisible, onVisibilityChange }: ExperienceList
   
   const windowRef = useRef<HTMLDivElement>(null);
   const { bringToFront, getZIndex } = useWindow();
-  
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
-  const API_KEY = process.env.NEXT_API_KEY;
 
   useEffect(() => {
     if (isVisible) {
@@ -64,7 +61,7 @@ export function ExperienceList({ isVisible, onVisibilityChange }: ExperienceList
           setIsLoading(false);
         });
     }
-  }, [isVisible, API_URL]);
+  }, [isVisible]);
 
   useEffect(() => {
     if (isVisible) {

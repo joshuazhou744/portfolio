@@ -180,8 +180,6 @@ interface Props {
   onExperienceClick?: () => void;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const API_KEY = process.env.NEXT_API_KEY;
 const COLLECTION_NAME = 'study';
 
 export default function MediaPlayer({ 
@@ -316,11 +314,7 @@ export default function MediaPlayer({
       setIsLoading(true);
       setError(null);
       
-      const response = await fetch(`${API_URL}/songs/${COLLECTION_NAME}?noshuffle=false`, {
-        headers: {
-          'X-API-Key': API_KEY
-        }
-      });
+      const response = await fetch(`/api/songs/${COLLECTION_NAME}?noshuffle=false`);
       
       if (!response.ok) {
         throw new Error(`Failed to fetch tracks: ${response.status}`);
@@ -379,7 +373,7 @@ export default function MediaPlayer({
     setShouldAutoPlay(autoPlay);
     console.log(`Set shouldAutoPlay state to ${autoPlay}, userPaused: ${userPaused}`);
     
-    const url = `${API_URL}/songs/${COLLECTION_NAME}/${track.id}/audio?t=${Date.now()}`;
+    const url = `/api/songs/${COLLECTION_NAME}/${track.id}/audio?t=${Date.now()}`;
     setAudioKey(track.id + Date.now());
     setAudioUrl(url);
     

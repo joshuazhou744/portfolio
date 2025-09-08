@@ -41,18 +41,11 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
   
   const windowRef = useRef<HTMLDivElement>(null);
   const { bringToFront, getZIndex } = useWindow();
-  
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
-  const API_KEY = process.env.NEXT_API_KEY;
 
   useEffect(() => {
     if (isVisible) {
       setIsLoading(true);
-      fetch(`${API_URL}/projects`, {
-        headers: {
-          'X-API-Key': API_KEY
-        }
-      })
+      fetch(`api/projects`)
         .then(response => {
           if (!response.ok) {
             throw new Error('Failed to fetch projects');
@@ -69,7 +62,7 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
           setIsLoading(false);
         });
     }
-  }, [isVisible, API_URL]);
+  }, [isVisible]);
 
   useEffect(() => {
     if (isVisible) {
