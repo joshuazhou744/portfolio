@@ -222,7 +222,7 @@ class ExperienceResponse(Experience):
         from_attributes = True
 
 @app.get("/health")
-async def health_check(api_key: str = Depends(verify_api_key)):
+async def health_check():
     try:
         await db.command("ping")
         return {"status": "healthy", "database": "connected"}

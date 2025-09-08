@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-export async function GET(_req: Request, { params }: { params: { collection: string } }) {
+export async function GET(_req: Request, { params }: { params: Promise<{ collection: string }> }) {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL
   const apiKey = process.env.NEXT_API_KEY
 
@@ -10,8 +10,9 @@ export async function GET(_req: Request, { params }: { params: { collection: str
 
   const url = new URL(_req.url)
   const noshuffle = url.searchParams.get('noshuffle') ?? 'false'
+  const { collection } = await params
 
-  const res = await fetch(`${apiUrl}/songs/${encodeURIComponent(params.collection)}?noshuffle=${encodeURIComponent(noshuffle)}`, {
+  const res = await fetch(`${apiUrl}/songs/${encodeURIComponent(collection)}?noshuffle=${encodeURIComponent(noshuffle)}`, {
     headers: { 'X-API-Key': apiKey }
   })
 
