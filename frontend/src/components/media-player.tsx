@@ -181,6 +181,7 @@ interface Props {
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_KEY = process.env.NEXT_API_KEY;
 const COLLECTION_NAME = 'study';
 
 export default function MediaPlayer({ 
@@ -315,7 +316,11 @@ export default function MediaPlayer({
       setIsLoading(true);
       setError(null);
       
-      const response = await fetch(`${API_URL}/songs/${COLLECTION_NAME}?noshuffle=false`);
+      const response = await fetch(`${API_URL}/songs/${COLLECTION_NAME}?noshuffle=false`, {
+        headers: {
+          'X-API-Key': API_KEY
+        }
+      });
       
       if (!response.ok) {
         throw new Error(`Failed to fetch tracks: ${response.status}`);

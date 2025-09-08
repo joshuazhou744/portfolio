@@ -43,11 +43,16 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
   const { bringToFront, getZIndex } = useWindow();
   
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const API_KEY = process.env.NEXT_API_KEY;
 
   useEffect(() => {
     if (isVisible) {
       setIsLoading(true);
-      fetch(`${API_URL}/projects`)
+      fetch(`${API_URL}/projects`, {
+        headers: {
+          'X-API-Key': API_KEY
+        }
+      })
         .then(response => {
           if (!response.ok) {
             throw new Error('Failed to fetch projects');

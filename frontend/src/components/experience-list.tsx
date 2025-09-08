@@ -42,11 +42,16 @@ export function ExperienceList({ isVisible, onVisibilityChange }: ExperienceList
   const { bringToFront, getZIndex } = useWindow();
   
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const API_KEY = process.env.NEXT_API_KEY;
 
   useEffect(() => {
     if (isVisible) {
       setIsLoading(true);
-      fetch(`${API_URL}/experiences`)
+      fetch(`${API_URL}/experiences`, {
+        headers: {
+          'X-API-Key': API_KEY
+        }
+      })
         .then(response => {
           if (!response.ok) {
             throw new Error('Failed to fetch experiences');

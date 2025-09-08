@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException, Query
+from fastapi import FastAPI, UploadFile, File, HTTPException, Query, Depends, status, Security
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
@@ -19,11 +19,20 @@ import urllib.parse
 from ytmusicapi import YTMusic
 import random
 import logging
+import secrets
 
 from pydantic import BaseModel
 
+from fastapi.security import APIKeyHeader, HTTPBasic, HTTPBasicCredentials
+from fastapi.openapi.docs import get_swagger_ui_html
+from fastapi.openapi.utils import get_openapi
+from fastapi.responses import JSONResponse
+
 # load environment variables
 load_dotenv()
+
+API_KEY = os.getenv("API_KEY")
+api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -34,7 +43,27 @@ YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 youtube = build('youtube', 'v3', developerKey=YOUTUBE_API_KEY)
 ytmusic = YTMusic()
 
-app = FastAPI(title="Portfolio Music API")
+# basic http auth for docs
+security = HTTPBasic()
+def verify_docs_access(credentials: HTTPBasicCredentials = Depends(security)):
+    correct_username = os.getenv("DOCS_USERNAME")
+    correct_password = os.getenv("DOCS_PASSWORD")
+    if not correct_username or not correct_password:
+        raise HTTPException(status_code=500, detail="Docs credentials not configured")
+    
+    # Use secrets.compare_digest to prevent timing attacks
+    correct_username_check = secrets.compare_digest(credentials.username, correct_username)
+    correct_password_check = secrets.compare_digest(credentials.password, correct_password)
+    
+    if not (correct_username_check and correct_password_check):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Basic"}
+        )
+    return True
+
+app = FastAPI(title="Portfolio Music API", docs_url=None, redoc_url=None, openapi_url=None)
 
 # get the frontend URL from environment variable or use localhost for development
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
@@ -120,6 +149,10 @@ async def check_collection_exists(collection_name: str) -> Tuple[bool, str]:
     except Exception as e:
         return False, f"Error checking collection: {str(e)}"
 
+def verify_api_key(api_key: str = Security(api_key_header)):
+    if not api_key or api_key != API_KEY:
+        raise HTTPException(status_code=403, detail="Not authenticated")
+
 class Song(BaseModel):
     title: str
     artist: str
@@ -189,7 +222,7 @@ class ExperienceResponse(Experience):
         from_attributes = True
 
 @app.get("/health")
-async def health_check():
+async def health_check(api_key: str = Depends(verify_api_key)):
     try:
         await db.command("ping")
         return {"status": "healthy", "database": "connected"}
@@ -200,7 +233,7 @@ async def health_check():
         )
 
 @app.get("/songs/{collection_name}", response_model=List[SongResponse])
-async def get_songs(collection_name: str, noshuffle: bool = False):
+async def get_songs(collection_name: str, noshuffle: bool = False, api_key: str = Depends(verify_api_key)):
     try:
         exists, error_message = await check_collection_exists(collection_name)
         if not exists:
@@ -223,7 +256,7 @@ async def get_songs(collection_name: str, noshuffle: bool = False):
         raise HTTPException(status_code=500, detail=f"Failed to fetch songs: {str(e)}")
 
 @app.get("/songs/{collection_name}/{song_id}", response_model=SongResponse)
-async def get_song(collection_name: str, song_id: str):
+async def get_song(collection_name: str, song_id: str, api_key: str = Depends(verify_api_key)):
     try:
         exists, error_message = await check_collection_exists(collection_name)
         if not exists:
@@ -245,7 +278,7 @@ async def get_song(collection_name: str, song_id: str):
         raise HTTPException(status_code=500, detail=f"Failed to fetch song: {str(e)}")
 
 @app.get("/songs/{collection_name}/{song_id}/audio")
-async def get_song_audio(collection_name: str, song_id: str):
+async def get_song_audio(collection_name: str, song_id: str, api_key: str = Depends(verify_api_key)):
     try:
         exists, error_message = await check_collection_exists(collection_name)
         if not exists:
@@ -274,7 +307,7 @@ async def get_song_audio(collection_name: str, song_id: str):
         raise HTTPException(status_code=500, detail=f"Failed to fetch song audio: {str(e)}")
 
 @app.delete("/songs/{collection_name}/{song_id}")
-async def delete_song(collection_name: str, song_id: str):
+async def delete_song(collection_name: str, song_id: str, api_key: str = Depends(verify_api_key)):
     try:
         exists, error_message = await check_collection_exists(collection_name)
         if not exists:
@@ -298,7 +331,7 @@ async def delete_song(collection_name: str, song_id: str):
         raise HTTPException(status_code=500, detail=f"Failed to delete song: {str(e)}")
 
 @app.get("/spotify/playlist/{playlist_id}", response_model=List[SpotifyTrack])
-async def get_spotify_playlist(playlist_id: str, collection: str = "study"):
+async def get_spotify_playlist(playlist_id: str, collection: str = "study", api_key: str = Depends(verify_api_key)):
     try:    
         # Use the get_spotify_client() function instead of global variable
         spotify_client = get_spotify_client()
@@ -334,7 +367,8 @@ async def get_spotify_playlist(playlist_id: str, collection: str = "study"):
 async def attach_youtube_audio(
     collection_name: str,
     spotify_id: str,
-    youtube_url: str = Query(..., description="YouTube URL for the audio")
+    youtube_url: str = Query(..., description="YouTube URL for the audio"),
+    api_key: str = Depends(verify_api_key)
 ):
     try:
         exists, error_message = await check_collection_exists(collection_name)
@@ -444,7 +478,7 @@ async def attach_youtube_audio(
         raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
 
 @app.post("/songs/collection/{collection_name}")
-async def add_songs_to_collection(collection_name: str, songs: List[Dict[str, Any]]):
+async def add_songs_to_collection(collection_name: str, songs: List[Dict[str, Any]], api_key: str = Depends(verify_api_key)):
     try:
         result = await db[collection_name].insert_many(songs)
         
@@ -460,7 +494,7 @@ async def add_songs_to_collection(collection_name: str, songs: List[Dict[str, An
         raise HTTPException(status_code=500, detail=f"Failed to add songs to collection: {str(e)}")
 
 @app.post("/songs/{collection_name}/process-missing")
-async def process_songs_without_audio(collection_name: str):
+async def process_songs_without_audio(collection_name: str, api_key: str = Depends(verify_api_key)):
     try:
         exists, error_message = await check_collection_exists(collection_name)
         if not exists:
@@ -607,7 +641,7 @@ async def process_songs_without_audio(collection_name: str):
         raise HTTPException(status_code=500, detail=f"Failed to process songs: {str(e)}")
 
 @app.post("/resume/upload", response_model=Dict[str, str])
-async def upload_resume(file: UploadFile = File(...)):
+async def upload_resume(file: UploadFile = File(...), api_key: str = Depends(verify_api_key)):
     try:
         if not file.content_type == "application/pdf":
             raise HTTPException(status_code=400, detail="Only PDF files are allowed")
@@ -636,7 +670,7 @@ async def upload_resume(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=f"Failed to upload resume: {str(e)}")
 
 @app.get("/resume", response_model=Optional[ResumeMetadata])
-async def get_resume():
+async def get_resume(api_key: str = Depends(verify_api_key)):
     try:
         resume = await db.resume.find_one()
         if not resume:
@@ -652,7 +686,7 @@ async def get_resume():
         raise HTTPException(status_code=500, detail=f"Failed to fetch resume: {str(e)}")
 
 @app.get("/resume/view")
-async def view_resume():
+async def view_resume(api_key: str = Depends(verify_api_key)):
     try:
         resume = await db.resume.find_one()
         if not resume:
@@ -671,7 +705,7 @@ async def view_resume():
         raise HTTPException(status_code=500, detail=f"Failed to view resume: {str(e)}")
 
 @app.get("/resume/download")
-async def download_resume():
+async def download_resume(api_key: str = Depends(verify_api_key)):
     try:
 
         resume = await db.resume.find_one()
@@ -695,7 +729,7 @@ async def download_resume():
         raise HTTPException(status_code=500, detail=f"Failed to download resume: {str(e)}")
 
 @app.post("/projects", response_model=Dict[str, str])
-async def add_project(project: Project):
+async def add_project(project: Project, api_key: str = Depends(verify_api_key)):
     try:
         project_dict = project.dict()
         
@@ -710,7 +744,7 @@ async def add_project(project: Project):
         raise HTTPException(status_code=500, detail=f"Failed to add project: {str(e)}")
 
 @app.post("/projects/bulk", response_model=Dict[str, Any])
-async def add_projects(projects: List[Project]):
+async def add_projects(projects: List[Project], api_key: str = Depends(verify_api_key)):
     try:
         project_dicts = [project.dict() for project in projects]
         
@@ -726,7 +760,7 @@ async def add_projects(projects: List[Project]):
         raise HTTPException(status_code=500, detail=f"Failed to add projects: {str(e)}")
 
 @app.get("/projects", response_model=List[ProjectResponse])
-async def get_projects():
+async def get_projects(api_key: str = Depends(verify_api_key)):
     try:
         projects = []
         cursor = db.projects.find()
@@ -741,7 +775,7 @@ async def get_projects():
         raise HTTPException(status_code=500, detail=f"Failed to fetch projects: {str(e)}")
 
 @app.get("/projects/{project_id}", response_model=ProjectResponse)
-async def get_project(project_id: str):
+async def get_project(project_id: str, api_key: str = Depends(verify_api_key)):
     try:
         if not ObjectId.is_valid(project_id):
             raise HTTPException(status_code=400, detail="Invalid project ID")
@@ -760,7 +794,7 @@ async def get_project(project_id: str):
         raise HTTPException(status_code=500, detail=f"Failed to fetch project: {str(e)}")
 
 @app.put("/projects/{project_id}", response_model=ProjectResponse)
-async def update_project(project_id: str, project: Project):
+async def update_project(project_id: str, project: Project, api_key: str = Depends(verify_api_key)):
     try:
         if not ObjectId.is_valid(project_id):
             raise HTTPException(status_code=400, detail="Invalid project ID")
@@ -788,7 +822,7 @@ async def update_project(project_id: str, project: Project):
         raise HTTPException(status_code=500, detail=f"Failed to update project: {str(e)}")
 
 @app.delete("/projects/{project_id}")
-async def delete_project(project_id: str):
+async def delete_project(project_id: str, api_key: str = Depends(verify_api_key)):
     try:
         if not ObjectId.is_valid(project_id):
             raise HTTPException(status_code=400, detail="Invalid project ID")
@@ -809,7 +843,7 @@ async def delete_project(project_id: str):
         raise HTTPException(status_code=500, detail=f"Failed to delete project: {str(e)}")
     
 @app.post("/experiences", response_model=Dict[str, str])
-async def add_experience(experience: Experience):
+async def add_experience(experience: Experience, api_key: str = Depends(verify_api_key)):
     try:
         experience_dict = experience.dict()
         
@@ -824,7 +858,7 @@ async def add_experience(experience: Experience):
         raise HTTPException(status_code=500, detail=f"Failed to add experience: {str(e)}")
 
 @app.post("/experiences/bulk", response_model=Dict[str, Any])
-async def add_experiences(experiences: List[Experience]):
+async def add_experiences(experiences: List[Experience], api_key: str = Depends(verify_api_key)):
     try:
         experience_dicts = [experience.dict() for experience in experiences]
         
@@ -840,7 +874,7 @@ async def add_experiences(experiences: List[Experience]):
         raise HTTPException(status_code=500, detail=f"Failed to add experiences: {str(e)}")
 
 @app.get("/experiences", response_model=List[ExperienceResponse])
-async def get_experiences():
+async def get_experiences(api_key: str = Depends(verify_api_key)):
     try:
         experiences = []
         cursor = db.experiences.find()
@@ -878,7 +912,7 @@ async def get_experiences():
         raise HTTPException(status_code=500, detail=f"Failed to fetch experiences: {str(e)}")
 
 @app.get("/experiences/{experience_id}", response_model=ExperienceResponse)
-async def get_experience(experience_id: str):
+async def get_experience(experience_id: str, api_key: str = Depends(verify_api_key)):
     try:
         if not ObjectId.is_valid(experience_id):
             raise HTTPException(status_code=400, detail="Invalid experience ID")
@@ -897,7 +931,7 @@ async def get_experience(experience_id: str):
         raise HTTPException(status_code=500, detail=f"Failed to fetch experience: {str(e)}")
 
 @app.put("/experiences/{experience_id}", response_model=ExperienceResponse)
-async def update_experience(experience_id: str, experience: Experience):
+async def update_experience(experience_id: str, experience: Experience, api_key: str = Depends(verify_api_key)):
     try:
         if not ObjectId.is_valid(experience_id):
             raise HTTPException(status_code=400, detail="Invalid experience ID")
@@ -925,7 +959,7 @@ async def update_experience(experience_id: str, experience: Experience):
         raise HTTPException(status_code=500, detail=f"Failed to update experience: {str(e)}")
 
 @app.delete("/experiences/{experience_id}")
-async def delete_experience(experience_id: str):
+async def delete_experience(experience_id: str, api_key: str = Depends(verify_api_key)):
     try:
         if not ObjectId.is_valid(experience_id):
             raise HTTPException(status_code=400, detail="Invalid experience ID")
@@ -945,3 +979,10 @@ async def delete_experience(experience_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to delete experience: {str(e)}")
 
+@app.get("/openapi.json", include_in_schema=False)
+def custom_openapi(auth: bool = Depends(verify_docs_access)):
+    return JSONResponse(get_openapi(title="Portfolio Music API", version="1.0.0", routes=app.routes))
+
+@app.get("/docs", include_in_schema=False)
+def custom_swagger_ui(auth: bool = Depends(verify_docs_access)):
+    return get_swagger_ui_html(openapi_url="/openapi.json", title="API Documentation")
