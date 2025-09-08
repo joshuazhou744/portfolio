@@ -47,11 +47,7 @@ export function ExperienceList({ isVisible, onVisibilityChange }: ExperienceList
   useEffect(() => {
     if (isVisible) {
       setIsLoading(true);
-      fetch(`${API_URL}/experiences`, {
-        headers: {
-          'X-API-Key': API_KEY
-        }
-      })
+      fetch(`/api/experiences`)
         .then(response => {
           if (!response.ok) {
             throw new Error('Failed to fetch experiences');
