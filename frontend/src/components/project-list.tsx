@@ -45,7 +45,7 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
   useEffect(() => {
     if (isVisible) {
       setIsLoading(true);
-      fetch(`api/projects`)
+      fetch(`/api/projects`)
         .then(response => {
           if (!response.ok) {
             throw new Error('Failed to fetch projects');

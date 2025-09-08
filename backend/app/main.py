@@ -32,7 +32,7 @@ from fastapi.responses import JSONResponse
 load_dotenv()
 
 API_KEY = os.getenv("API_KEY")
-api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
+api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False, scheme_name="ApiKeyAuth")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -985,4 +985,8 @@ def custom_openapi(auth: bool = Depends(verify_docs_access)):
 
 @app.get("/docs", include_in_schema=False)
 def custom_swagger_ui(auth: bool = Depends(verify_docs_access)):
-    return get_swagger_ui_html(openapi_url="/openapi.json", title="API Documentation")
+    return get_swagger_ui_html(
+        openapi_url="/openapi.json", 
+        title="API Documentation",
+        swagger_ui_parameters={"persistAuthorization": True}
+    )
