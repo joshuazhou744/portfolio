@@ -178,7 +178,7 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
             ) : projects.length === 0 ? (
               <div style={{ padding: '10px' }}>No projects found.</div>
             ) : (
-              projects.map(project => (
+              projects.sort((a, b) => b.year - a.year).map(project => (
                 <div 
                   key={project.id} 
                   className={`project-item ${selectedProject === project.id ? 'selected' : ''}`}
