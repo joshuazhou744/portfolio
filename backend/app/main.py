@@ -257,10 +257,20 @@ async def get_song_audio(collection_name: str, song_id: str):
         song = await db[collection_name].find_one({"_id": ObjectId(song_id)})
         if not song:
             raise HTTPException(status_code=404, detail="Song not found")
-        
-        audio_file_id = ObjectId(song["audio_file_id"])
-        grid_out = await fs.open_download_stream(audio_file_id)
-        
+        if not song.get("audio_file_id"):
+            raise HTTPException(status_code=404, detail="Song has no audio_file_id")
+
+        try:
+            audio_file_id = ObjectId(song["audio_file_id"])
+        except Exception:
+            raise HTTPException(status_code=400, detail="Invalid audio file id on song")
+
+        try:
+            grid_out = await fs.open_download_stream(audio_file_id)
+        except Exception as e:
+            logger.error(f"Failed to open GridFS stream for {audio_file_id}: {e}")
+            raise HTTPException(status_code=404, detail="Audio file not found")
+
         return StreamingResponse(
             grid_out,
             media_type=grid_out.content_type,

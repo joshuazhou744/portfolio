@@ -24,6 +24,7 @@ frontend/build/
 dist/
 build/
 backend/app/__pycache__/
+backend/ADDSONG.md
 
 # misc
 .DS_Store
