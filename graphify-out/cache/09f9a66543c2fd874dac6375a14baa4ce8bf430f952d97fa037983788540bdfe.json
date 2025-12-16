@@ -1,0 +1,1 @@
+{"nodes": [{"id": "about_me", "label": "about-me.tsx", "file_type": "code", "source_file": "frontend/src/components/about-me.tsx", "source_location": "L1"}], "edges": [{"source": "about_me", "target": "base_window", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "frontend/src/components/about-me.tsx", "source_location": "L3", "weight": 1.0}]}

@@ -1,0 +1,2876 @@
+{
+  "nodes": [
+    {
+      "id": "g0",
+      "type": "group",
+      "label": "Desktop Window Shell",
+      "x": 0,
+      "y": 0,
+      "width": 1100,
+      "height": 920,
+      "color": "1"
+    },
+    {
+      "id": "n_base_window_basewindow",
+      "type": "file",
+      "file": "graphify/obsidian/BaseWindow().md",
+      "x": 20,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_info_panel_infopanel",
+      "type": "file",
+      "file": "graphify/obsidian/InfoPanel().md",
+      "x": 220,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_status_bar_statusbar",
+      "type": "file",
+      "file": "graphify/obsidian/StatusBar().md",
+      "x": 420,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_about_me",
+      "type": "file",
+      "file": "graphify/obsidian/about-me.tsx.md",
+      "x": 20,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_base_window",
+      "type": "file",
+      "file": "graphify/obsidian/base-window.tsx.md",
+      "x": 220,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_page_checkmobile",
+      "type": "file",
+      "file": "graphify/obsidian/checkMobile().md",
+      "x": 420,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_contact",
+      "type": "file",
+      "file": "graphify/obsidian/contact.tsx.md",
+      "x": 20,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_page_handleaboutmeclick",
+      "type": "file",
+      "file": "graphify/obsidian/handleAboutMeClick().md",
+      "x": 220,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_page_handlecontactclick",
+      "type": "file",
+      "file": "graphify/obsidian/handleContactClick().md",
+      "x": 420,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_contact_handlecopy",
+      "type": "file",
+      "file": "graphify/obsidian/handleCopy().md",
+      "x": 20,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_page_handleexperienceclick",
+      "type": "file",
+      "file": "graphify/obsidian/handleExperienceClick().md",
+      "x": 220,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_page_handleinfoclick",
+      "type": "file",
+      "file": "graphify/obsidian/handleInfoClick().md",
+      "x": 420,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_page_handleloadercomplete",
+      "type": "file",
+      "file": "graphify/obsidian/handleLoaderComplete().md",
+      "x": 20,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_page_handleprojectlistclick",
+      "type": "file",
+      "file": "graphify/obsidian/handleProjectListClick().md",
+      "x": 220,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_page_handleresumeclick",
+      "type": "file",
+      "file": "graphify/obsidian/handleResumeClick().md",
+      "x": 420,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_info_panel",
+      "type": "file",
+      "file": "graphify/obsidian/info-panel.tsx.md",
+      "x": 20,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_loader",
+      "type": "file",
+      "file": "graphify/obsidian/loader.tsx.md",
+      "x": 220,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_media_player",
+      "type": "file",
+      "file": "graphify/obsidian/media-player.tsx.md",
+      "x": 420,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_mobile_fallback",
+      "type": "file",
+      "file": "graphify/obsidian/mobile-fallback.tsx.md",
+      "x": 20,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_page",
+      "type": "file",
+      "file": "graphify/obsidian/page.tsx.md",
+      "x": 220,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_page_showwindow",
+      "type": "file",
+      "file": "graphify/obsidian/showWindow().md",
+      "x": 420,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_status_bar",
+      "type": "file",
+      "file": "graphify/obsidian/status-bar.tsx.md",
+      "x": 20,
+      "y": 640,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_usewindowdimensions_usewindowdimensions",
+      "type": "file",
+      "file": "graphify/obsidian/useWindowDimensions().md",
+      "x": 220,
+      "y": 640,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_usewindowdimensions",
+      "type": "file",
+      "file": "graphify/obsidian/useWindowDimensions.ts.md",
+      "x": 420,
+      "y": 640,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g1",
+      "type": "group",
+      "label": "Project & Resume Windows",
+      "x": 1180,
+      "y": 0,
+      "width": 1100,
+      "height": 720,
+      "color": "2"
+    },
+    {
+      "id": "n_windowcontext",
+      "type": "file",
+      "file": "graphify/obsidian/WindowContext.tsx.md",
+      "x": 1200,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_windowcontext_windowprovider",
+      "type": "file",
+      "file": "graphify/obsidian/WindowProvider().md",
+      "x": 1400,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_project_list_handleclose",
+      "type": "file",
+      "file": "graphify/obsidian/handleClose().md",
+      "x": 1600,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_resume_handleclose",
+      "type": "file",
+      "file": "graphify/obsidian/handleClose()_1.md",
+      "x": 1200,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_resume_handledownload",
+      "type": "file",
+      "file": "graphify/obsidian/handleDownload().md",
+      "x": 1400,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_resume_handlekeydown",
+      "type": "file",
+      "file": "graphify/obsidian/handleKeyDown().md",
+      "x": 1600,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_resume_handlemaximize",
+      "type": "file",
+      "file": "graphify/obsidian/handleMaximize().md",
+      "x": 1200,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_project_list_handleminimize",
+      "type": "file",
+      "file": "graphify/obsidian/handleMinimize().md",
+      "x": 1400,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_resume_handleminimize",
+      "type": "file",
+      "file": "graphify/obsidian/handleMinimize()_1.md",
+      "x": 1600,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_project_list_handlemousedown",
+      "type": "file",
+      "file": "graphify/obsidian/handleMouseDown().md",
+      "x": 1200,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_resume_handlemousedown",
+      "type": "file",
+      "file": "graphify/obsidian/handleMouseDown()_1.md",
+      "x": 1400,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_project_list_handlemouseup",
+      "type": "file",
+      "file": "graphify/obsidian/handleMouseUp().md",
+      "x": 1600,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_resume_handlemouseup",
+      "type": "file",
+      "file": "graphify/obsidian/handleMouseUp()_1.md",
+      "x": 1200,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_project_list_handleprojectselect",
+      "type": "file",
+      "file": "graphify/obsidian/handleProjectSelect().md",
+      "x": 1400,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_project_list",
+      "type": "file",
+      "file": "graphify/obsidian/project-list.tsx.md",
+      "x": 1600,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_resume",
+      "type": "file",
+      "file": "graphify/obsidian/resume.tsx.md",
+      "x": 1200,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_windowcontext_usewindow",
+      "type": "file",
+      "file": "graphify/obsidian/useWindow().md",
+      "x": 1400,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g2",
+      "type": "group",
+      "label": "Backend FastAPI Routes",
+      "x": 2360,
+      "y": 0,
+      "width": 880,
+      "height": 720,
+      "color": "3"
+    },
+    {
+      "id": "n_main_config",
+      "type": "file",
+      "file": "graphify/obsidian/Config.md",
+      "x": 2380,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_experience",
+      "type": "file",
+      "file": "graphify/obsidian/Experience.md",
+      "x": 2580,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_experienceresponse",
+      "type": "file",
+      "file": "graphify/obsidian/ExperienceResponse.md",
+      "x": 2780,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_spotifytrack",
+      "type": "file",
+      "file": "graphify/obsidian/SpotifyTrack.md",
+      "x": 2380,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_add_experience",
+      "type": "file",
+      "file": "graphify/obsidian/add_experience().md",
+      "x": 2580,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_add_experiences",
+      "type": "file",
+      "file": "graphify/obsidian/add_experiences().md",
+      "x": 2780,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_add_project",
+      "type": "file",
+      "file": "graphify/obsidian/add_project().md",
+      "x": 2380,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_add_projects",
+      "type": "file",
+      "file": "graphify/obsidian/add_projects().md",
+      "x": 2580,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_add_songs_to_collection",
+      "type": "file",
+      "file": "graphify/obsidian/add_songs_to_collection().md",
+      "x": 2780,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_download_resume",
+      "type": "file",
+      "file": "graphify/obsidian/download_resume().md",
+      "x": 2380,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_get_spotify_client",
+      "type": "file",
+      "file": "graphify/obsidian/get_spotify_client().md",
+      "x": 2580,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_get_spotify_playlist",
+      "type": "file",
+      "file": "graphify/obsidian/get_spotify_playlist().md",
+      "x": 2780,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_get_youtube_client",
+      "type": "file",
+      "file": "graphify/obsidian/get_youtube_client().md",
+      "x": 2380,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_health_check",
+      "type": "file",
+      "file": "graphify/obsidian/health_check().md",
+      "x": 2580,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main",
+      "type": "file",
+      "file": "graphify/obsidian/main.py.md",
+      "x": 2780,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_view_resume",
+      "type": "file",
+      "file": "graphify/obsidian/view_resume().md",
+      "x": 2380,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g3",
+      "type": "group",
+      "label": "Song Sync Pipeline (docs)",
+      "x": 3320,
+      "y": 0,
+      "width": 880,
+      "height": 620,
+      "color": "4"
+    },
+    {
+      "id": "n_addsong_override_flag",
+      "type": "file",
+      "file": "graphify/obsidian/--override Flag.md",
+      "x": 3340,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_addsong_doc",
+      "type": "file",
+      "file": "graphify/obsidian/Adding New Songs Guide.md",
+      "x": 3540,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_readme_env_backend",
+      "type": "file",
+      "file": "graphify/obsidian/Backend env (MONGODB_URL, SPOTIFY, YOUTUBE_API_KEY).md",
+      "x": 3740,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_addsong_study_collection",
+      "type": "file",
+      "file": "graphify/obsidian/MongoDB 'study' Collection.md",
+      "x": 3340,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_backendreadme_mongodb_gridfs",
+      "type": "file",
+      "file": "graphify/obsidian/MongoDB + GridFS Audio Storage.md",
+      "x": 3540,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_addsong_prod_warning",
+      "type": "file",
+      "file": "graphify/obsidian/Production Data Warning.md",
+      "x": 3740,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_addsong_dedup_rationale",
+      "type": "file",
+      "file": "graphify/obsidian/Rationale dedupe by spotify_id, resume on partial failure.md",
+      "x": 3340,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_addsong_override_rationale",
+      "type": "file",
+      "file": "graphify/obsidian/Rationale exact title match avoids substring collisions.md",
+      "x": 3540,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_addsong_ytmusic_match",
+      "type": "file",
+      "file": "graphify/obsidian/YouTube Music Title+Artist Matching (=0.7).md",
+      "x": 3740,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_addsong_ffmpeg",
+      "type": "file",
+      "file": "graphify/obsidian/ffmpeg Dependency.md",
+      "x": 3340,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_addsong_media_player_ref",
+      "type": "file",
+      "file": "graphify/obsidian/frontendsrccomponentsmedia-player.tsx hardcoded 'study'.md",
+      "x": 3540,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_requirements_spotipy",
+      "type": "file",
+      "file": "graphify/obsidian/spotipy 2.23.0.md",
+      "x": 3740,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_addsong_sync_script",
+      "type": "file",
+      "file": "graphify/obsidian/sync_songs.py script.md",
+      "x": 3340,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_requirements_ytdlp",
+      "type": "file",
+      "file": "graphify/obsidian/yt-dlp 2025.6.30.md",
+      "x": 3540,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_requirements_ytmusicapi",
+      "type": "file",
+      "file": "graphify/obsidian/ytmusicapi 1.10.2.md",
+      "x": 3740,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g4",
+      "type": "group",
+      "label": "Backend API Stack & Models",
+      "x": 4280,
+      "y": 0,
+      "width": 880,
+      "height": 620,
+      "color": "5"
+    },
+    {
+      "id": "n_backendreadme_music_api",
+      "type": "file",
+      "file": "graphify/obsidian/Portfolio Music API.md",
+      "x": 4300,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_backendreadme_endpoints",
+      "type": "file",
+      "file": "graphify/obsidian/Song API Endpoints.md",
+      "x": 4500,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_backendreadme_song_datamodel",
+      "type": "file",
+      "file": "graphify/obsidian/Song Data Model.md",
+      "x": 4700,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_addsong_spotify_mirror",
+      "type": "file",
+      "file": "graphify/obsidian/Spotify Playlist Mirroring.md",
+      "x": 4300,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_backendreadme_swagger",
+      "type": "file",
+      "file": "graphify/obsidian/Swagger UI  ReDoc.md",
+      "x": 4500,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_requirements_fastapi",
+      "type": "file",
+      "file": "graphify/obsidian/fastapi 0.115.11.md",
+      "x": 4700,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_requirements_motor",
+      "type": "file",
+      "file": "graphify/obsidian/motor 3.7.0.md",
+      "x": 4300,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_requirements_pydantic",
+      "type": "file",
+      "file": "graphify/obsidian/pydantic 2.10.6.md",
+      "x": 4500,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_requirements_python_dotenv",
+      "type": "file",
+      "file": "graphify/obsidian/python-dotenv 1.0.1.md",
+      "x": 4700,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_requirements_python_multipart",
+      "type": "file",
+      "file": "graphify/obsidian/python-multipart 0.0.20.md",
+      "x": 4300,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_requirementsdev_ruff",
+      "type": "file",
+      "file": "graphify/obsidian/ruff 0.15.10.md",
+      "x": 4500,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_requirements_uvicorn",
+      "type": "file",
+      "file": "graphify/obsidian/uvicorn 0.34.0.md",
+      "x": 4700,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_requirementsdev_vulture",
+      "type": "file",
+      "file": "graphify/obsidian/vulture 2.16.md",
+      "x": 4300,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g5",
+      "type": "group",
+      "label": "CRUD Endpoints + Mongo Helpers",
+      "x": 0,
+      "y": 1000,
+      "width": 880,
+      "height": 520,
+      "color": "6"
+    },
+    {
+      "id": "n_main_rationale_122",
+      "type": "file",
+      "file": "graphify/obsidian/Convert Mongo's _id ObjectId field to a string `id` field in-place..md",
+      "x": 20,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_rationale_129",
+      "type": "file",
+      "file": "graphify/obsidian/Validate an ObjectId string, fetch the document, and raise standard HTTP errors..md",
+      "x": 220,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_fetch_by_object_id",
+      "type": "file",
+      "file": "graphify/obsidian/_fetch_by_object_id().md",
+      "x": 420,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_strip_mongo_id",
+      "type": "file",
+      "file": "graphify/obsidian/_strip_mongo_id().md",
+      "x": 20,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_delete_experience",
+      "type": "file",
+      "file": "graphify/obsidian/delete_experience().md",
+      "x": 220,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_delete_project",
+      "type": "file",
+      "file": "graphify/obsidian/delete_project().md",
+      "x": 420,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_get_experience",
+      "type": "file",
+      "file": "graphify/obsidian/get_experience().md",
+      "x": 20,
+      "y": 1240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_get_project",
+      "type": "file",
+      "file": "graphify/obsidian/get_project().md",
+      "x": 220,
+      "y": 1240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_get_projects",
+      "type": "file",
+      "file": "graphify/obsidian/get_projects().md",
+      "x": 420,
+      "y": 1240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_get_resume",
+      "type": "file",
+      "file": "graphify/obsidian/get_resume().md",
+      "x": 20,
+      "y": 1320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_update_experience",
+      "type": "file",
+      "file": "graphify/obsidian/update_experience().md",
+      "x": 220,
+      "y": 1320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_update_project",
+      "type": "file",
+      "file": "graphify/obsidian/update_project().md",
+      "x": 420,
+      "y": 1320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g6",
+      "type": "group",
+      "label": "Pydantic Data Models",
+      "x": 1180,
+      "y": 1000,
+      "width": 660,
+      "height": 420,
+      "color": "1"
+    },
+    {
+      "id": "n_basemodel",
+      "type": "file",
+      "file": "graphify/obsidian/BaseModel.md",
+      "x": 1200,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_contactinfo",
+      "type": "file",
+      "file": "graphify/obsidian/ContactInfo.md",
+      "x": 1400,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_project",
+      "type": "file",
+      "file": "graphify/obsidian/Project.md",
+      "x": 1600,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_projectresponse",
+      "type": "file",
+      "file": "graphify/obsidian/ProjectResponse.md",
+      "x": 1200,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_resumemetadata",
+      "type": "file",
+      "file": "graphify/obsidian/ResumeMetadata.md",
+      "x": 1400,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_song",
+      "type": "file",
+      "file": "graphify/obsidian/Song.md",
+      "x": 1600,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_songresponse",
+      "type": "file",
+      "file": "graphify/obsidian/SongResponse.md",
+      "x": 1200,
+      "y": 1240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_get_contact",
+      "type": "file",
+      "file": "graphify/obsidian/get_contact().md",
+      "x": 1400,
+      "y": 1240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_upload_resume",
+      "type": "file",
+      "file": "graphify/obsidian/upload_resume().md",
+      "x": 1600,
+      "y": 1240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g7",
+      "type": "group",
+      "label": "Project README & Deployment",
+      "x": 2360,
+      "y": 1000,
+      "width": 660,
+      "height": 420,
+      "color": "2"
+    },
+    {
+      "id": "n_readme_deployment",
+      "type": "file",
+      "file": "graphify/obsidian/Deployment.md",
+      "x": 2380,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_readme_dev_setup",
+      "type": "file",
+      "file": "graphify/obsidian/Development Setup.md",
+      "x": 2580,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_readme_docker_quickstart",
+      "type": "file",
+      "file": "graphify/obsidian/Docker Quickstart.md",
+      "x": 2780,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_readme_env_frontend",
+      "type": "file",
+      "file": "graphify/obsidian/Frontend env (NEXT_PUBLIC_API_URL).md",
+      "x": 2380,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_readme_mit_license",
+      "type": "file",
+      "file": "graphify/obsidian/MIT License.md",
+      "x": 2580,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_readme_portfolio",
+      "type": "file",
+      "file": "graphify/obsidian/Portfolio README.md",
+      "x": 2780,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_readme_railway",
+      "type": "file",
+      "file": "graphify/obsidian/Railway.app Backend Deployment.md",
+      "x": 2380,
+      "y": 1240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_readme_plaza_inspiration",
+      "type": "file",
+      "file": "graphify/obsidian/UI Inspired by plaza.one.md",
+      "x": 2580,
+      "y": 1240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_readme_vercel",
+      "type": "file",
+      "file": "graphify/obsidian/Vercel Frontend Deployment.md",
+      "x": 2780,
+      "y": 1240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g8",
+      "type": "group",
+      "label": "Songs & YouTube Audio Routes",
+      "x": 3320,
+      "y": 1000,
+      "width": 660,
+      "height": 420,
+      "color": "3"
+    },
+    {
+      "id": "n_main_attach_youtube_audio",
+      "type": "file",
+      "file": "graphify/obsidian/attach_youtube_audio().md",
+      "x": 3340,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_check_collection_exists",
+      "type": "file",
+      "file": "graphify/obsidian/check_collection_exists().md",
+      "x": 3540,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_delete_song",
+      "type": "file",
+      "file": "graphify/obsidian/delete_song().md",
+      "x": 3740,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_get_song",
+      "type": "file",
+      "file": "graphify/obsidian/get_song().md",
+      "x": 3340,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_get_song_audio",
+      "type": "file",
+      "file": "graphify/obsidian/get_song_audio().md",
+      "x": 3540,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_get_songs",
+      "type": "file",
+      "file": "graphify/obsidian/get_songs().md",
+      "x": 3740,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_get_ytmusic_client",
+      "type": "file",
+      "file": "graphify/obsidian/get_ytmusic_client().md",
+      "x": 3340,
+      "y": 1240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_process_songs_without_audio",
+      "type": "file",
+      "file": "graphify/obsidian/process_songs_without_audio().md",
+      "x": 3540,
+      "y": 1240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g9",
+      "type": "group",
+      "label": "YouTube Audio Download (audio.py)",
+      "x": 4280,
+      "y": 1000,
+      "width": 660,
+      "height": 420,
+      "color": "4"
+    },
+    {
+      "id": "n_audio_rationale_54",
+      "type": "file",
+      "file": "graphify/obsidian/Pick the first ytmusicapi search result whose title AND artist are     similar e.md",
+      "x": 4300,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_audio_rationale_1",
+      "type": "file",
+      "file": "graphify/obsidian/Shared audio download helpers used by both the FastAPI backend and the standalon.md",
+      "x": 4500,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_audio_rationale_77",
+      "type": "file",
+      "file": "graphify/obsidian/Synchronous yt-dlp download. Run inside an executor for use from async code..md",
+      "x": 4700,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_audio_ratio",
+      "type": "file",
+      "file": "graphify/obsidian/_ratio().md",
+      "x": 4300,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_audio",
+      "type": "file",
+      "file": "graphify/obsidian/audio.py.md",
+      "x": 4500,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_audio_download_audio_sync",
+      "type": "file",
+      "file": "graphify/obsidian/download_audio_sync().md",
+      "x": 4700,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_audio_pick_youtube_match",
+      "type": "file",
+      "file": "graphify/obsidian/pick_youtube_match().md",
+      "x": 4300,
+      "y": 1240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g10",
+      "type": "group",
+      "label": "Experience List Window",
+      "x": 0,
+      "y": 1600,
+      "width": 660,
+      "height": 400,
+      "color": "5"
+    },
+    {
+      "id": "n_experience_list",
+      "type": "file",
+      "file": "graphify/obsidian/experience-list.tsx.md",
+      "x": 20,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_experience_list_handleclose",
+      "type": "file",
+      "file": "graphify/obsidian/handleClose()_2.md",
+      "x": 220,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_experience_list_handleexperienceselect",
+      "type": "file",
+      "file": "graphify/obsidian/handleExperienceSelect().md",
+      "x": 420,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_experience_list_handleminimize",
+      "type": "file",
+      "file": "graphify/obsidian/handleMinimize()_2.md",
+      "x": 20,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_experience_list_handlemousedown",
+      "type": "file",
+      "file": "graphify/obsidian/handleMouseDown()_2.md",
+      "x": 220,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_experience_list_handlemouseup",
+      "type": "file",
+      "file": "graphify/obsidian/handleMouseUp()_2.md",
+      "x": 420,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g11",
+      "type": "group",
+      "label": "sync_songs Script",
+      "x": 1180,
+      "y": 1600,
+      "width": 660,
+      "height": 400,
+      "color": "6"
+    },
+    {
+      "id": "n_sync_songs_rationale_55",
+      "type": "file",
+      "file": "graphify/obsidian/For each (title, url) override, find the matching song doc, delete its     exist.md",
+      "x": 1200,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_sync_songs_rationale_1",
+      "type": "file",
+      "file": "graphify/obsidian/Sync new songs from a Spotify playlist into MongoDB.  Usage     cd backend.md",
+      "x": 1400,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_sync_songs_apply_overrides",
+      "type": "file",
+      "file": "graphify/obsidian/_apply_overrides().md",
+      "x": 1600,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_sync_songs_main",
+      "type": "file",
+      "file": "graphify/obsidian/main().md",
+      "x": 1200,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_sync_songs_sync",
+      "type": "file",
+      "file": "graphify/obsidian/sync().md",
+      "x": 1400,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_sync_songs",
+      "type": "file",
+      "file": "graphify/obsidian/sync_songs.py.md",
+      "x": 1600,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g12",
+      "type": "group",
+      "label": "Next.js App Shell",
+      "x": 2360,
+      "y": 1600,
+      "width": 600,
+      "height": 400,
+      "color": "1"
+    },
+    {
+      "id": "n_clientbody_clientbody",
+      "type": "file",
+      "file": "graphify/obsidian/ClientBody().md",
+      "x": 2380,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_clientbody",
+      "type": "file",
+      "file": "graphify/obsidian/ClientBody.tsx.md",
+      "x": 2580,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_layout_rootlayout",
+      "type": "file",
+      "file": "graphify/obsidian/RootLayout().md",
+      "x": 2780,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_layout",
+      "type": "file",
+      "file": "graphify/obsidian/layout.tsx.md",
+      "x": 2380,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g13",
+      "type": "group",
+      "label": "Experience Date Parsing",
+      "x": 3320,
+      "y": 1600,
+      "width": 600,
+      "height": 400,
+      "color": "2"
+    },
+    {
+      "id": "n_main_rationale_162",
+      "type": "file",
+      "file": "graphify/obsidian/Parse 'Month YYYY' or 'Present' into a sortable (year, month) tuple..md",
+      "x": 3340,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_parse_experience_date",
+      "type": "file",
+      "file": "graphify/obsidian/_parse_experience_date().md",
+      "x": 3540,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_get_experiences",
+      "type": "file",
+      "file": "graphify/obsidian/get_experiences().md",
+      "x": 3740,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g14",
+      "type": "group",
+      "label": "Project Sort Key",
+      "x": 4280,
+      "y": 1600,
+      "width": 600,
+      "height": 400,
+      "color": "3"
+    },
+    {
+      "id": "n_main_rationale_139",
+      "type": "file",
+      "file": "graphify/obsidian/Sort key for projects explicit `level` ascending, then year descending..md",
+      "x": 4300,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_main_project_sort_key",
+      "type": "file",
+      "file": "graphify/obsidian/_project_sort_key().md",
+      "x": 4500,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g15",
+      "type": "group",
+      "label": "Spotify Asset",
+      "x": 0,
+      "y": 2080,
+      "width": 600,
+      "height": 400,
+      "color": "4"
+    },
+    {
+      "id": "n_spotify_brand",
+      "type": "file",
+      "file": "graphify/obsidian/Spotify (Music Streaming Service).md",
+      "x": 20,
+      "y": 2160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_spotify_logo",
+      "type": "file",
+      "file": "graphify/obsidian/Spotify Logo.md",
+      "x": 220,
+      "y": 2160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g16",
+      "type": "group",
+      "label": "Next Config",
+      "x": 1180,
+      "y": 2080,
+      "width": 600,
+      "height": 400,
+      "color": "5"
+    },
+    {
+      "id": "n_next_config",
+      "type": "file",
+      "file": "graphify/obsidian/next.config.js.md",
+      "x": 1200,
+      "y": 2160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g17",
+      "type": "group",
+      "label": "Next Env Types",
+      "x": 2360,
+      "y": 2080,
+      "width": 600,
+      "height": 400,
+      "color": "6"
+    },
+    {
+      "id": "n_next_env_d",
+      "type": "file",
+      "file": "graphify/obsidian/next-env.d.ts.md",
+      "x": 2380,
+      "y": 2160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g18",
+      "type": "group",
+      "label": "Tailwind Config",
+      "x": 3320,
+      "y": 2080,
+      "width": 600,
+      "height": 400,
+      "color": "1"
+    },
+    {
+      "id": "n_tailwind_config",
+      "type": "file",
+      "file": "graphify/obsidian/tailwind.config.ts.md",
+      "x": 3340,
+      "y": 2160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g19",
+      "type": "group",
+      "label": "Styles Module Types",
+      "x": 4280,
+      "y": 2080,
+      "width": 600,
+      "height": 400,
+      "color": "2"
+    },
+    {
+      "id": "n_styles_d",
+      "type": "file",
+      "file": "graphify/obsidian/styles.d.ts.md",
+      "x": 4300,
+      "y": 2160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g20",
+      "type": "group",
+      "label": "google-api-python-client",
+      "x": 0,
+      "y": 2560,
+      "width": 600,
+      "height": 400,
+      "color": "3"
+    },
+    {
+      "id": "n_requirements_google_api",
+      "type": "file",
+      "file": "graphify/obsidian/google-api-python-client 2.165.0.md",
+      "x": 20,
+      "y": 2640,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g21",
+      "type": "group",
+      "label": "Penguin Asset",
+      "x": 1180,
+      "y": 2560,
+      "width": 600,
+      "height": 400,
+      "color": "4"
+    },
+    {
+      "id": "n_penguin_image",
+      "type": "file",
+      "file": "graphify/obsidian/Penguin with Machete (decorative asset).md",
+      "x": 1200,
+      "y": 2640,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g22",
+      "type": "group",
+      "label": "Sky Asset",
+      "x": 2360,
+      "y": 2560,
+      "width": 600,
+      "height": 400,
+      "color": "5"
+    },
+    {
+      "id": "n_sky_image",
+      "type": "file",
+      "file": "graphify/obsidian/Sky with Clouds Illustration.md",
+      "x": 2380,
+      "y": 2640,
+      "width": 180,
+      "height": 60
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_windowcontext_windowcontext_windowprovider",
+      "fromNode": "n_windowcontext",
+      "toNode": "n_windowcontext_windowprovider",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_windowcontext_windowcontext_usewindow",
+      "fromNode": "n_windowcontext",
+      "toNode": "n_windowcontext_usewindow",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_windowcontext_page",
+      "fromNode": "n_windowcontext",
+      "toNode": "n_page",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_windowcontext_project_list",
+      "fromNode": "n_windowcontext",
+      "toNode": "n_project_list",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_windowcontext_media_player",
+      "fromNode": "n_windowcontext",
+      "toNode": "n_media_player",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_windowcontext_base_window",
+      "fromNode": "n_windowcontext",
+      "toNode": "n_base_window",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_windowcontext_resume",
+      "fromNode": "n_windowcontext",
+      "toNode": "n_resume",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_windowcontext_experience_list",
+      "fromNode": "n_windowcontext",
+      "toNode": "n_experience_list",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_clientbody_clientbody_clientbody",
+      "fromNode": "n_clientbody",
+      "toNode": "n_clientbody_clientbody",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_clientbody_layout",
+      "fromNode": "n_clientbody",
+      "toNode": "n_layout",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_layout_layout_rootlayout",
+      "fromNode": "n_layout",
+      "toNode": "n_layout_rootlayout",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_page_media_player",
+      "fromNode": "n_page",
+      "toNode": "n_media_player",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_page_info_panel",
+      "fromNode": "n_page",
+      "toNode": "n_info_panel",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_page_status_bar",
+      "fromNode": "n_page",
+      "toNode": "n_status_bar",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_page_loader",
+      "fromNode": "n_page",
+      "toNode": "n_loader",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_page_about_me",
+      "fromNode": "n_page",
+      "toNode": "n_about_me",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_page_contact",
+      "fromNode": "n_page",
+      "toNode": "n_contact",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_page_project_list",
+      "fromNode": "n_page",
+      "toNode": "n_project_list",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_page_resume",
+      "fromNode": "n_page",
+      "toNode": "n_resume",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_page_experience_list",
+      "fromNode": "n_page",
+      "toNode": "n_experience_list",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_page_mobile_fallback",
+      "fromNode": "n_page",
+      "toNode": "n_mobile_fallback",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_page_usewindowdimensions",
+      "fromNode": "n_page",
+      "toNode": "n_usewindowdimensions",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_page_page_checkmobile",
+      "fromNode": "n_page",
+      "toNode": "n_page_checkmobile",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_page_page_showwindow",
+      "fromNode": "n_page",
+      "toNode": "n_page_showwindow",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_page_page_handleinfoclick",
+      "fromNode": "n_page",
+      "toNode": "n_page_handleinfoclick",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_page_page_handleaboutmeclick",
+      "fromNode": "n_page",
+      "toNode": "n_page_handleaboutmeclick",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_page_page_handlecontactclick",
+      "fromNode": "n_page",
+      "toNode": "n_page_handlecontactclick",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_page_page_handleprojectlistclick",
+      "fromNode": "n_page",
+      "toNode": "n_page_handleprojectlistclick",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_page_page_handleresumeclick",
+      "fromNode": "n_page",
+      "toNode": "n_page_handleresumeclick",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_page_page_handleexperienceclick",
+      "fromNode": "n_page",
+      "toNode": "n_page_handleexperienceclick",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_page_page_handleloadercomplete",
+      "fromNode": "n_page",
+      "toNode": "n_page_handleloadercomplete",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_page_showwindow_page_handleinfoclick",
+      "fromNode": "n_page_showwindow",
+      "toNode": "n_page_handleinfoclick",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_page_showwindow_page_handleaboutmeclick",
+      "fromNode": "n_page_showwindow",
+      "toNode": "n_page_handleaboutmeclick",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_page_showwindow_page_handlecontactclick",
+      "fromNode": "n_page_showwindow",
+      "toNode": "n_page_handlecontactclick",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_page_showwindow_page_handleprojectlistclick",
+      "fromNode": "n_page_showwindow",
+      "toNode": "n_page_handleprojectlistclick",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_page_showwindow_page_handleresumeclick",
+      "fromNode": "n_page_showwindow",
+      "toNode": "n_page_handleresumeclick",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_page_showwindow_page_handleexperienceclick",
+      "fromNode": "n_page_showwindow",
+      "toNode": "n_page_handleexperienceclick",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_project_list_project_list_handlemousedown",
+      "fromNode": "n_project_list",
+      "toNode": "n_project_list_handlemousedown",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_project_list_project_list_handlemouseup",
+      "fromNode": "n_project_list",
+      "toNode": "n_project_list_handlemouseup",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_project_list_project_list_handleclose",
+      "fromNode": "n_project_list",
+      "toNode": "n_project_list_handleclose",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_project_list_project_list_handleminimize",
+      "fromNode": "n_project_list",
+      "toNode": "n_project_list_handleminimize",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_project_list_project_list_handleprojectselect",
+      "fromNode": "n_project_list",
+      "toNode": "n_project_list_handleprojectselect",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_media_player_usewindowdimensions",
+      "fromNode": "n_media_player",
+      "toNode": "n_usewindowdimensions",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_info_panel_base_window",
+      "fromNode": "n_info_panel",
+      "toNode": "n_base_window",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_info_panel_usewindowdimensions",
+      "fromNode": "n_info_panel",
+      "toNode": "n_usewindowdimensions",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_info_panel_info_panel_infopanel",
+      "fromNode": "n_info_panel",
+      "toNode": "n_info_panel_infopanel",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_base_window_usewindowdimensions",
+      "fromNode": "n_base_window",
+      "toNode": "n_usewindowdimensions",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_base_window_base_window_basewindow",
+      "fromNode": "n_base_window",
+      "toNode": "n_base_window_basewindow",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_base_window_contact",
+      "fromNode": "n_base_window",
+      "toNode": "n_contact",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_base_window_about_me",
+      "fromNode": "n_base_window",
+      "toNode": "n_about_me",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_resume_resume_handlekeydown",
+      "fromNode": "n_resume",
+      "toNode": "n_resume_handlekeydown",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_resume_resume_handlemousedown",
+      "fromNode": "n_resume",
+      "toNode": "n_resume_handlemousedown",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_resume_resume_handlemouseup",
+      "fromNode": "n_resume",
+      "toNode": "n_resume_handlemouseup",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_resume_resume_handleclose",
+      "fromNode": "n_resume",
+      "toNode": "n_resume_handleclose",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_resume_resume_handleminimize",
+      "fromNode": "n_resume",
+      "toNode": "n_resume_handleminimize",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_resume_resume_handlemaximize",
+      "fromNode": "n_resume",
+      "toNode": "n_resume_handlemaximize",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_resume_resume_handledownload",
+      "fromNode": "n_resume",
+      "toNode": "n_resume_handledownload",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_contact_contact_handlecopy",
+      "fromNode": "n_contact",
+      "toNode": "n_contact_handlecopy",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_status_bar_usewindowdimensions",
+      "fromNode": "n_status_bar",
+      "toNode": "n_usewindowdimensions",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_status_bar_status_bar_statusbar",
+      "fromNode": "n_status_bar",
+      "toNode": "n_status_bar_statusbar",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_experience_list_experience_list_handlemousedown",
+      "fromNode": "n_experience_list",
+      "toNode": "n_experience_list_handlemousedown",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_experience_list_experience_list_handlemouseup",
+      "fromNode": "n_experience_list",
+      "toNode": "n_experience_list_handlemouseup",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_experience_list_experience_list_handleclose",
+      "fromNode": "n_experience_list",
+      "toNode": "n_experience_list_handleclose",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_experience_list_experience_list_handleminimize",
+      "fromNode": "n_experience_list",
+      "toNode": "n_experience_list_handleminimize",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_experience_list_experience_list_handleexperienceselect",
+      "fromNode": "n_experience_list",
+      "toNode": "n_experience_list_handleexperienceselect",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_usewindowdimensions_usewindowdimensions_usewindowdimensions",
+      "fromNode": "n_usewindowdimensions",
+      "toNode": "n_usewindowdimensions_usewindowdimensions",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_audio_audio_ratio",
+      "fromNode": "n_audio",
+      "toNode": "n_audio_ratio",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_audio_audio_pick_youtube_match",
+      "fromNode": "n_audio",
+      "toNode": "n_audio_pick_youtube_match",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_audio_audio_download_audio_sync",
+      "fromNode": "n_audio",
+      "toNode": "n_audio_download_audio_sync",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_audio_audio_rationale_1",
+      "fromNode": "n_audio",
+      "toNode": "n_audio_rationale_1",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_audio_ratio_audio_pick_youtube_match",
+      "fromNode": "n_audio_ratio",
+      "toNode": "n_audio_pick_youtube_match",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_audio_pick_youtube_match_audio_rationale_54",
+      "fromNode": "n_audio_pick_youtube_match",
+      "toNode": "n_audio_rationale_54",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_audio_download_audio_sync_audio_rationale_77",
+      "fromNode": "n_audio_download_audio_sync",
+      "toNode": "n_audio_rationale_77",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_get_youtube_client",
+      "fromNode": "n_main",
+      "toNode": "n_main_get_youtube_client",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_get_spotify_client",
+      "fromNode": "n_main",
+      "toNode": "n_main_get_spotify_client",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_get_ytmusic_client",
+      "fromNode": "n_main",
+      "toNode": "n_main_get_ytmusic_client",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_check_collection_exists",
+      "fromNode": "n_main",
+      "toNode": "n_main_check_collection_exists",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_strip_mongo_id",
+      "fromNode": "n_main",
+      "toNode": "n_main_strip_mongo_id",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_fetch_by_object_id",
+      "fromNode": "n_main",
+      "toNode": "n_main_fetch_by_object_id",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_project_sort_key",
+      "fromNode": "n_main",
+      "toNode": "n_main_project_sort_key",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_parse_experience_date",
+      "fromNode": "n_main",
+      "toNode": "n_main_parse_experience_date",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_song",
+      "fromNode": "n_main",
+      "toNode": "n_main_song",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_songresponse",
+      "fromNode": "n_main",
+      "toNode": "n_main_songresponse",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_config",
+      "fromNode": "n_main",
+      "toNode": "n_main_config",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_spotifytrack",
+      "fromNode": "n_main",
+      "toNode": "n_main_spotifytrack",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_resumemetadata",
+      "fromNode": "n_main",
+      "toNode": "n_main_resumemetadata",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_project",
+      "fromNode": "n_main",
+      "toNode": "n_main_project",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_projectresponse",
+      "fromNode": "n_main",
+      "toNode": "n_main_projectresponse",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_experience",
+      "fromNode": "n_main",
+      "toNode": "n_main_experience",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_experienceresponse",
+      "fromNode": "n_main",
+      "toNode": "n_main_experienceresponse",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_contactinfo",
+      "fromNode": "n_main",
+      "toNode": "n_main_contactinfo",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_health_check",
+      "fromNode": "n_main",
+      "toNode": "n_main_health_check",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_get_songs",
+      "fromNode": "n_main",
+      "toNode": "n_main_get_songs",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_get_song",
+      "fromNode": "n_main",
+      "toNode": "n_main_get_song",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_get_song_audio",
+      "fromNode": "n_main",
+      "toNode": "n_main_get_song_audio",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_delete_song",
+      "fromNode": "n_main",
+      "toNode": "n_main_delete_song",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_get_spotify_playlist",
+      "fromNode": "n_main",
+      "toNode": "n_main_get_spotify_playlist",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_attach_youtube_audio",
+      "fromNode": "n_main",
+      "toNode": "n_main_attach_youtube_audio",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_add_songs_to_collection",
+      "fromNode": "n_main",
+      "toNode": "n_main_add_songs_to_collection",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_process_songs_without_audio",
+      "fromNode": "n_main",
+      "toNode": "n_main_process_songs_without_audio",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_upload_resume",
+      "fromNode": "n_main",
+      "toNode": "n_main_upload_resume",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_get_resume",
+      "fromNode": "n_main",
+      "toNode": "n_main_get_resume",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_view_resume",
+      "fromNode": "n_main",
+      "toNode": "n_main_view_resume",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_download_resume",
+      "fromNode": "n_main",
+      "toNode": "n_main_download_resume",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_get_contact",
+      "fromNode": "n_main",
+      "toNode": "n_main_get_contact",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_add_project",
+      "fromNode": "n_main",
+      "toNode": "n_main_add_project",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_add_projects",
+      "fromNode": "n_main",
+      "toNode": "n_main_add_projects",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_get_projects",
+      "fromNode": "n_main",
+      "toNode": "n_main_get_projects",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_get_project",
+      "fromNode": "n_main",
+      "toNode": "n_main_get_project",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_update_project",
+      "fromNode": "n_main",
+      "toNode": "n_main_update_project",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_delete_project",
+      "fromNode": "n_main",
+      "toNode": "n_main_delete_project",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_add_experience",
+      "fromNode": "n_main",
+      "toNode": "n_main_add_experience",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_add_experiences",
+      "fromNode": "n_main",
+      "toNode": "n_main_add_experiences",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_get_experiences",
+      "fromNode": "n_main",
+      "toNode": "n_main_get_experiences",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_get_experience",
+      "fromNode": "n_main",
+      "toNode": "n_main_get_experience",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_update_experience",
+      "fromNode": "n_main",
+      "toNode": "n_main_update_experience",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_main_delete_experience",
+      "fromNode": "n_main",
+      "toNode": "n_main_delete_experience",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_main_get_spotify_client_main_get_spotify_playlist",
+      "fromNode": "n_main_get_spotify_client",
+      "toNode": "n_main_get_spotify_playlist",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_get_ytmusic_client_main_process_songs_without_audio",
+      "fromNode": "n_main_get_ytmusic_client",
+      "toNode": "n_main_process_songs_without_audio",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_check_collection_exists_main_get_songs",
+      "fromNode": "n_main_check_collection_exists",
+      "toNode": "n_main_get_songs",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_check_collection_exists_main_get_song",
+      "fromNode": "n_main_check_collection_exists",
+      "toNode": "n_main_get_song",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_check_collection_exists_main_get_song_audio",
+      "fromNode": "n_main_check_collection_exists",
+      "toNode": "n_main_get_song_audio",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_check_collection_exists_main_delete_song",
+      "fromNode": "n_main_check_collection_exists",
+      "toNode": "n_main_delete_song",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_check_collection_exists_main_attach_youtube_audio",
+      "fromNode": "n_main_check_collection_exists",
+      "toNode": "n_main_attach_youtube_audio",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_check_collection_exists_main_process_songs_without_audio",
+      "fromNode": "n_main_check_collection_exists",
+      "toNode": "n_main_process_songs_without_audio",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_strip_mongo_id_main_get_songs",
+      "fromNode": "n_main_strip_mongo_id",
+      "toNode": "n_main_get_songs",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_strip_mongo_id_main_get_song",
+      "fromNode": "n_main_strip_mongo_id",
+      "toNode": "n_main_get_song",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_strip_mongo_id_main_get_resume",
+      "fromNode": "n_main_strip_mongo_id",
+      "toNode": "n_main_get_resume",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_strip_mongo_id_main_get_contact",
+      "fromNode": "n_main_strip_mongo_id",
+      "toNode": "n_main_get_contact",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_strip_mongo_id_main_get_projects",
+      "fromNode": "n_main_strip_mongo_id",
+      "toNode": "n_main_get_projects",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_strip_mongo_id_main_get_project",
+      "fromNode": "n_main_strip_mongo_id",
+      "toNode": "n_main_get_project",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_strip_mongo_id_main_update_project",
+      "fromNode": "n_main_strip_mongo_id",
+      "toNode": "n_main_update_project",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_strip_mongo_id_main_get_experiences",
+      "fromNode": "n_main_strip_mongo_id",
+      "toNode": "n_main_get_experiences",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_strip_mongo_id_main_get_experience",
+      "fromNode": "n_main_strip_mongo_id",
+      "toNode": "n_main_get_experience",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_strip_mongo_id_main_update_experience",
+      "fromNode": "n_main_strip_mongo_id",
+      "toNode": "n_main_update_experience",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_strip_mongo_id_main_rationale_122",
+      "fromNode": "n_main_strip_mongo_id",
+      "toNode": "n_main_rationale_122",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_main_fetch_by_object_id_main_get_song",
+      "fromNode": "n_main_fetch_by_object_id",
+      "toNode": "n_main_get_song",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_fetch_by_object_id_main_get_song_audio",
+      "fromNode": "n_main_fetch_by_object_id",
+      "toNode": "n_main_get_song_audio",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_fetch_by_object_id_main_delete_song",
+      "fromNode": "n_main_fetch_by_object_id",
+      "toNode": "n_main_delete_song",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_fetch_by_object_id_main_get_project",
+      "fromNode": "n_main_fetch_by_object_id",
+      "toNode": "n_main_get_project",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_fetch_by_object_id_main_update_project",
+      "fromNode": "n_main_fetch_by_object_id",
+      "toNode": "n_main_update_project",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_fetch_by_object_id_main_delete_project",
+      "fromNode": "n_main_fetch_by_object_id",
+      "toNode": "n_main_delete_project",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_fetch_by_object_id_main_get_experience",
+      "fromNode": "n_main_fetch_by_object_id",
+      "toNode": "n_main_get_experience",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_fetch_by_object_id_main_update_experience",
+      "fromNode": "n_main_fetch_by_object_id",
+      "toNode": "n_main_update_experience",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_fetch_by_object_id_main_delete_experience",
+      "fromNode": "n_main_fetch_by_object_id",
+      "toNode": "n_main_delete_experience",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_fetch_by_object_id_main_rationale_129",
+      "fromNode": "n_main_fetch_by_object_id",
+      "toNode": "n_main_rationale_129",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_main_project_sort_key_main_rationale_139",
+      "fromNode": "n_main_project_sort_key",
+      "toNode": "n_main_rationale_139",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_main_parse_experience_date_main_get_experiences",
+      "fromNode": "n_main_parse_experience_date",
+      "toNode": "n_main_get_experiences",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_parse_experience_date_main_rationale_162",
+      "fromNode": "n_main_parse_experience_date",
+      "toNode": "n_main_rationale_162",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_main_song_basemodel",
+      "fromNode": "n_main_song",
+      "toNode": "n_basemodel",
+      "label": "inherits [EXTRACTED]"
+    },
+    {
+      "id": "e_main_song_main_songresponse",
+      "fromNode": "n_main_song",
+      "toNode": "n_main_songresponse",
+      "label": "inherits [EXTRACTED]"
+    },
+    {
+      "id": "e_basemodel_main_spotifytrack",
+      "fromNode": "n_basemodel",
+      "toNode": "n_main_spotifytrack",
+      "label": "inherits [EXTRACTED]"
+    },
+    {
+      "id": "e_basemodel_main_resumemetadata",
+      "fromNode": "n_basemodel",
+      "toNode": "n_main_resumemetadata",
+      "label": "inherits [EXTRACTED]"
+    },
+    {
+      "id": "e_basemodel_main_project",
+      "fromNode": "n_basemodel",
+      "toNode": "n_main_project",
+      "label": "inherits [EXTRACTED]"
+    },
+    {
+      "id": "e_basemodel_main_experience",
+      "fromNode": "n_basemodel",
+      "toNode": "n_main_experience",
+      "label": "inherits [EXTRACTED]"
+    },
+    {
+      "id": "e_basemodel_main_contactinfo",
+      "fromNode": "n_basemodel",
+      "toNode": "n_main_contactinfo",
+      "label": "inherits [EXTRACTED]"
+    },
+    {
+      "id": "e_main_spotifytrack_main_get_spotify_playlist",
+      "fromNode": "n_main_spotifytrack",
+      "toNode": "n_main_get_spotify_playlist",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_resumemetadata_main_upload_resume",
+      "fromNode": "n_main_resumemetadata",
+      "toNode": "n_main_upload_resume",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_main_project_main_projectresponse",
+      "fromNode": "n_main_project",
+      "toNode": "n_main_projectresponse",
+      "label": "inherits [EXTRACTED]"
+    },
+    {
+      "id": "e_main_experience_main_experienceresponse",
+      "fromNode": "n_main_experience",
+      "toNode": "n_main_experienceresponse",
+      "label": "inherits [EXTRACTED]"
+    },
+    {
+      "id": "e_main_contactinfo_main_get_contact",
+      "fromNode": "n_main_contactinfo",
+      "toNode": "n_main_get_contact",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_sync_songs_sync_songs_apply_overrides",
+      "fromNode": "n_sync_songs",
+      "toNode": "n_sync_songs_apply_overrides",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_sync_songs_sync_songs_sync",
+      "fromNode": "n_sync_songs",
+      "toNode": "n_sync_songs_sync",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_sync_songs_sync_songs_main",
+      "fromNode": "n_sync_songs",
+      "toNode": "n_sync_songs_main",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_sync_songs_sync_songs_rationale_1",
+      "fromNode": "n_sync_songs",
+      "toNode": "n_sync_songs_rationale_1",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_sync_songs_apply_overrides_sync_songs_sync",
+      "fromNode": "n_sync_songs_apply_overrides",
+      "toNode": "n_sync_songs_sync",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_sync_songs_apply_overrides_sync_songs_rationale_55",
+      "fromNode": "n_sync_songs_apply_overrides",
+      "toNode": "n_sync_songs_rationale_55",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_sync_songs_sync_sync_songs_main",
+      "fromNode": "n_sync_songs_sync",
+      "toNode": "n_sync_songs_main",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_readme_portfolio_readme_plaza_inspiration",
+      "fromNode": "n_readme_portfolio",
+      "toNode": "n_readme_plaza_inspiration",
+      "label": "references [EXTRACTED]"
+    },
+    {
+      "id": "e_readme_portfolio_readme_docker_quickstart",
+      "fromNode": "n_readme_portfolio",
+      "toNode": "n_readme_docker_quickstart",
+      "label": "references [EXTRACTED]"
+    },
+    {
+      "id": "e_readme_portfolio_readme_dev_setup",
+      "fromNode": "n_readme_portfolio",
+      "toNode": "n_readme_dev_setup",
+      "label": "references [EXTRACTED]"
+    },
+    {
+      "id": "e_readme_portfolio_readme_deployment",
+      "fromNode": "n_readme_portfolio",
+      "toNode": "n_readme_deployment",
+      "label": "references [EXTRACTED]"
+    },
+    {
+      "id": "e_readme_portfolio_readme_mit_license",
+      "fromNode": "n_readme_portfolio",
+      "toNode": "n_readme_mit_license",
+      "label": "references [EXTRACTED]"
+    },
+    {
+      "id": "e_readme_dev_setup_readme_env_frontend",
+      "fromNode": "n_readme_dev_setup",
+      "toNode": "n_readme_env_frontend",
+      "label": "references [EXTRACTED]"
+    },
+    {
+      "id": "e_readme_dev_setup_readme_env_backend",
+      "fromNode": "n_readme_dev_setup",
+      "toNode": "n_readme_env_backend",
+      "label": "references [EXTRACTED]"
+    },
+    {
+      "id": "e_readme_deployment_readme_railway",
+      "fromNode": "n_readme_deployment",
+      "toNode": "n_readme_railway",
+      "label": "references [EXTRACTED]"
+    },
+    {
+      "id": "e_readme_deployment_readme_vercel",
+      "fromNode": "n_readme_deployment",
+      "toNode": "n_readme_vercel",
+      "label": "references [EXTRACTED]"
+    },
+    {
+      "id": "e_readme_env_backend_backendreadme_mongodb_gridfs",
+      "fromNode": "n_readme_env_backend",
+      "toNode": "n_backendreadme_mongodb_gridfs",
+      "label": "shares_data_with [INFERRED]"
+    },
+    {
+      "id": "e_readme_env_backend_addsong_doc",
+      "fromNode": "n_readme_env_backend",
+      "toNode": "n_addsong_doc",
+      "label": "shares_data_with [INFERRED]"
+    },
+    {
+      "id": "e_requirements_fastapi_backendreadme_music_api",
+      "fromNode": "n_requirements_fastapi",
+      "toNode": "n_backendreadme_music_api",
+      "label": "references [EXTRACTED]"
+    },
+    {
+      "id": "e_requirements_fastapi_requirementsdev_ruff",
+      "fromNode": "n_requirements_fastapi",
+      "toNode": "n_requirementsdev_ruff",
+      "label": "references [INFERRED]"
+    },
+    {
+      "id": "e_requirements_fastapi_requirementsdev_vulture",
+      "fromNode": "n_requirements_fastapi",
+      "toNode": "n_requirementsdev_vulture",
+      "label": "references [INFERRED]"
+    },
+    {
+      "id": "e_requirements_uvicorn_backendreadme_music_api",
+      "fromNode": "n_requirements_uvicorn",
+      "toNode": "n_backendreadme_music_api",
+      "label": "references [EXTRACTED]"
+    },
+    {
+      "id": "e_requirements_motor_backendreadme_music_api",
+      "fromNode": "n_requirements_motor",
+      "toNode": "n_backendreadme_music_api",
+      "label": "calls [INFERRED]"
+    },
+    {
+      "id": "e_requirements_python_multipart_backendreadme_music_api",
+      "fromNode": "n_requirements_python_multipart",
+      "toNode": "n_backendreadme_music_api",
+      "label": "calls [INFERRED]"
+    },
+    {
+      "id": "e_requirements_python_dotenv_backendreadme_music_api",
+      "fromNode": "n_requirements_python_dotenv",
+      "toNode": "n_backendreadme_music_api",
+      "label": "calls [INFERRED]"
+    },
+    {
+      "id": "e_requirements_pydantic_backendreadme_music_api",
+      "fromNode": "n_requirements_pydantic",
+      "toNode": "n_backendreadme_music_api",
+      "label": "calls [INFERRED]"
+    },
+    {
+      "id": "e_requirements_spotipy_addsong_sync_script",
+      "fromNode": "n_requirements_spotipy",
+      "toNode": "n_addsong_sync_script",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_requirements_ytdlp_addsong_sync_script",
+      "fromNode": "n_requirements_ytdlp",
+      "toNode": "n_addsong_sync_script",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_requirements_ytmusicapi_addsong_sync_script",
+      "fromNode": "n_requirements_ytmusicapi",
+      "toNode": "n_addsong_sync_script",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_backendreadme_music_api_backendreadme_mongodb_gridfs",
+      "fromNode": "n_backendreadme_music_api",
+      "toNode": "n_backendreadme_mongodb_gridfs",
+      "label": "references [EXTRACTED]"
+    },
+    {
+      "id": "e_backendreadme_music_api_backendreadme_endpoints",
+      "fromNode": "n_backendreadme_music_api",
+      "toNode": "n_backendreadme_endpoints",
+      "label": "references [EXTRACTED]"
+    },
+    {
+      "id": "e_backendreadme_music_api_backendreadme_song_datamodel",
+      "fromNode": "n_backendreadme_music_api",
+      "toNode": "n_backendreadme_song_datamodel",
+      "label": "references [EXTRACTED]"
+    },
+    {
+      "id": "e_backendreadme_music_api_backendreadme_swagger",
+      "fromNode": "n_backendreadme_music_api",
+      "toNode": "n_backendreadme_swagger",
+      "label": "references [EXTRACTED]"
+    },
+    {
+      "id": "e_backendreadme_mongodb_gridfs_addsong_study_collection",
+      "fromNode": "n_backendreadme_mongodb_gridfs",
+      "toNode": "n_addsong_study_collection",
+      "label": "semantically_similar_to [INFERRED]"
+    },
+    {
+      "id": "e_backendreadme_endpoints_backendreadme_song_datamodel",
+      "fromNode": "n_backendreadme_endpoints",
+      "toNode": "n_backendreadme_song_datamodel",
+      "label": "shares_data_with [INFERRED]"
+    },
+    {
+      "id": "e_backendreadme_endpoints_addsong_spotify_mirror",
+      "fromNode": "n_backendreadme_endpoints",
+      "toNode": "n_addsong_spotify_mirror",
+      "label": "semantically_similar_to [INFERRED]"
+    },
+    {
+      "id": "e_addsong_doc_addsong_sync_script",
+      "fromNode": "n_addsong_doc",
+      "toNode": "n_addsong_sync_script",
+      "label": "references [EXTRACTED]"
+    },
+    {
+      "id": "e_addsong_doc_addsong_study_collection",
+      "fromNode": "n_addsong_doc",
+      "toNode": "n_addsong_study_collection",
+      "label": "references [EXTRACTED]"
+    },
+    {
+      "id": "e_addsong_doc_addsong_prod_warning",
+      "fromNode": "n_addsong_doc",
+      "toNode": "n_addsong_prod_warning",
+      "label": "references [EXTRACTED]"
+    }
+  ]
+}

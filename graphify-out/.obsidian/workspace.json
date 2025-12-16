@@ -1,0 +1,195 @@
+{
+  "main": {
+    "id": "b9efab9c1b9744e7",
+    "type": "split",
+    "children": [
+      {
+        "id": "ddbdc6e1b1497e45",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "d087998c0e49755e",
+            "type": "leaf",
+            "state": {
+              "type": "canvas",
+              "state": {
+                "file": "obsidian/graph.canvas",
+                "viewState": {
+                  "x": 2580,
+                  "y": 1480,
+                  "zoom": -2.2808343151805346
+                }
+              },
+              "icon": "lucide-layout-dashboard",
+              "title": "graph"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "5087fada233e4482",
+    "type": "split",
+    "children": [
+      {
+        "id": "c14669a7e389bf84",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9539114d07f86d93",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "e02d2201923b7cef",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "canvas",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "50b66c0324907187",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "033e934b6379dffb",
+    "type": "split",
+    "children": [
+      {
+        "id": "9bef27a304a53978",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "fbc9bb514e592ddb",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "GRAPH_REPORT.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for GRAPH_REPORT"
+            }
+          },
+          {
+            "id": "dd5239cfa8cffc7c",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "GRAPH_REPORT.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from GRAPH_REPORT"
+            }
+          },
+          {
+            "id": "3da52370f124a65c",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "7a0419a9c43c121c",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "82954283fcb1d988",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "GRAPH_REPORT.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of GRAPH_REPORT"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "d087998c0e49755e",
+  "lastOpenFiles": [
+    "GRAPH_REPORT.md",
+    "obsidian/Deployment.md"
+  ]
+}
