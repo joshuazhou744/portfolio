@@ -268,16 +268,23 @@ async def get_song_audio(collection_name: str, song_id: str):
         try:
             grid_out = await fs.open_download_stream(audio_file_id)
         except Exception as e:
-            logger.error(f"Failed to open GridFS stream for {audio_file_id}: {e}")
+            logger.error(f"Failed to open GridFS stream for {audio_file_id}: {e}", exc_info=True)
             raise HTTPException(status_code=404, detail="Audio file not found")
 
-        return StreamingResponse(
-            grid_out,
-            media_type=grid_out.content_type,
-            headers={
-                "Content-Disposition": f'attachment; filename="{grid_out.filename}"'
-            }
-        )
+        media_type = getattr(grid_out, "content_type", None) or "application/octet-stream"
+        filename = getattr(grid_out, "filename", None) or f"{song['title']}.mp3"
+
+        try:
+            return StreamingResponse(
+                grid_out,
+                media_type=media_type,
+                headers={
+                    "Content-Disposition": f'attachment; filename=\"{filename}\"'
+                }
+            )
+        except Exception as e:
+            logger.error(f"Failed to stream GridFS file {audio_file_id}: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail="Failed to stream audio file")
     except HTTPException:
         raise
     except Exception as e:
