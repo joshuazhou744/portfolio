@@ -31,5 +31,5 @@ COPY . .
 # Expose the port the app runs on
 EXPOSE 3001
 
-# Start the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "3001"] 
+# Start the application (respect platform-provided PORT, default 3001)
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-3001}"]
