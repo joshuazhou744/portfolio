@@ -19,7 +19,7 @@
     "concurrently": "^9.1.2",
     "howler": "^2.2.4",
     "lucide-react": "^0.475.0",
-    "next": "^15.2.0",
+    "next": "15.2.8",
     "normalize.css": "^8.0.1",
     "play-dl": "^1.9.7",
     "react": "^18.3.1",
