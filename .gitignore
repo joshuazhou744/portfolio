@@ -23,6 +23,7 @@ frontend/out/
 frontend/build/
 dist/
 build/
+backend/app/__pycache__/
 
 # misc
 .DS_Store
