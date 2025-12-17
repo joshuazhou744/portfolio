@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
+import type { MutableRefObject, MouseEvent as ReactMouseEvent, ChangeEvent } from 'react'
 import { useWavesurfer } from '@wavesurfer/react'
 import Image from 'next/image'
 import '98.css/dist/98.css'
@@ -31,8 +32,7 @@ interface AudioCoreProps {
   onError?: (error: Error) => void;
   onFinish?: () => void;
   volume: number;
-  wavesurferRef: React.MutableRefObject<unknown | null>;
-  key: string;
+  wavesurferRef: MutableRefObject<unknown | null>;
 }
 
 const AudioCore = ({ 
@@ -62,7 +62,6 @@ const AudioCore = ({
   
   useEffect(() => {
     if (wavesurfer) {
-      console.log('WaveSurfer instance created and stored in ref');
       wavesurferRef.current = wavesurfer;
     }
     
@@ -74,28 +73,23 @@ const AudioCore = ({
   useEffect(() => {
     if (!wavesurfer) return;
     
-    console.log('Setting up WaveSurfer event handlers');
     
     wavesurfer.setVolume(volume);
 
     const handleReady = () => {
-      console.log('WaveSurfer internal ready event fired');
       if (onReady) {
         const duration = wavesurfer.getDuration();
-        console.log('WaveSurfer reporting duration on ready:', duration);
         onReady(duration);
       }
     };
     
     const handlePlay = () => {
-      console.log('WaveSurfer internal play event fired');
       if (onPlayPause) {
         onPlayPause(true);
       }
     };
     
     const handlePause = () => {
-      console.log('WaveSurfer internal pause event fired');
       if (onPlayPause) {
         onPlayPause(false);
       }
@@ -115,7 +109,6 @@ const AudioCore = ({
     };
     
     const handleFinish = () => {
-      console.log('WaveSurfer internal finish event fired');
       if (onFinish) {
         onFinish();
       }
@@ -129,12 +122,10 @@ const AudioCore = ({
     wavesurfer.on('finish', handleFinish);
     
     if (wavesurfer.getDuration() > 0) {
-      console.log('WaveSurfer already has duration, calling ready handler manually');
       handleReady();
     }
     
     return () => {
-      console.log('Cleaning up WaveSurfer event handlers');
       if (wavesurfer) {
         wavesurfer.un('ready', handleReady);
         wavesurfer.un('play', handlePlay);
@@ -146,13 +137,6 @@ const AudioCore = ({
     };
   }, [wavesurfer, onReady, onPlayPause, onTimeUpdate, onError, onFinish, volume]);
 
-  useEffect(() => {
-    if (!wavesurfer) return;
-    
-    return () => {
-    };
-  }, [wavesurfer]);
-  
   return <div ref={containerRef} style={{ display: 'none' }} />;
 };
 
@@ -171,8 +155,6 @@ interface WindowPosition {
 }
 
 interface Props {
-  initiallyVisible?: boolean;
-  onMinimize?: () => void;
   onAboutMeClick?: () => void;
   onContactClick?: () => void;
   onProjectListClick?: () => void;
@@ -184,8 +166,6 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const COLLECTION_NAME = 'study';
 
 export default function MediaPlayer({ 
-  initiallyVisible = true,
-  onMinimize,
   onAboutMeClick,
   onContactClick,
   onProjectListClick,
@@ -194,11 +174,12 @@ export default function MediaPlayer({
 }: Props) {
 
   // states
-  const [isVisible, setIsVisible] = useState(true);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // track list/network
+  const [isBuffering, setIsBuffering] = useState(true); // current track readiness (start locked)
+  const [isTrackReady, setIsTrackReady] = useState(false); // only true after valid duration confirmed
   const [error, setError] = useState<string | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -216,19 +197,11 @@ export default function MediaPlayer({
   // refs
   const windowRef = useRef<HTMLDivElement>(null);
   const hasLoadedInitialTrack = useRef(false);
-  const tracksLoadedOnce = useRef(false);
   const wavesurferRef = useRef<unknown | null>(null);
+  const hasFetchedTracks = useRef(false);
   
   const { bringToFront, getZIndex } = useWindow();
   
-  const previouslyVisible = useRef(true);
-  
-  const loadTrackShouldPlay = useRef(false);
-  
-  useEffect(() => {
-    console.log("Duration", duration);
-  }, [duration]);
-
   useEffect(() => {
     const x = (window.innerWidth - 500) / 2;
     const y = (window.innerHeight - 300) / 2;
@@ -236,29 +209,21 @@ export default function MediaPlayer({
   }, []);
   
   useEffect(() => {
-    if (!tracksLoadedOnce.current) {
-      fetchTracks();
-      tracksLoadedOnce.current = true;
-    }
-  }, []);
-  
-  // update visibility
-  useEffect(() => {
-    setIsVisible(true);
-    previouslyVisible.current = true;
+    if (hasFetchedTracks.current) return;
+    hasFetchedTracks.current = true;
+    fetchTracks();
   }, []);
   
   // load initial track
   useEffect(() => {
     if (tracks.length > 0 && !hasLoadedInitialTrack.current) {
-      console.log('Loading initial track');
       loadTrack(0);
       hasLoadedInitialTrack.current = true;
     }
   }, [tracks]);
   
   // window dragging
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const handleMouseDown = (e: ReactMouseEvent) => {
     if (e.target instanceof HTMLElement && e.target.closest('.title-bar')) {
       setIsDragging(true);
       const rect = windowRef.current?.getBoundingClientRect();
@@ -272,25 +237,24 @@ export default function MediaPlayer({
   };
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (isDragging) {
-      const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 500;
-      const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 500;
-      
-      const newX = e.clientX - dragOffset.x;
-      const newY = e.clientY - dragOffset.y;
-      
+    if (!isDragging) return;
 
-      const width = windowRef.current?.offsetWidth || 500;
-      const height = windowRef.current?.offsetHeight || 300;
-      
-      const constrainedX = Math.min(Math.max(newX, -width + 80), windowWidth - 80);
-      const constrainedY = Math.min(Math.max(newY, 0), windowHeight - 50);
-      
-      setPosition({
-        x: constrainedX,
-        y: constrainedY
-      });
-    }
+    const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 500;
+    const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 500;
+    
+    const newX = e.clientX - dragOffset.x;
+    const newY = e.clientY - dragOffset.y;
+
+    const width = windowRef.current?.offsetWidth || 500;
+    const height = windowRef.current?.offsetHeight || 300;
+    
+    const constrainedX = Math.min(Math.max(newX, -width + 80), windowWidth - 80);
+    const constrainedY = Math.min(Math.max(newY, 0), windowHeight - 50);
+    
+    setPosition({
+      x: constrainedX,
+      y: constrainedY
+    });
   }, [isDragging, dragOffset]);
 
   const handleMouseUp = () => {
@@ -313,7 +277,10 @@ export default function MediaPlayer({
   const fetchTracks = async () => {
     try {
       setIsLoading(true);
+      setIsBuffering(true);
+      setIsTrackReady(false);
       setError(null);
+      console.log('[MediaPlayer] fetching tracks');
       
       const response = await fetch(`${API_URL}/songs/${COLLECTION_NAME}?noshuffle=false`);
       
@@ -322,10 +289,12 @@ export default function MediaPlayer({
       }
       
       const data = await response.json();
+      console.log('[MediaPlayer] fetched tracks', data.length);
       
       // filter tracks with audio
       const tracksWithAudio = data.filter((track: Track) => track.audio_file_id);
       setTracks(tracksWithAudio);
+      console.log('[MediaPlayer] tracks with audio', tracksWithAudio.length);
       
       // reset track loading flag when tracks change
       hasLoadedInitialTrack.current = false;
@@ -334,6 +303,7 @@ export default function MediaPlayer({
       setError('Failed to load songs. Please try again later.');
     } finally {
       setIsLoading(false);
+      // keep buffering locked until a track actually reports duration
     }
   };
   
@@ -343,7 +313,6 @@ export default function MediaPlayer({
       return;
     }
     
-    console.log(`loadTrack called with autoPlay=${autoPlay}, userPaused=${userPaused}`);
     
     // pause and empty current audio
     if (wavesurferRef.current) {
@@ -356,15 +325,14 @@ export default function MediaPlayer({
     }
     
     const track = tracks[index];
-    console.log(`Loading track: ${track.title} (ID: ${track.id})`);
     
     // reset state and clearly set loading state
     setCurrentTime(0);
     setDuration(0);
     setError(null);
     setCurrentTrackIndex(index);
-    setIsLoading(true); 
-    
+    setIsBuffering(true);
+    setIsTrackReady(false);
     // reset the userPaused flag
     if (index !== currentTrackIndex) {
       setUserPaused(false);
@@ -372,21 +340,17 @@ export default function MediaPlayer({
     
     // set autoplay state before loading new audio
     setShouldAutoPlay(autoPlay);
-    console.log(`Set shouldAutoPlay state to ${autoPlay}, userPaused: ${userPaused}`);
     
     const url = `${API_URL}/songs/${COLLECTION_NAME}/${track.id}/audio?t=${Date.now()}`;
-    setAudioKey(track.id + Date.now());
+    setAudioKey(`${track.id}-${Date.now()}`);
+    setAudioUrl(url);
+    setAudioKey(`${track.id}-${Date.now()}`);
     setAudioUrl(url);
     
-    console.log(`Track ${index} loading started, autoPlay: ${autoPlay}`);
   }, [tracks, isPlaying, userPaused, currentTrackIndex]);
   
   // helper function that polls for a valid duration
-  const waitForValidDuration = useCallback((
-    wavesurferRef: React.MutableRefObject<unknown | null>,
-    timeout: number = 10000,  // maximum wait time for polling
-    interval: number = 100   // check interval
-  ): Promise<number> => {
+  const waitForValidDuration = useCallback((timeout: number = 10000, interval: number = 100): Promise<number> => {
     return new Promise((resolve, reject) => {
       const startTime = Date.now();
       
@@ -400,18 +364,15 @@ export default function MediaPlayer({
         try {
           const ws = wavesurferRef.current as WaveSurferType;
           const currentDuration = ws.getDuration();
-          console.log('Polling duration:', currentDuration);
           
           // check if duration is valid
           if (currentDuration > 0 && !isNaN(currentDuration)) {
-            console.log('Found valid duration:', currentDuration);
             resolve(currentDuration);
             return;
           } 
           
           // check if we've exceeded timeout
           if (Date.now() - startTime >= timeout) {
-            console.log('Polling timeout reached after', timeout, 'ms');
             reject(new Error('Timeout waiting for audio metadata'));
             return;
           }
@@ -428,95 +389,71 @@ export default function MediaPlayer({
   }, []);
 
   const handleReady = useCallback((audioDuration: number) => {
-    console.log('WaveSurfer ready event received, initial duration:', audioDuration);
-    
-    // set initial duration from event (may be 0)
     setDuration(audioDuration);
     
-    // only start polling if WaveSurfer instance exists
     if (!wavesurferRef.current) {
       console.error('WaveSurfer instance not available in handleReady');
-      setIsLoading(false);
+      setIsBuffering(false);
+      setIsTrackReady(false);
       return;
     }
     
-    // set loading state to true while we wait for valid duration
-    setIsLoading(true);
-    
-    console.log('Starting duration polling, autoplay state:', shouldAutoPlay, 'userPaused:', userPaused);
-    
-    // use the polling function to wait for valid duration
-    waitForValidDuration(wavesurferRef)
+    setIsBuffering(true);
+
+    waitForValidDuration()
       .then((validDuration) => {
-        console.log('Successfully polled valid duration:', validDuration);
-        console.log('Autoplay state when duration ready:', shouldAutoPlay, 'userPaused:', userPaused);
-        
-        // update state with the valid duration
         setDuration(validDuration);
-        setIsLoading(false);
+        setIsBuffering(false);
+        setIsTrackReady(true);
         
-        // auto-play if the flag is set AND user hasn't manually paused
         if (shouldAutoPlay && !userPaused && wavesurferRef.current) {
           try {
             const ws = wavesurferRef.current as WaveSurferType;
-            console.log('Auto-playing track with confirmed duration:', validDuration);
             ws.play();
             setIsPlaying(true);
-            console.log('Playback started via polling');
           } catch (e) {
             console.error('Error playing audio after valid duration found:', e);
           }
-        } else {
-          console.log('Not auto-playing because:', {
-            autoplayState: shouldAutoPlay,
-            userPaused: userPaused,
-            wavesurferExists: !!wavesurferRef.current
-          });
         }
       })
       .catch((error) => {
         console.error('Failed to get valid duration:', error);
         
-        // continute trying to update state with whatever duration we have now from WaveSurfer
         try {
           if (wavesurferRef.current) {
             const currentDuration = (wavesurferRef.current as WaveSurferType).getDuration();
-            console.log('Using fallback duration after polling failure:', currentDuration);
             setDuration(currentDuration);
+            setIsTrackReady(currentDuration > 0);
+          } else {
+            setIsTrackReady(false);
           }
         } catch (e) {
           console.error('Error getting fallback duration:', e);
+          setIsTrackReady(false);
         }
-        
-        // clear loading state regardless
-        setIsLoading(false);
+        setIsBuffering(false);
       });
   }, [waitForValidDuration, shouldAutoPlay, userPaused]);
   
   const handlePlayPauseChange = useCallback((isPlaying: boolean) => {
-    // only update the UI state if it's different from the current state
-    setIsPlaying((prevState) => {
-      if (prevState !== isPlaying) {
-        return isPlaying;
-      }
-      return prevState;
-    });
+    setIsPlaying(isPlaying);
   }, []);
   
   const handleNextTrack = useCallback(() => {
+    if (isBuffering || !isTrackReady || !duration || duration <= 0) {
+      return;
+    }
     if (tracks.length <= 1) return;
     
     const nextIndex = (currentTrackIndex + 1) % tracks.length;
     loadTrack(nextIndex);
-    console.log(`Auto-advancing to next track: ${nextIndex}`);
-  }, [currentTrackIndex, tracks.length, loadTrack]);
+  }, [currentTrackIndex, tracks.length, loadTrack, isBuffering, isTrackReady, duration]);
   
   const handleTimeUpdate = useCallback((time: number) => {
     if (wavesurferRef.current && (wavesurferRef.current as WaveSurferType).isPlaying() && duration > 0) {
       setCurrentTime(time);
       
       if (time > duration && duration > 0) {
-        console.log('Time exceeded duration, advancing to next track');
         handleNextTrack();
       }
     }
@@ -525,45 +462,24 @@ export default function MediaPlayer({
   const handleAudioError = useCallback((error: Error) => {
     console.error('Audio error:', error);
     setError('Failed to load audio. Please try another track.');
-    setIsLoading(false);
+    setIsBuffering(false);
+    setIsTrackReady(false);
   }, []);
   
   const handleTrackFinish = useCallback(() => {
-    console.log('Track finished, advancing to next track');
     if (tracks.length > 1) {
       // always autoplay the next one
       const nextIndex = (currentTrackIndex + 1) % tracks.length;
       
-      console.log('Setting autoplay to true for next track after finish');
       // load next track with autoplay=true
       loadTrack(nextIndex, true);
     }
   }, [currentTrackIndex, tracks.length, loadTrack]);
   
   // handle UI events
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVolumeChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
-  };
-  
-  const handleMinimizeClick = () => {
-    if (onMinimize) {
-      onMinimize();
-    }
-  };
-  
-  const handleClose = () => {
-    if (wavesurferRef.current && isPlaying) {
-      try {
-        (wavesurferRef.current as WaveSurferType).pause();
-        setIsPlaying(false);
-      } catch (e) {
-        console.error('Error pausing audio on close:', e);
-      }
-    }
-    if (onMinimize) {
-      onMinimize();
-    }
   };
   
   const handleSpotifyClick = () => {
@@ -610,6 +526,7 @@ export default function MediaPlayer({
 
   // handle playback control
   const handlePlayPause = useCallback(() => {
+    if (isBuffering || !isTrackReady || !duration || duration <= 0) return;
     if (!wavesurferRef.current) {
       console.error('WaveSurfer instance not available');
       return;
@@ -617,25 +534,23 @@ export default function MediaPlayer({
 
     try {
       const ws = wavesurferRef.current as WaveSurferType;
-      console.log('User clicked play/pause, current state:', isPlaying ? 'playing' : 'paused');
       
       if (isPlaying) {
         ws.pause();
         setIsPlaying(false);
         setUserPaused(true); // mark that user manually paused
-        console.log('User manually paused playback');
       } else {
         ws.play();
         setIsPlaying(true);
         setUserPaused(false); // clear user paused flag when manually playing
-        console.log('User manually started playback');
       }
     } catch (e) {
       console.error('Error in handlePlayPause:', e);
     }
-  }, [isPlaying]);
+  }, [isPlaying, isBuffering, isTrackReady, duration]);
   
   const handlePrevTrack = useCallback(() => {
+    if (isBuffering || !isTrackReady || !duration || duration <= 0) return;
     if (tracks.length <= 1) return;
     
     // if more than 3 seconds into the song, restart the current song
@@ -652,9 +567,25 @@ export default function MediaPlayer({
     // otherwise, go to previous track with wraparound
     const prevIndex = currentTrackIndex > 0 ? currentTrackIndex - 1 : tracks.length - 1;
     loadTrack(prevIndex);
-  }, [currentTime, currentTrackIndex, tracks.length, loadTrack]);
+  }, [currentTime, currentTrackIndex, tracks.length, loadTrack, isBuffering, isTrackReady, duration]);
 
   const currentTrack = tracks[currentTrackIndex];
+
+  // UI-only handlers that respect loading state
+  const handlePlayPauseClick = useCallback(() => {
+    if (isBuffering || !isTrackReady || !duration || duration <= 0) return;
+    handlePlayPause();
+  }, [isBuffering, isTrackReady, duration, handlePlayPause]);
+
+  const handleNextClick = useCallback(() => {
+    if (isBuffering || !isTrackReady || !duration || duration <= 0) return;
+    handleNextTrack();
+  }, [isBuffering, isTrackReady, duration, handleNextTrack]);
+
+  const handlePrevClick = useCallback(() => {
+    if (isBuffering || !isTrackReady || !duration || duration <= 0) return;
+    handlePrevTrack();
+  }, [isBuffering, isTrackReady, duration, handlePrevTrack]);
 
   // Use client-side state management to avoid hydration errors
   const [isMounted, setIsMounted] = useState(false)
@@ -848,26 +779,26 @@ export default function MediaPlayer({
                 </div>
                 <div className="media-player-controls playback-controls field-row">
                   <button 
-                    onClick={handlePlayPause}
+                    onClick={handlePlayPauseClick}
                     className="win98-toolbar-button"
                     style={{ width: '60px' }}
-                    disabled={isLoading || tracks.length === 0}
+                    disabled={isBuffering || !isTrackReady || !duration || duration <= 0 || tracks.length === 0}
                   >
                     {isPlaying ? '⏸' : '⏵'}
                   </button>
                   <button 
-                    onClick={handlePrevTrack}
+                    onClick={handlePrevClick}
                     className="win98-toolbar-button"
                     style={{ width: '40px' }}
-                    disabled={isLoading || tracks.length <= 1}
+                    disabled={isBuffering || !isTrackReady || !duration || duration <= 0 || tracks.length <= 1}
                   >
                     ⏮
                   </button>
                   <button 
-                    onClick={handleNextTrack}
+                    onClick={handleNextClick}
                     className="win98-toolbar-button"
                     style={{ width: '40px' }}
-                    disabled={isLoading || tracks.length <= 1}
+                    disabled={isBuffering || !isTrackReady || !duration || duration <= 0 || tracks.length <= 1}
                   >
                     ⏭
                   </button>

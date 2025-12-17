@@ -53,7 +53,7 @@ export function InfoPanel({ isVisible, onVisibilityChange }: InfoPanelProps) {
         initialPosition={initialPosition}
       >
         <div className="info-panel-main">
-          <h4 className="info-panel-title">Welcome to Joshua Zhou's portfolio</h4>
+          <h4 className="info-panel-title">Welcome to my website</h4>
           <p className="info-panel-subtitle">This was originally my study app</p>
         </div>
       </BaseWindow>

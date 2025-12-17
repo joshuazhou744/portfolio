@@ -32,6 +32,10 @@
   margin-bottom: 10px;
 }
 
+.base-window-title-bar {
+  cursor: default !important;
+}
+
 /* About Me Window */
 .about-me-window {
   width: 500px;
@@ -45,6 +49,7 @@
 
 .contact-window {
   width: 350px;
+  min-width: 300px;
   font-size: 14px;
 
   label {
@@ -81,6 +86,7 @@
   
   .contact-window {
     width: 320px;
+    min-width: 280px;
   }
   
   .project-list-window {
@@ -114,6 +120,7 @@
   .resume-window {
     width: 90vw;
     max-width: 90vw;
+    min-width: unset;
     left: 5vw !important;
     transform: none !important;
   }

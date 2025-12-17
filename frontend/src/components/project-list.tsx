@@ -220,7 +220,15 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
               ))
             )}
           </div>
-          <div className="field-row" style={{ justifyContent: 'space-around', marginTop: '5px' }}>
+          <div 
+            className="field-row" 
+            style={{ 
+              justifyContent: 'flex-start', 
+              marginTop: '5px',
+              gap: '8px',
+              flexWrap: 'wrap'
+            }}
+          >
             <button disabled={!selectedProject}>View Details</button>
             <button 
               disabled={!selectedProject || !projects.find(p => p.id === selectedProject)?.github} 

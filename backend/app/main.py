@@ -188,6 +188,13 @@ class ExperienceResponse(Experience):
     class Config:
         from_attributes = True
 
+class ContactInfo(BaseModel):
+    id: Optional[str] = None
+    email: str
+    phone: str
+    linkedin: str
+    github: str
+
 @app.get("/health")
 async def health_check():
     try:
@@ -275,12 +282,21 @@ async def get_song_audio(collection_name: str, song_id: str):
         filename = getattr(grid_out, "filename", None) or f"{song['title']}.mp3"
 
         try:
+            # Ensure Content-Disposition header is ASCII-safe to avoid latin-1 encoding issues
+            headers = {}
+            if filename:
+                try:
+                    ascii_filename = filename.encode("latin-1").decode("latin-1")
+                    headers["Content-Disposition"] = f'attachment; filename="{ascii_filename}"'
+                except Exception:
+                    headers["Content-Disposition"] = f"attachment; filename*=UTF-8''{urllib.parse.quote(filename)}"
+            else:
+                headers["Content-Disposition"] = 'attachment; filename="audio.mp3"'
+
             return StreamingResponse(
                 grid_out,
                 media_type=media_type,
-                headers={
-                    "Content-Disposition": f'attachment; filename=\"{filename}\"'
-                }
+                headers=headers
             )
         except Exception as e:
             logger.error(f"Failed to stream GridFS file {audio_file_id}: {e}", exc_info=True)
@@ -710,6 +726,20 @@ async def download_resume():
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to download resume: {str(e)}")
+
+@app.get("/contact", response_model=ContactInfo)
+async def get_contact():
+    try:
+        contact = await db.contact.find_one({"_id": "primary"}) or await db.contact.find_one()
+        if not contact:
+            raise HTTPException(status_code=404, detail="Contact info not found")
+        contact["id"] = str(contact["_id"])
+        del contact["_id"]
+        return ContactInfo(**contact)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch contact info: {str(e)}")
 
 @app.post("/projects", response_model=Dict[str, str])
 async def add_project(project: Project):
