@@ -10,6 +10,7 @@ import { Contact } from '@/components/contact'
 import { ProjectList } from '@/components/project-list'
 import { Resume } from '@/components/resume'
 import { ExperienceList } from '@/components/experience-list'
+import { MobileFallback } from '@/components/mobile-fallback'
 import { WindowProvider, useWindow } from '@/contexts/WindowContext'
 import '98.css/dist/98.css'
 import '../styles/mobile-responsive.css'
@@ -145,6 +146,9 @@ function AppContent() {
   };
 
   return (
+    isMobile ? (
+      <MobileFallback />
+    ) : (
     <main 
       className={`flex min-h-screen flex-col items-center relative main-container ${isMounted && isMobile ? 'mobile-main' : ''}`}
     >
@@ -207,6 +211,7 @@ function AppContent() {
         </>
       )}
     </main>
+    )
   )
 }
 

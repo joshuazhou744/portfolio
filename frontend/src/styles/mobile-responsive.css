@@ -91,7 +91,7 @@
 
 /* Base Window Styles */
 .base-window-title-bar {
-  cursor: move;
+  cursor: default;
   touch-action: auto;
 }
 
