@@ -164,6 +164,7 @@ class Project(BaseModel):
     description: str
     technologies: List[str]
     year: int
+    level: Optional[int] = None
     github: Optional[str] = None
     demo_url: Optional[str] = None
 
@@ -782,7 +783,13 @@ async def get_projects():
             project["id"] = str(project["_id"])
             del project["_id"]
             projects.append(project)
-            
+
+        def sort_key(p):
+            level = p.get("level")
+            # None means no priority; push to end by using large sentinel
+            return (level if level is not None else float('inf'), -(p.get("year") or 0))
+
+        projects.sort(key=sort_key)
         return projects
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch projects: {str(e)}")

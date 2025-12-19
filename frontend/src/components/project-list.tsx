@@ -19,6 +19,7 @@ interface Project {
   github?: string;
   demo_url?: string;
   image_url?: string;
+  level?: number;
 }
 
 interface ProjectListProps {
@@ -170,7 +171,16 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
       </div>
       <div className="window-body">
         <div className="content" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <div className="projects-container" style={{ maxHeight: '300px', overflow: 'auto', border: '2px inset #c0c0c0', padding: '5px' }}>
+          <div
+            className="projects-container"
+            style={{
+              maxHeight: '300px',
+              overflow: 'auto',
+              border: '2px inset #c0c0c0',
+              padding: '5px',
+              paddingRight: '10px', // keep text clear of scrollbar
+            }}
+          >
             {isLoading ? (
               <div style={{ padding: '10px', textAlign: 'center' }}>Loading projects...</div>
             ) : error ? (
@@ -178,7 +188,15 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
             ) : projects.length === 0 ? (
               <div style={{ padding: '10px' }}>No projects found.</div>
             ) : (
-              projects.sort((a, b) => b.year - a.year).map(project => (
+              projects
+                .slice()
+                .sort((a, b) => {
+                  const levelA = a.level ?? Infinity;
+                  const levelB = b.level ?? Infinity;
+                  if (levelA !== levelB) return levelA - levelB;
+                  return b.year - a.year;
+                })
+                .map(project => (
                 <div 
                   key={project.id} 
                   className={`project-item ${selectedProject === project.id ? 'selected' : ''}`}
@@ -229,7 +247,6 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
               flexWrap: 'wrap'
             }}
           >
-            <button disabled={!selectedProject}>View Details</button>
             <button 
               disabled={!selectedProject || !projects.find(p => p.id === selectedProject)?.github} 
               onClick={() => {

@@ -1,6 +1,6 @@
-my portfolio website
+My portfolio website
 
-ui inspired by plaza.one
+**UI inspired by plaza.one**
 
 ## Docker Quickstart
 
