@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useRef, useCallback, useEffect } from 'react'
-import '98.css/dist/98.css'
 import '../styles/window.css'
 import { useWindow } from '../contexts/WindowContext'
 

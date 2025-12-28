@@ -1,8 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import '98.css/dist/98.css'
-import '../styles/mobile-responsive.css'
 
 interface StatusBarProps {
   onMediaPlayerClick?: () => void;

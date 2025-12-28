@@ -4,8 +4,6 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import type { MutableRefObject, MouseEvent as ReactMouseEvent, ChangeEvent } from 'react'
 import { useWavesurfer } from '@wavesurfer/react'
 import Image from 'next/image'
-import '98.css/dist/98.css'
-import '../styles/responsive.css'
 import { useWindow } from '../contexts/WindowContext'
 
 interface WaveSurferType {

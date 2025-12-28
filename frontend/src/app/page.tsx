@@ -12,8 +12,6 @@ import { Resume } from '@/components/resume'
 import { ExperienceList } from '@/components/experience-list'
 import { MobileFallback } from '@/components/mobile-fallback'
 import { WindowProvider, useWindow } from '@/contexts/WindowContext'
-import '98.css/dist/98.css'
-import '../styles/mobile-responsive.css'
 
 // small screen size alert
 function MobileAlert({ onClose }: { onClose: () => void }) {
@@ -152,64 +150,66 @@ function AppContent() {
     <main 
       className={`flex min-h-screen flex-col items-center relative main-container ${isMounted && isMobile ? 'mobile-main' : ''}`}
     >
-      {showMobileAlert && <MobileAlert onClose={() => setShowMobileAlert(false)} />}
-      {isLoading ? (
-        <Loader onComplete={handleLoaderComplete} />
-      ) : (
-        <>
-          <MediaPlayer 
-            onAboutMeClick={handleAboutMeClick}
-            onContactClick={handleContactClick}
-            onProjectListClick={handleProjectListClick}
-            onResumeClick={handleResumeClick}
-            onExperienceClick={handleExperienceClick}
-          />
-          <InfoPanel 
-            isVisible={showInfoPanel}
-            onVisibilityChange={setShowInfoPanel}
-          />
-          <AboutMe
-            isVisible={showAboutMe}
-            onVisibilityChange={setShowAboutMe}
-          />
-          <Contact
-            isVisible={showContact}
-            onVisibilityChange={setShowContact}
-          />
-          <ProjectList
-            isVisible={showProjectList}
-            onVisibilityChange={setShowProjectList}
-          />
-          <Resume
-            isVisible={showResume}
-            onVisibilityChange={setShowResume}
-          />
-          <ExperienceList
-            isVisible={showExperience}
-            onVisibilityChange={setShowExperience}
-          />
-          <StatusBar 
-            onInfoClick={handleInfoClick}
-            onAboutMeClick={handleAboutMeClick}
-            onContactClick={handleContactClick}
-            onProjectListClick={handleProjectListClick}
-            onResumeClick={handleResumeClick}
-            onExperienceClick={handleExperienceClick}
-            showInfoPanel={showInfoPanel}
-            showAboutMe={showAboutMe}
-            showContact={showContact}
-            showProjectList={showProjectList}
-            showResume={showResume}
-            showExperience={showExperience}
-            onMinimizeInfoPanel={() => setShowInfoPanel(false)}
-            onMinimizeAboutMe={() => setShowAboutMe(false)}
-            onMinimizeContact={() => setShowContact(false)}
-            onMinimizeProjectList={() => setShowProjectList(false)}
-            onMinimizeResume={() => setShowResume(false)}
-            onMinimizeExperience={() => setShowExperience(false)}
-          />
-        </>
-      )}
+      <div className="main-content">
+        {showMobileAlert && <MobileAlert onClose={() => setShowMobileAlert(false)} />}
+        {isLoading ? (
+          <Loader onComplete={handleLoaderComplete} />
+        ) : (
+          <>
+            <MediaPlayer 
+              onAboutMeClick={handleAboutMeClick}
+              onContactClick={handleContactClick}
+              onProjectListClick={handleProjectListClick}
+              onResumeClick={handleResumeClick}
+              onExperienceClick={handleExperienceClick}
+            />
+            <InfoPanel 
+              isVisible={showInfoPanel}
+              onVisibilityChange={setShowInfoPanel}
+            />
+            <AboutMe
+              isVisible={showAboutMe}
+              onVisibilityChange={setShowAboutMe}
+            />
+            <Contact
+              isVisible={showContact}
+              onVisibilityChange={setShowContact}
+            />
+            <ProjectList
+              isVisible={showProjectList}
+              onVisibilityChange={setShowProjectList}
+            />
+            <Resume
+              isVisible={showResume}
+              onVisibilityChange={setShowResume}
+            />
+            <ExperienceList
+              isVisible={showExperience}
+              onVisibilityChange={setShowExperience}
+            />
+            <StatusBar 
+              onInfoClick={handleInfoClick}
+              onAboutMeClick={handleAboutMeClick}
+              onContactClick={handleContactClick}
+              onProjectListClick={handleProjectListClick}
+              onResumeClick={handleResumeClick}
+              onExperienceClick={handleExperienceClick}
+              showInfoPanel={showInfoPanel}
+              showAboutMe={showAboutMe}
+              showContact={showContact}
+              showProjectList={showProjectList}
+              showResume={showResume}
+              showExperience={showExperience}
+              onMinimizeInfoPanel={() => setShowInfoPanel(false)}
+              onMinimizeAboutMe={() => setShowAboutMe(false)}
+              onMinimizeContact={() => setShowContact(false)}
+              onMinimizeProjectList={() => setShowProjectList(false)}
+              onMinimizeResume={() => setShowResume(false)}
+              onMinimizeExperience={() => setShowExperience(false)}
+            />
+          </>
+        )}
+      </div>
     </main>
     )
   )

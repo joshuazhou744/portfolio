@@ -1,9 +1,7 @@
 'use client'
 
 import { useState, useRef, useCallback, useEffect, ReactNode } from 'react'
-import '98.css/dist/98.css'
 import '../styles/window.css'
-import '../styles/mobile-responsive.css'
 import { useWindow } from '../contexts/WindowContext'
 
 interface WindowPosition {
