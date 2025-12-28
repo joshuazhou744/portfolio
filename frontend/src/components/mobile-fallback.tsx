@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import '../styles/mobile-responsive.css'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
