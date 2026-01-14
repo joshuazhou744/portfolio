@@ -34,7 +34,16 @@ YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 youtube = build('youtube', 'v3', developerKey=YOUTUBE_API_KEY)
 ytmusic = YTMusic()
 
-app = FastAPI(title="Portfolio Music API")
+# Env to expose or hide docs
+ENV = os.getenv("ENV", "dev")
+IS_PROD = ENV == "prod"
+
+app = FastAPI(
+    title="Portfolio Music API",
+    docs_url=None if IS_PROD else "/docs",
+    redoc_url=None if IS_PROD else "/redoc",
+    openapi_url=None if IS_PROD else "/openapi.json",
+)
 
 # get the frontend URL from environment variable or use localhost for development
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
