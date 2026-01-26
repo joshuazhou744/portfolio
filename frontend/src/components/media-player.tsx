@@ -278,7 +278,7 @@ export default function MediaPlayer({
       setIsBuffering(true);
       setIsTrackReady(false);
       setError(null);
-      console.log('[MediaPlayer] fetching tracks');
+      // console.log('[MediaPlayer] fetching tracks');
       
       const response = await fetch(`${API_URL}/songs/${COLLECTION_NAME}?noshuffle=false`);
       
@@ -287,12 +287,12 @@ export default function MediaPlayer({
       }
       
       const data = await response.json();
-      console.log('[MediaPlayer] fetched tracks', data.length);
+      // console.log('[MediaPlayer] fetched tracks', data.length);
       
       // filter tracks with audio
       const tracksWithAudio = data.filter((track: Track) => track.audio_file_id);
       setTracks(tracksWithAudio);
-      console.log('[MediaPlayer] tracks with audio', tracksWithAudio.length);
+      // console.log('[MediaPlayer] tracks with audio', tracksWithAudio.length);
       
       // reset track loading flag when tracks change
       hasLoadedInitialTrack.current = false;
