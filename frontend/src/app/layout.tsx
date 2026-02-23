@@ -6,6 +6,7 @@ import '../styles/mobile-responsive.css'
 import 'normalize.css'
 import '98.css/dist/98.css'
 import { ClientBody } from './ClientBody'
+import { Analytics } from '@vercel/analytics/next';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -41,6 +42,7 @@ export default function RootLayout({
         <ClientBody>
           {children}
         </ClientBody>
+        <Analytics />
       </body>
     </html>
   )
