@@ -12,6 +12,7 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.0.13",
     "@types/howler": "^2.2.12",
+    "@vercel/analytics": "^1.6.1",
     "@wavesurfer/react": "^1.0.9",
     "98.css": "^0.1.20",
     "class-variance-authority": "^0.7.1",
