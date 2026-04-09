@@ -1,8 +1,9 @@
-'use client'
+'use client';
 
-import { useState, useRef, useCallback, useEffect, ReactNode } from 'react'
-import '../styles/window.css'
-import { useWindow } from '../contexts/WindowContext'
+import { useState, useRef, useCallback, useEffect, ReactNode } from 'react';
+import '../styles/window.css';
+import { useWindow } from '../contexts/WindowContext';
+import { useWindowDimensions } from '../hooks/useWindowDimensions';
 
 interface WindowPosition {
   x: number;
@@ -23,48 +24,31 @@ interface BaseWindowProps {
   isMaximized?: boolean;
 }
 
-export function BaseWindow({ 
-  isVisible, 
-  onVisibilityChange, 
-  title, 
-  width, 
+export function BaseWindow({
+  isVisible,
+  onVisibilityChange,
+  title,
+  width,
   height,
   windowId,
   children,
   initialPosition,
   showMaximize = false,
   onMaximize,
-  isMaximized = false
+  isMaximized = false,
 }: BaseWindowProps) {
-  // Use client-side state management
-  const [isMounted, setIsMounted] = useState(false)
-  const [windowDimensions, setWindowDimensions] = useState({ width: 1024, height: 768 })
-  
-  useEffect(() => {
-    setIsMounted(true)
-    
-    const updateDimensions = () => {
-      setWindowDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight
-      })
-    }
-    
-    updateDimensions()
-    window.addEventListener('resize', updateDimensions)
-    
-    return () => window.removeEventListener('resize', updateDimensions)
-  }, [])
+  const windowDimensions = useWindowDimensions();
+  const { isMounted } = windowDimensions;
 
-  const isMobile = isMounted && windowDimensions.width <= 768
+  const isMobile = isMounted && windowDimensions.width <= 768;
 
   const [position, setPosition] = useState<WindowPosition>(() => {
     if (initialPosition) return initialPosition;
-    
+
     // Default position for SSR
     return { x: 100, y: 50 };
   });
-  
+
   // Update position once mounted for responsive positioning
   useEffect(() => {
     if (isMounted && !initialPosition) {
@@ -72,68 +56,76 @@ export function BaseWindow({
         const estimatedWidth = parseInt(width) || 300;
         setPosition({
           x: Math.max(10, (windowDimensions.width - estimatedWidth) / 2),
-          y: 20
+          y: 20,
         });
       } else {
         setPosition({
-          x: Math.random() * (200-100) + 100,
-          y: Math.random() * (75-50) + 50
+          x: Math.random() * (200 - 100) + 100,
+          y: Math.random() * (75 - 50) + 50,
         });
       }
     }
   }, [isMounted, isMobile, width, windowDimensions, initialPosition]);
-  
+
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState<WindowPosition>({ x: 0, y: 0 });
-  
+
   const windowRef = useRef<HTMLDivElement>(null);
   const { bringToFront, getZIndex } = useWindow();
-  
+
   const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
     if (e.target instanceof HTMLElement && e.target.closest('.title-bar')) {
       // Don't allow dragging on mobile to prevent interference with scrolling
       if (isMobile) {
         return;
       }
-      
+
       setIsDragging(true);
       const rect = windowRef.current?.getBoundingClientRect();
       if (rect) {
         const clientX = 'clientX' in e ? e.clientX : e.touches[0].clientX;
         const clientY = 'clientY' in e ? e.clientY : e.touches[0].clientY;
-        
+
         setDragOffset({
           x: clientX - rect.left,
-          y: clientY - rect.top
+          y: clientY - rect.top,
         });
       }
     }
   };
 
-  const handleMouseMove = useCallback((e: MouseEvent | TouchEvent) => {
-    if (isDragging && !isMobile && isMounted) {
-      const clientX = 'clientX' in e ? e.clientX : e.touches[0].clientX;
-      const clientY = 'clientY' in e ? e.clientY : e.touches[0].clientY;
-      
-      const newX = clientX - dragOffset.x;
-      const newY = clientY - dragOffset.y;
-      
-      const windowElementWidth = windowRef.current?.offsetWidth || parseInt(width) || 300;
-      const windowElementHeight = windowRef.current?.offsetHeight || (height ? parseInt(height) : 300);
-      
-      // More generous constraints for mobile
-      const minVisibleWidth = isMobile ? 50 : 200;
-      const minVisibleHeight = isMobile ? 100 : 150;
-      
-      const constrainedX = Math.min(Math.max(newX, -windowElementWidth + minVisibleWidth), windowDimensions.width - minVisibleWidth);
-      const constrainedY = Math.min(Math.max(newY, 0), windowDimensions.height - minVisibleHeight);
-      
-      setPosition({
-        x: constrainedX,
-        y: constrainedY
-      });
-    }
-  }, [isDragging, dragOffset, width, height, isMobile, isMounted, windowDimensions]);
+  const handleMouseMove = useCallback(
+    (e: MouseEvent | TouchEvent) => {
+      if (isDragging && !isMobile && isMounted) {
+        const clientX = 'clientX' in e ? e.clientX : e.touches[0].clientX;
+        const clientY = 'clientY' in e ? e.clientY : e.touches[0].clientY;
+
+        const newX = clientX - dragOffset.x;
+        const newY = clientY - dragOffset.y;
+
+        const windowElementWidth = windowRef.current?.offsetWidth || parseInt(width) || 300;
+
+        // More generous constraints for mobile
+        const minVisibleWidth = isMobile ? 50 : 200;
+        const minVisibleHeight = isMobile ? 100 : 150;
+
+        const constrainedX = Math.min(
+          Math.max(newX, -windowElementWidth + minVisibleWidth),
+          windowDimensions.width - minVisibleWidth
+        );
+        const constrainedY = Math.min(
+          Math.max(newY, 0),
+          windowDimensions.height - minVisibleHeight
+        );
+
+        setPosition({
+          x: constrainedX,
+          y: constrainedY,
+        });
+      }
+    },
+    [isDragging, dragOffset, width, height, isMobile, isMounted, windowDimensions]
+  );
 
   const handleMouseUp = () => {
     setIsDragging(false);
@@ -143,20 +135,20 @@ export function BaseWindow({
     if (isDragging && !isMobile && isMounted) {
       const events = ['mousemove', 'touchmove'];
       const endEvents = ['mouseup', 'touchend'];
-      
-      events.forEach(event => {
+
+      events.forEach((event) => {
         window.addEventListener(event, handleMouseMove as EventListener);
       });
-      
-      endEvents.forEach(event => {
+
+      endEvents.forEach((event) => {
         window.addEventListener(event, handleMouseUp);
       });
 
       return () => {
-        events.forEach(event => {
+        events.forEach((event) => {
           window.removeEventListener(event, handleMouseMove as EventListener);
         });
-        endEvents.forEach(event => {
+        endEvents.forEach((event) => {
           window.removeEventListener(event, handleMouseUp);
         });
       };
@@ -184,10 +176,10 @@ export function BaseWindow({
     if (isMounted && isMobile && windowRef.current) {
       const handleResize = () => {
         const elementWidth = windowRef.current?.offsetWidth || 0;
-        
-        setPosition(prev => ({
+
+        setPosition((prev) => ({
           x: Math.min(prev.x, windowDimensions.width - elementWidth - 10),
-          y: Math.max(10, Math.min(prev.y, windowDimensions.height - 100))
+          y: Math.max(10, Math.min(prev.y, windowDimensions.height - 100)),
         }));
       };
 
@@ -201,17 +193,20 @@ export function BaseWindow({
   }
 
   // Don't render mobile-specific styles until mounted to avoid hydration mismatch
-  const mobileStyles = isMounted && isMobile ? {
-    maxWidth: '95vw',
-    maxHeight: '90vh',
-    overflowY: 'auto' as const,
-  } : {};
+  const mobileStyles =
+    isMounted && isMobile
+      ? {
+          maxWidth: '95vw',
+          maxHeight: '90vh',
+          overflowY: 'auto' as const,
+        }
+      : {};
 
   return (
-    <div 
+    <div
       ref={windowRef}
       className={`window ${windowId}-window ${isMounted && isMobile ? 'mobile-window' : ''}`}
-      style={{ 
+      style={{
         width,
         height: height || 'auto',
         position: 'fixed',
@@ -222,7 +217,7 @@ export function BaseWindow({
         userSelect: 'none',
         transform: isMaximized ? 'none' : undefined,
         boxSizing: 'border-box',
-        ...mobileStyles
+        ...mobileStyles,
       }}
       onMouseDown={(e) => {
         handleMouseDown(e);
@@ -241,9 +236,7 @@ export function BaseWindow({
           <button aria-label="Close" onClick={handleClose}></button>
         </div>
       </div>
-      <div className="window-body base-window-body">
-        {children}
-      </div>
+      <div className="window-body base-window-body">{children}</div>
     </div>
   );
-} 
+}

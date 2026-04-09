@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import { useState, useRef, useCallback, useEffect } from 'react'
-import '../styles/window.css'
-import { useWindow } from '../contexts/WindowContext'
+import { useState, useRef, useCallback, useEffect } from 'react';
+import '../styles/window.css';
+import { useWindow } from '../contexts/WindowContext';
 
 interface WindowPosition {
   x: number;
@@ -26,8 +26,8 @@ interface ExperienceListProps {
 
 export function ExperienceList({ isVisible, onVisibilityChange }: ExperienceListProps) {
   const [position, setPosition] = useState<WindowPosition>(() => {
-    const x = Math.random() * (200-150) + 150;
-    const y = window.innerHeight - (Math.random() * (300-200) + 200);
+    const x = Math.random() * (200 - 150) + 150;
+    const y = window.innerHeight - (Math.random() * (300 - 200) + 200);
     return { x, y };
   });
   const [isDragging, setIsDragging] = useState(false);
@@ -36,27 +36,27 @@ export function ExperienceList({ isVisible, onVisibilityChange }: ExperienceList
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   const windowRef = useRef<HTMLDivElement>(null);
   const { bringToFront, getZIndex } = useWindow();
-  
+
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     if (isVisible) {
       setIsLoading(true);
       fetch(`${API_URL}/experiences`)
-        .then(response => {
+        .then((response) => {
           if (!response.ok) {
             throw new Error('Failed to fetch experiences');
           }
           return response.json();
         })
-        .then(data => {
+        .then((data) => {
           setExperiences(data);
           setIsLoading(false);
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Error fetching experiences:', error);
           setError(error.message);
           setIsLoading(false);
@@ -79,32 +79,34 @@ export function ExperienceList({ isVisible, onVisibilityChange }: ExperienceList
       if (rect) {
         setDragOffset({
           x: e.clientX - rect.left,
-          y: e.clientY - rect.top
+          y: e.clientY - rect.top,
         });
       }
     }
   };
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (isDragging) {
-      const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 500;
-      const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 500;
-      
-      const newX = e.clientX - dragOffset.x;
-      const newY = e.clientY - dragOffset.y;
-      
-      const width = windowRef.current?.offsetWidth || 450;
-      const height = windowRef.current?.offsetHeight || 400;
-      
-      const constrainedX = Math.min(Math.max(newX, -width + 300), windowWidth - 300);
-      const constrainedY = Math.min(Math.max(newY, 0), windowHeight - 200);
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (isDragging) {
+        const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 500;
+        const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 500;
 
-      setPosition({
-        x: constrainedX,
-        y: constrainedY
-      });
-    }
-  }, [isDragging, dragOffset]);
+        const newX = e.clientX - dragOffset.x;
+        const newY = e.clientY - dragOffset.y;
+
+        const width = windowRef.current?.offsetWidth || 450;
+
+        const constrainedX = Math.min(Math.max(newX, -width + 300), windowWidth - 300);
+        const constrainedY = Math.min(Math.max(newY, 0), windowHeight - 200);
+
+        setPosition({
+          x: constrainedX,
+          y: constrainedY,
+        });
+      }
+    },
+    [isDragging, dragOffset]
+  );
 
   const handleMouseUp = () => {
     setIsDragging(false);
@@ -139,10 +141,10 @@ export function ExperienceList({ isVisible, onVisibilityChange }: ExperienceList
   }
 
   return (
-    <div 
+    <div
       ref={windowRef}
-      className="window experience-list-window" 
-      style={{ 
+      className="window experience-list-window"
+      style={{
         width: '35vw',
         position: 'fixed',
         left: position.x,
@@ -152,7 +154,7 @@ export function ExperienceList({ isVisible, onVisibilityChange }: ExperienceList
         userSelect: 'none',
         wordSpacing: '0.1em',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
       }}
       onMouseDown={(e) => {
         handleMouseDown(e);
@@ -168,7 +170,15 @@ export function ExperienceList({ isVisible, onVisibilityChange }: ExperienceList
       </div>
       <div className="window-body">
         <div className="content" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <div className="experiences-container" style={{ maxHeight: '300px', overflow: 'auto', border: '2px inset #c0c0c0', padding: '5px' }}>
+          <div
+            className="experiences-container"
+            style={{
+              maxHeight: '300px',
+              overflow: 'auto',
+              border: '2px inset #c0c0c0',
+              padding: '5px',
+            }}
+          >
             {isLoading ? (
               <div style={{ padding: '10px', textAlign: 'center' }}>Loading experiences...</div>
             ) : error ? (
@@ -176,30 +186,46 @@ export function ExperienceList({ isVisible, onVisibilityChange }: ExperienceList
             ) : experiences.length === 0 ? (
               <div style={{ padding: '10px' }}>No experiences found.</div>
             ) : (
-              experiences.map(experience => (
-                <div 
-                  key={experience.id} 
+              experiences.map((experience) => (
+                <div
+                  key={experience.id}
                   className={`experience-item ${selectedExperience === experience.id ? 'selected' : ''}`}
-                  style={{ 
-                    padding: '8px', 
-                    marginBottom: '5px', 
+                  style={{
+                    padding: '8px',
+                    marginBottom: '5px',
                     cursor: 'pointer',
                     background: selectedExperience === experience.id ? '#000080' : 'transparent',
-                    color: selectedExperience === experience.id ? 'white' : 'black'
+                    color: selectedExperience === experience.id ? 'white' : 'black',
                   }}
                   onClick={() => handleExperienceSelect(experience.id)}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px', fontSize: '1em' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      marginBottom: '4px',
+                      fontSize: '1em',
+                    }}
+                  >
                     <strong>{experience.title}</strong>
-                    <span>{experience.start_date} - {experience.end_date}</span>
+                    <span>
+                      {experience.start_date} - {experience.end_date}
+                    </span>
                   </div>
-                  <div style={{ fontSize: '1.1em', color: selectedExperience === experience.id ? '#cccccc' : '#666666' }}>
-                      {experience.company} • {experience.location}
+                  <div
+                    style={{
+                      fontSize: '1.1em',
+                      color: selectedExperience === experience.id ? '#cccccc' : '#666666',
+                    }}
+                  >
+                    {experience.company} • {experience.location}
                   </div>
                   {selectedExperience === experience.id && (
                     <div style={{ marginTop: '8px', fontSize: '1em' }}>
                       {experience.description.map((bullet, index) => (
-                        <div key={index} style={{ marginBottom: '4px' }} 
+                        <div
+                          key={index}
+                          style={{ marginBottom: '4px' }}
                           dangerouslySetInnerHTML={{ __html: `• ${bullet}` }}
                         />
                       ))}
@@ -213,4 +239,4 @@ export function ExperienceList({ isVisible, onVisibilityChange }: ExperienceList
       </div>
     </div>
   );
-} 
+}

@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import { useState, useRef, useCallback, useEffect } from 'react'
-import '../styles/window.css'
-import { useWindow } from '../contexts/WindowContext'
+import { useState, useRef, useCallback, useEffect } from 'react';
+import '../styles/window.css';
+import { useWindow } from '../contexts/WindowContext';
 
 interface WindowPosition {
   x: number;
@@ -28,8 +28,8 @@ interface ProjectListProps {
 
 export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps) {
   const [position, setPosition] = useState<WindowPosition>(() => {
-    const x = Math.random() * (100-50) + 50;
-    const y = window.innerHeight - (Math.random() * (550-400) + 450);
+    const x = Math.random() * (100 - 50) + 50;
+    const y = window.innerHeight - (Math.random() * (550 - 400) + 450);
     return { x, y };
   });
   const [isDragging, setIsDragging] = useState(false);
@@ -38,27 +38,27 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   const windowRef = useRef<HTMLDivElement>(null);
   const { bringToFront, getZIndex } = useWindow();
-  
+
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     if (isVisible) {
       setIsLoading(true);
       fetch(`${API_URL}/projects`)
-        .then(response => {
+        .then((response) => {
           if (!response.ok) {
             throw new Error('Failed to fetch projects');
           }
           return response.json();
         })
-        .then(data => {
+        .then((data) => {
           setProjects(data);
           setIsLoading(false);
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Error fetching projects:', error);
           setError(error.message);
           setIsLoading(false);
@@ -81,32 +81,34 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
       if (rect) {
         setDragOffset({
           x: e.clientX - rect.left,
-          y: e.clientY - rect.top
+          y: e.clientY - rect.top,
         });
       }
     }
   };
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (isDragging) {
-      const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 500;
-      const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 500;
-      
-      const newX = e.clientX - dragOffset.x;
-      const newY = e.clientY - dragOffset.y;
-      
-      const width = windowRef.current?.offsetWidth || 450;
-      const height = windowRef.current?.offsetHeight || 400;
-      
-      const constrainedX = Math.min(Math.max(newX, -width + 300), windowWidth - 300);
-      const constrainedY = Math.min(Math.max(newY, 0), windowHeight - 300);
-      
-      setPosition({
-        x: constrainedX,
-        y: constrainedY
-      });
-    }
-  }, [isDragging, dragOffset]);
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (isDragging) {
+        const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 500;
+        const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 500;
+
+        const newX = e.clientX - dragOffset.x;
+        const newY = e.clientY - dragOffset.y;
+
+        const width = windowRef.current?.offsetWidth || 450;
+
+        const constrainedX = Math.min(Math.max(newX, -width + 300), windowWidth - 300);
+        const constrainedY = Math.min(Math.max(newY, 0), windowHeight - 300);
+
+        setPosition({
+          x: constrainedX,
+          y: constrainedY,
+        });
+      }
+    },
+    [isDragging, dragOffset]
+  );
 
   const handleMouseUp = () => {
     setIsDragging(false);
@@ -141,10 +143,10 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
   }
 
   return (
-    <div 
+    <div
       ref={windowRef}
-      className="window project-list-window" 
-      style={{ 
+      className="window project-list-window"
+      style={{
         width: '30vw',
         position: 'fixed',
         left: position.x,
@@ -154,7 +156,7 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
         userSelect: 'none',
         wordSpacing: '0.1em',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
       }}
       onMouseDown={(e) => {
         handleMouseDown(e);
@@ -195,70 +197,79 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
                   if (levelA !== levelB) return levelA - levelB;
                   return b.year - a.year;
                 })
-                .map(project => (
-                <div 
-                  key={project.id} 
-                  className={`project-item ${selectedProject === project.id ? 'selected' : ''}`}
-                  style={{ 
-                    padding: '8px', 
-                    marginBottom: '5px', 
-                    cursor: 'pointer',
-                    background: selectedProject === project.id ? '#000080' : 'transparent',
-                    color: selectedProject === project.id ? 'white' : 'black'
-                  }}
-                  onClick={() => handleProjectSelect(project.id)}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <strong>{project.name}</strong>
-                    <span>{project.year}</span>
-                  </div>
-                  {selectedProject === project.id && (
-                    <div style={{ marginTop: '5px' }}>
-                      <p>{project.description}</p>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '5px' }}>
-                        {project.technologies.map((tech, index) => (
-                          <span 
-                            key={index} 
-                            style={{ 
-                              padding: '2px 5px', 
-                              background: '#c0c0c0', 
-                              color: '#000', 
-                              fontSize: '12px',
-                              border: '1px solid #888'
-                            }}
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
+                .map((project) => (
+                  <div
+                    key={project.id}
+                    className={`project-item ${selectedProject === project.id ? 'selected' : ''}`}
+                    style={{
+                      padding: '8px',
+                      marginBottom: '5px',
+                      cursor: 'pointer',
+                      background: selectedProject === project.id ? '#000080' : 'transparent',
+                      color: selectedProject === project.id ? 'white' : 'black',
+                    }}
+                    onClick={() => handleProjectSelect(project.id)}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <strong>{project.name}</strong>
+                      <span>{project.year}</span>
                     </div>
-                  )}
-                </div>
-              ))
+                    {selectedProject === project.id && (
+                      <div style={{ marginTop: '5px' }}>
+                        <p>{project.description}</p>
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: '5px',
+                            marginTop: '5px',
+                          }}
+                        >
+                          {project.technologies.map((tech, index) => (
+                            <span
+                              key={index}
+                              style={{
+                                padding: '2px 5px',
+                                background: '#c0c0c0',
+                                color: '#000',
+                                fontSize: '12px',
+                                border: '1px solid #888',
+                              }}
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))
             )}
           </div>
-          <div 
-            className="field-row" 
-            style={{ 
-              justifyContent: 'flex-start', 
+          <div
+            className="field-row"
+            style={{
+              justifyContent: 'flex-start',
               marginTop: '5px',
               gap: '8px',
-              flexWrap: 'wrap'
+              flexWrap: 'wrap',
             }}
           >
-            <button 
-              disabled={!selectedProject || !projects.find(p => p.id === selectedProject)?.github} 
+            <button
+              disabled={!selectedProject || !projects.find((p) => p.id === selectedProject)?.github}
               onClick={() => {
-                const project = projects.find(p => p.id === selectedProject);
+                const project = projects.find((p) => p.id === selectedProject);
                 if (project?.github) window.open(project.github, '_blank');
               }}
             >
               GitHub
             </button>
-            <button 
-              disabled={!selectedProject || !projects.find(p => p.id === selectedProject)?.demo_url}
+            <button
+              disabled={
+                !selectedProject || !projects.find((p) => p.id === selectedProject)?.demo_url
+              }
               onClick={() => {
-                const project = projects.find(p => p.id === selectedProject);
+                const project = projects.find((p) => p.id === selectedProject);
                 if (project?.demo_url) window.open(project.demo_url, '_blank');
               }}
             >
@@ -267,9 +278,6 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
           </div>
         </div>
       </div>
-      {/*<div className="status-bar">
-        <p className="status-bar-field">Projects: {projects.length}</p>
-      </div>*/}
     </div>
   );
-} 
+}

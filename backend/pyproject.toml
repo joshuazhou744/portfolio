@@ -1,0 +1,54 @@
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = [
+    "E501",  # line length is enforced via formatter
+    "B008",  # FastAPI Depends/File defaults are intentional
+    "B904",  # raise-from is noisy in HTTPException re-raises
+]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.vulture]
+# Whitelist FastAPI / Pydantic patterns vulture cannot infer.
+# Decorated FastAPI route handlers and Pydantic field declarations are
+# referenced via metaclass / decorator magic, not direct calls.
+ignore_decorators = [
+    "@app.*",
+    "@router.*",
+]
+ignore_names = [
+    # Pydantic v1/v2 inner Config class
+    "Config",
+    "from_attributes",
+    # Pydantic field names declared via class body annotations
+    "title",
+    "artist",
+    "cover_image_url",
+    "audio_file_id",
+    "spotify_id",
+    "filename",
+    "file_id",
+    "upload_date",
+    "content_type",
+    "name",
+    "description",
+    "technologies",
+    "year",
+    "level",
+    "github",
+    "demo_url",
+    "company",
+    "location",
+    "start_date",
+    "end_date",
+    "email",
+    "phone",
+    "linkedin",
+]
+min_confidence = 80
+paths = ["app"]
