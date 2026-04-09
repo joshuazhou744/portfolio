@@ -20,7 +20,7 @@ from pydantic import BaseModel
 from spotipy.oauth2 import SpotifyClientCredentials
 from ytmusicapi import YTMusic
 
-from app.audio import download_audio_sync
+from app.audio import download_audio_sync, pick_youtube_match
 
 # load environment variables
 load_dotenv()
@@ -485,10 +485,22 @@ async def process_songs_without_audio(collection_name: str):
                     )
                     continue
 
-                # get the first result
-                first_result = search_results[0]
-                youtube_id = first_result["videoId"]
-                youtube_url = f"https://www.youtube.com/watch?v={youtube_id}"
+                # pick the first result whose title AND artist are close enough;
+                # otherwise skip rather than blindly downloading the wrong upload
+                match = pick_youtube_match(song["title"], song["artist"], search_results)
+                if not match:
+                    top = search_results[0]
+                    top_title = top.get("title") or "?"
+                    top_artist = " ".join(a.get("name", "") for a in (top.get("artists") or [])) or "?"
+                    failed_songs.append(
+                        {
+                            "title": song["title"],
+                            "artist": song["artist"],
+                            "reason": f"No YouTube title+artist match >=0.7 (top: {top_title!r} by {top_artist!r})",
+                        }
+                    )
+                    continue
+                youtube_url = f"https://www.youtube.com/watch?v={match['videoId']}"
 
                 # download the audio using yt-dlp
                 executor = ThreadPoolExecutor()
