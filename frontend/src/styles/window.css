@@ -36,6 +36,14 @@
   cursor: default !important;
 }
 
+/* 98.css gives every .window-body 8px margin on all sides. For BaseWindow
+   modals (Welcome, Contact, About Me) that creates a visible empty band
+   between the title bar and the content. Drop the top margin so content
+   sits flush under the title bar like the Projects modal does visually. */
+.window-body.base-window-body {
+  margin: 0 8px 8px 8px;
+}
+
 /* About Me Window */
 .about-me-window {
   width: 500px;
