@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import { BaseWindow } from './base-window'
-import { useState, useEffect } from 'react'
-import '../styles/info-panel.css'
+import { BaseWindow } from './base-window';
+import '../styles/info-panel.css';
+import { useWindowDimensions } from '../hooks/useWindowDimensions';
 
 interface InfoPanelProps {
   isVisible: boolean;
@@ -10,36 +10,21 @@ interface InfoPanelProps {
 }
 
 export function InfoPanel({ isVisible, onVisibilityChange }: InfoPanelProps) {
-  const [windowDimensions, setWindowDimensions] = useState({ width: 400, height: 300 })
-  
-  useEffect(() => {
-    // Only run on client side after hydration
-    const updateDimensions = () => {
-      setWindowDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight
-      })
-    }
-    
-    updateDimensions()
-    window.addEventListener('resize', updateDimensions)
-    
-    return () => window.removeEventListener('resize', updateDimensions)
-  }, [])
+  const windowDimensions = useWindowDimensions(400, 300);
 
   // Calculate responsive properties after client-side mount
-  const isMobile = windowDimensions.width <= 768
-  const windowWidth = isMobile ? '90vw' : '400px'
-  
-  const initialPosition = isMobile 
+  const isMobile = windowDimensions.width <= 768;
+  const windowWidth = isMobile ? '90vw' : '400px';
+
+  const initialPosition = isMobile
     ? {
         x: Math.max(0, (windowDimensions.width - 300) / 2),
-        y: 50
+        y: 50,
       }
     : {
         x: Math.random() * (windowDimensions.width - 400) + 50,
-        y: Math.random() * (windowDimensions.height - 200) + 50
-      }
+        y: Math.random() * (windowDimensions.height - 200) + 50,
+      };
 
   return (
     <div className="win98 info-panel-container">

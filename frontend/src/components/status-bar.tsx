@@ -1,23 +1,21 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
+import { useWindowDimensions } from '../hooks/useWindowDimensions';
 
 interface StatusBarProps {
-  onMediaPlayerClick?: () => void;
   onInfoClick: () => void;
   onAboutMeClick: () => void;
   onContactClick: () => void;
   onProjectListClick: () => void;
   onResumeClick: () => void;
   onExperienceClick: () => void;
-  showMediaPlayer?: boolean;
   showInfoPanel: boolean;
   showAboutMe: boolean;
   showContact: boolean;
   showProjectList: boolean;
   showResume: boolean;
   showExperience: boolean;
-  onMinimizeMediaPlayer?: () => void;
   onMinimizeInfoPanel: () => void;
   onMinimizeAboutMe: () => void;
   onMinimizeContact: () => void;
@@ -26,130 +24,110 @@ interface StatusBarProps {
   onMinimizeExperience: () => void;
 }
 
-export function StatusBar({ 
-  onMediaPlayerClick, 
+export function StatusBar({
   onInfoClick,
   onAboutMeClick,
   onContactClick,
   onProjectListClick,
   onResumeClick,
   onExperienceClick,
-  showMediaPlayer, 
   showInfoPanel,
   showAboutMe,
   showContact,
   showProjectList,
   showResume,
   showExperience,
-  onMinimizeMediaPlayer,
   onMinimizeInfoPanel,
   onMinimizeAboutMe,
   onMinimizeContact,
   onMinimizeProjectList,
   onMinimizeResume,
-  onMinimizeExperience
+  onMinimizeExperience,
 }: StatusBarProps) {
-  const [currentTime, setCurrentTime] = useState('')
-  const [isMounted, setIsMounted] = useState(false)
-  const [windowDimensions, setWindowDimensions] = useState({ width: 1024, height: 768 })
+  const [currentTime, setCurrentTime] = useState('');
+  const windowDimensions = useWindowDimensions();
+  const { isMounted } = windowDimensions;
 
   useEffect(() => {
     const updateTime = () => {
-      const now = new Date()
-      setCurrentTime(now.toLocaleTimeString())
-    }
+      const now = new Date();
+      setCurrentTime(now.toLocaleTimeString());
+    };
 
-    updateTime()
-    const timer = setInterval(updateTime, 1000)
-    return () => clearInterval(timer)
-  }, [])
+    updateTime();
+    const timer = setInterval(updateTime, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
-  useEffect(() => {
-    setIsMounted(true)
-    
-    const updateDimensions = () => {
-      setWindowDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight
-      })
-    }
-    
-    updateDimensions()
-    window.addEventListener('resize', updateDimensions)
-    
-    return () => window.removeEventListener('resize', updateDimensions)
-  }, [])
-
-  const isMobile = isMounted && windowDimensions.width <= 768
-
-  const handleMediaPlayerClick = () => {
-    // Skip if no handlers provided
-    if (!onMediaPlayerClick && !onMinimizeMediaPlayer) return;
-    
-    if (showMediaPlayer) {
-      onMinimizeMediaPlayer?.();
-    } else {
-      onMediaPlayerClick?.();
-    }
-  }
+  const isMobile = isMounted && windowDimensions.width <= 768;
 
   const handleInfoClick = () => {
     if (showInfoPanel) {
-      onMinimizeInfoPanel()
+      onMinimizeInfoPanel();
     } else {
-      onInfoClick()
+      onInfoClick();
     }
-  }
+  };
 
   const handleAboutMeClick = () => {
     if (showAboutMe) {
-      onMinimizeAboutMe()
+      onMinimizeAboutMe();
     } else {
-      onAboutMeClick()
+      onAboutMeClick();
     }
-  }
+  };
 
   const handleContactClick = () => {
     if (showContact) {
-      onMinimizeContact()
+      onMinimizeContact();
     } else {
-      onContactClick()
+      onContactClick();
     }
-  }
+  };
 
   const handleProjectListClick = () => {
     if (showProjectList) {
-      onMinimizeProjectList()
+      onMinimizeProjectList();
     } else {
-      onProjectListClick()
+      onProjectListClick();
     }
-  }
+  };
 
   const handleResumeClick = () => {
     if (showResume) {
-      onMinimizeResume()
+      onMinimizeResume();
     } else {
-      onResumeClick()
+      onResumeClick();
     }
-  }
+  };
 
   const handleExperienceClick = () => {
     if (showExperience) {
-      onMinimizeExperience()
+      onMinimizeExperience();
     } else {
-      onExperienceClick()
+      onExperienceClick();
     }
-  }
+  };
 
   // Button data for easier responsive handling
   const buttons = [
     { label: 'Information', handler: handleInfoClick, isActive: showInfoPanel, shortLabel: 'Info' },
     { label: 'About Me', handler: handleAboutMeClick, isActive: showAboutMe, shortLabel: 'About' },
     { label: 'Contact', handler: handleContactClick, isActive: showContact, shortLabel: 'Contact' },
-    { label: 'Projects', handler: handleProjectListClick, isActive: showProjectList, shortLabel: 'Projects' },
-    { label: 'Experiences', handler: handleExperienceClick, isActive: showExperience, shortLabel: 'Exp.' },
-    { label: 'Resume', handler: handleResumeClick, isActive: showResume, shortLabel: 'Resume' }
-  ]
+    {
+      label: 'Projects',
+      handler: handleProjectListClick,
+      isActive: showProjectList,
+      shortLabel: 'Projects',
+    },
+    {
+      label: 'Experiences',
+      handler: handleExperienceClick,
+      isActive: showExperience,
+      shortLabel: 'Exp.',
+    },
+    { label: 'Resume', handler: handleResumeClick, isActive: showResume, shortLabel: 'Resume' },
+  ];
 
   return (
     <div className={`win98 status-bar ${isMounted && isMobile ? 'status-bar-mobile' : ''}`}>
@@ -161,7 +139,9 @@ export function StatusBar({
             onClick={button.handler}
             title={button.label} // Tooltip for truncated text
           >
-            {isMounted && isMobile && windowDimensions.width <= 480 ? button.shortLabel : button.label}
+            {isMounted && isMobile && windowDimensions.width <= 480
+              ? button.shortLabel
+              : button.label}
           </button>
         ))}
       </div>
@@ -169,5 +149,5 @@ export function StatusBar({
         {isMounted && isMobile ? currentTime.substring(0, 5) : currentTime}
       </div>
     </div>
-  )
+  );
 }

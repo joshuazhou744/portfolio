@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { BaseWindow } from './base-window'
+import { BaseWindow } from './base-window';
 
 interface AboutMeProps {
   isVisible: boolean;
@@ -16,13 +16,13 @@ export function AboutMe({ isVisible, onVisibilityChange }: AboutMeProps) {
       width="500px"
       windowId="about-me"
       initialPosition={{
-        x: Math.random() * (200-100) + 100,
-        y: Math.random() * (75-50) + 50
+        x: Math.random() * (200 - 100) + 100,
+        y: Math.random() * (75 - 50) + 50,
       }}
     >
       <div className="content">
         <h4>Hello, I'm Joshua Zhou</h4>
-        <br/>
+        <br />
         <ul>
           <li>I am a Software Engineering (Co-op) student at McGill University.</li>
           <li>I have worked at IBM as a Data Scientist Intern.</li>
@@ -31,4 +31,4 @@ export function AboutMe({ isVisible, onVisibilityChange }: AboutMeProps) {
       </div>
     </BaseWindow>
   );
-} 
+}

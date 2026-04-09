@@ -1,40 +1,40 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import "../styles/loader.css"
+import { useEffect, useState } from 'react';
+import '../styles/loader.css';
 
 interface LoaderProps {
   onComplete: () => void;
 }
 
 export function Loader({ onComplete }: LoaderProps) {
-  const [progress, setProgress] = useState(0)
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const duration = 1000
-    const interval = 50
-    const steps = duration / interval
-    const increment = 100 / steps
+    const duration = 1000;
+    const interval = 50;
+    const steps = duration / interval;
+    const increment = 100 / steps;
 
     const timer = setInterval(() => {
-      setProgress(prev => {
-        const newProgress = Math.min(prev + increment, 100)
+      setProgress((prev) => {
+        const newProgress = Math.min(prev + increment, 100);
         if (newProgress >= 100) {
-          clearInterval(timer)
-          return 100
+          clearInterval(timer);
+          return 100;
         }
-        return newProgress
-      })
-    }, interval)
+        return newProgress;
+      });
+    }, interval);
 
-    return () => clearInterval(timer)
-  }, [])
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     if (progress >= 100) {
-      onComplete()
+      onComplete();
     }
-  }, [progress, onComplete])
+  }, [progress, onComplete]);
 
   return (
     <div className="loader-container">
@@ -48,12 +48,12 @@ export function Loader({ onComplete }: LoaderProps) {
               key={index}
               className="loader-block"
               style={{
-                left: `${(progress + (index * 9))}px`,
+                left: `${progress + index * 9}px`,
               }}
             />
           ))}
         </div>
       </div>
     </div>
-  )
-} 
+  );
+}

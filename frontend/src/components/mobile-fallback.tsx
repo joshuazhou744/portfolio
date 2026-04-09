@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -47,7 +47,7 @@ export function MobileFallback() {
         gap: '20px',
         background: '#c0c0c0',
         color: '#000',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
       }}
     >
       <div
@@ -58,13 +58,13 @@ export function MobileFallback() {
           border: '2px solid #000',
           boxShadow: '4px 4px 0 #555',
           padding: '16px',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
         }}
       >
         <h2 style={{ margin: '0 0 8px 0' }}>Desktop Site Recommended</h2>
         <p style={{ margin: 0 }}>
-          This portfolio is built with a Windows 98 desktop experience. For the full effect, please view on a
-          laptop or desktop. In the meantime, here are the essentials.
+          This portfolio is built with a Windows 98 desktop experience. For the full effect, please
+          view on a laptop or desktop. In the meantime, here are the essentials.
         </p>
       </div>
 
@@ -76,11 +76,11 @@ export function MobileFallback() {
           border: '2px solid #000',
           boxShadow: '4px 4px 0 #555',
           padding: '16px',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
         }}
       >
         <h3 style={{ marginTop: 0, marginBottom: '8px' }}>About Me</h3>
-        Joshua Zhou <br/>
+        Joshua Zhou <br />
         Software Engineering (Co-op) student at McGill University
       </div>
 
@@ -95,14 +95,36 @@ export function MobileFallback() {
           boxSizing: 'border-box',
           display: 'flex',
           flexDirection: 'column',
-          gap: '8px'
+          gap: '8px',
         }}
       >
         <h3 style={{ margin: 0 }}>Contact & Links</h3>
-        <div><strong>Email:</strong> <a href={`mailto:${email}`}>{email}</a></div>
-        <div><strong>Phone:</strong> <a href={`tel:${phone.replace(/[^\\d+]/g, '')}`}>{phone}</a></div>
-        <div><strong>LinkedIn:</strong> <a href={linkedin.startsWith('http') ? linkedin : `https://${linkedin}`} target="_blank" rel="noopener noreferrer">{linkedin.replace(/^https?:\/\//, '')}</a></div>
-        <div><strong>GitHub:</strong> <a href={github.startsWith('http') ? github : `https://${github}`} target="_blank" rel="noopener noreferrer">{github.replace(/^https?:\/\//, '')}</a></div>
+        <div>
+          <strong>Email:</strong> <a href={`mailto:${email}`}>{email}</a>
+        </div>
+        <div>
+          <strong>Phone:</strong> <a href={`tel:${phone.replace(/[^\\d+]/g, '')}`}>{phone}</a>
+        </div>
+        <div>
+          <strong>LinkedIn:</strong>{' '}
+          <a
+            href={linkedin.startsWith('http') ? linkedin : `https://${linkedin}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {linkedin.replace(/^https?:\/\//, '')}
+          </a>
+        </div>
+        <div>
+          <strong>GitHub:</strong>{' '}
+          <a
+            href={github.startsWith('http') ? github : `https://${github}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {github.replace(/^https?:\/\//, '')}
+          </a>
+        </div>
       </div>
     </main>
   );
