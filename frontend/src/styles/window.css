@@ -32,16 +32,19 @@
   margin-bottom: 10px;
 }
 
-.base-window-title-bar {
-  cursor: default !important;
+/* 98.css sets `h4 { font-size: 1.5rem }` (24px) and uses its bitmap font, which
+   makes h4 inside a window look like a giant pixelated header. Force h4 inside
+   any window to render at the parent's body text size and weight so the deployed
+   look (where the first line of About Me etc. looks like normal text) matches. */
+.window h4,
+.window-body h4 {
+  font-size: inherit;
+  font-weight: normal;
+  font-family: inherit;
 }
 
-/* 98.css gives every .window-body 8px margin on all sides. For BaseWindow
-   modals (Welcome, Contact, About Me) that creates a visible empty band
-   between the title bar and the content. Drop the top margin so content
-   sits flush under the title bar like the Projects modal does visually. */
-.window-body.base-window-body {
-  margin: 0 8px 8px 8px;
+.base-window-title-bar {
+  cursor: default !important;
 }
 
 /* About Me Window */

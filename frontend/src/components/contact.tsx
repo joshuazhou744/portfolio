@@ -1,7 +1,7 @@
-'use client';
+'use client'
 
-import { BaseWindow } from './base-window';
-import { useEffect, useState } from 'react';
+import { BaseWindow } from './base-window'
+import { useEffect, useState } from 'react'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -70,78 +70,80 @@ export function Contact({ isVisible, onVisibilityChange }: ContactProps) {
       width="350px"
       windowId="contact"
       initialPosition={{
-        x: window.innerWidth - (Math.random() * (500 - 300) + 300),
-        y: Math.random() * (75 - 50) + 50,
+        x: window.innerWidth - (Math.random() * (500-300) + 300),
+        y: Math.random() * (75-50) + 50
       }}
     >
-      <div className="content">
-        {loading ? (
+      {loading && (
+        <div className="content">
           <p>Loading contact info...</p>
-        ) : error ? (
+        </div>
+      )}
+      {error && !loading && (
+        <div className="content">
           <p style={{ color: 'red' }}>{error}</p>
-        ) : (
-          <>
-            <div className="field-row-stacked" style={{ marginBottom: '10px' }}>
-              <label htmlFor="email">Email:</label>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                <p>{email}</p>
-                <button
-                  className="win98-button"
-                  onClick={() => handleCopy(email, 'email')}
-                  style={{ whiteSpace: 'nowrap', minWidth: '60px', marginBottom: '8px' }}
-                >
-                  {copyStatus['email'] || 'Copy'}
-                </button>
-              </div>
-            </div>
-            <div className="field-row-stacked" style={{ marginBottom: '10px' }}>
-              <label htmlFor="phone-number">Phone Number:</label>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                <p>{phone}</p>
-                <button
-                  className="win98-button"
-                  onClick={() => handleCopy(phone, 'phone')}
-                  style={{ whiteSpace: 'nowrap', minWidth: '60px', marginBottom: '8px' }}
-                >
-                  {copyStatus['phone'] || 'Copy'}
-                </button>
-              </div>
-            </div>
-            <div className="field-row-stacked" style={{ marginBottom: '10px' }}>
-              <label htmlFor="linkedin">LinkedIn:</label>
-              <a
-                href={linkedin.startsWith('http') ? linkedin : `https://${linkedin}`}
-                id="linkedin"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  color: '#0000EE',
-                  textDecoration: 'underline',
-                  cursor: 'pointer',
-                }}
-              >
-                {linkedin.replace(/^https?:\/\//, '')}
-              </a>
-            </div>
-            <div className="field-row-stacked">
-              <label htmlFor="github">Github:</label>
-              <a
-                href={github.startsWith('http') ? github : `https://${github}`}
-                id="github"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  color: '#0000EE',
-                  textDecoration: 'underline',
-                  cursor: 'pointer',
-                }}
-              >
-                {github.replace(/^https?:\/\//, '')}
-              </a>
-            </div>
-          </>
-        )}
+        </div>
+      )}
+      <div className="content">
+        <div className="field-row-stacked" style={{ marginBottom: '10px' }}>
+          <label htmlFor="email">Email:</label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            <p>{email}</p>
+            <button
+              className="win98-button"
+              onClick={() => handleCopy(email, 'email')}
+              style={{ whiteSpace: 'nowrap', minWidth: '60px', marginBottom: '8px' }}
+            >
+              {copyStatus['email'] || 'Copy'}
+            </button>
+          </div>
+        </div>
+        <div className="field-row-stacked" style={{ marginBottom: '10px' }}>
+          <label htmlFor="phone-number">Phone Number:</label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            <p>{phone}</p>
+            <button
+              className="win98-button"
+              onClick={() => handleCopy(phone, 'phone')}
+              style={{ whiteSpace: 'nowrap', minWidth: '60px', marginBottom: '8px' }}
+            >
+              {copyStatus['phone'] || 'Copy'}
+            </button>
+          </div>
+        </div>
+        <div className="field-row-stacked" style={{ marginBottom: '10px' }}>
+          <label htmlFor="linkedin">LinkedIn:</label>
+          <a 
+            href={linkedin.startsWith('http') ? linkedin : `https://${linkedin}`} 
+            id="linkedin" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{
+              color: '#0000EE',
+              textDecoration: 'underline',
+              cursor: 'pointer'
+            }}
+          >
+            {linkedin.replace(/^https?:\/\//, '')}
+          </a>
+        </div>
+        <div className="field-row-stacked">
+          <label htmlFor="github">Github:</label>
+          <a 
+            href={github.startsWith('http') ? github : `https://${github}`} 
+            id="github" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{
+              color: '#0000EE',
+              textDecoration: 'underline',
+              cursor: 'pointer'
+            }}
+          >
+            {github.replace(/^https?:\/\//, '')}
+          </a>
+        </div>
       </div>
     </BaseWindow>
   );
-}
+} 
