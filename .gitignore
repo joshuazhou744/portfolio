@@ -95,3 +95,5 @@ package-lock.json
 # script runtime artifacts (created by scripts/sync_songs.py wherever it's run from)
 .cache
 cookies.txt
+
+graphify-out/
