@@ -8,7 +8,7 @@ import { useWindow } from '../contexts/WindowContext';
 import { useWindowDimensions } from '../hooks/useWindowDimensions';
 
 interface WaveSurferType {
-  play: () => void;
+  play: () => Promise<void> | void;
   pause: () => void;
   playPause: () => void;
   getCurrentTime: () => number;
@@ -22,6 +22,24 @@ interface WaveSurferType {
   cancelAjax?: () => void;
   destroy: () => void;
 }
+
+// wavesurfer.play() may throw or return a rejecting promise when the browser
+// blocks autoplay (tab was backgrounded, audio context suspended, etc.).
+// Swallow the rejection and fall back to paused so the UI stays consistent.
+const safePlay = (ws: WaveSurferType, onFail?: () => void) => {
+  try {
+    const result = ws.play();
+    if (result && typeof (result as Promise<void>).catch === 'function') {
+      (result as Promise<void>).catch((err) => {
+        console.error('play() rejected:', err);
+        onFail?.();
+      });
+    }
+  } catch (err) {
+    console.error('play() threw:', err);
+    onFail?.();
+  }
+};
 
 interface AudioCoreProps {
   audioUrl: string;
@@ -46,6 +64,13 @@ const AudioCore = ({
 }: AudioCoreProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Keep the latest handlers in a ref so the wavesurfer listener effect
+  // below only depends on `wavesurfer` identity — otherwise parent re-renders
+  // would tear down and re-subscribe every listener, creating windows where
+  // 'ready' / 'finish' events can be dropped.
+  const handlersRef = useRef({ onReady, onPlayPause, onTimeUpdate, onError, onFinish });
+  handlersRef.current = { onReady, onPlayPause, onTimeUpdate, onError, onFinish };
+
   const { wavesurfer } = useWavesurfer({
     container: containerRef,
     url: audioUrl,
@@ -63,52 +88,26 @@ const AudioCore = ({
     if (wavesurfer) {
       wavesurferRef.current = wavesurfer;
     }
-
-    return () => {};
   }, [wavesurfer, wavesurferRef]);
+
+  useEffect(() => {
+    if (wavesurfer) {
+      wavesurfer.setVolume(volume);
+    }
+  }, [wavesurfer, volume]);
 
   useEffect(() => {
     if (!wavesurfer) return;
 
-    wavesurfer.setVolume(volume);
-
-    const handleReady = () => {
-      if (onReady) {
-        const duration = wavesurfer.getDuration();
-        onReady(duration);
-      }
+    const handleReady = () => handlersRef.current.onReady?.(wavesurfer.getDuration());
+    const handlePlay = () => handlersRef.current.onPlayPause?.(true);
+    const handlePause = () => handlersRef.current.onPlayPause?.(false);
+    const handleAudioProcess = () => handlersRef.current.onTimeUpdate?.(wavesurfer.getCurrentTime());
+    const handleError = (err: unknown) => {
+      console.error('WaveSurfer error:', err);
+      handlersRef.current.onError?.(err instanceof Error ? err : new Error(String(err)));
     };
-
-    const handlePlay = () => {
-      if (onPlayPause) {
-        onPlayPause(true);
-      }
-    };
-
-    const handlePause = () => {
-      if (onPlayPause) {
-        onPlayPause(false);
-      }
-    };
-
-    const handleAudioProcess = () => {
-      if (onTimeUpdate) {
-        onTimeUpdate(wavesurfer.getCurrentTime());
-      }
-    };
-
-    const handleError = (error: Error) => {
-      console.error('WaveSurfer error:', error);
-      if (onError) {
-        onError(error);
-      }
-    };
-
-    const handleFinish = () => {
-      if (onFinish) {
-        onFinish();
-      }
-    };
+    const handleFinish = () => handlersRef.current.onFinish?.();
 
     wavesurfer.on('ready', handleReady);
     wavesurfer.on('play', handlePlay);
@@ -117,21 +116,22 @@ const AudioCore = ({
     wavesurfer.on('error', handleError);
     wavesurfer.on('finish', handleFinish);
 
+    // If wavesurfer already has duration by the time we subscribe (happens
+    // when a stream finishes decoding before this effect runs), fire ready
+    // manually so we don't wait forever.
     if (wavesurfer.getDuration() > 0) {
       handleReady();
     }
 
     return () => {
-      if (wavesurfer) {
-        wavesurfer.un('ready', handleReady);
-        wavesurfer.un('play', handlePlay);
-        wavesurfer.un('pause', handlePause);
-        wavesurfer.un('audioprocess', handleAudioProcess);
-        wavesurfer.un('error', handleError);
-        wavesurfer.un('finish', handleFinish);
-      }
+      wavesurfer.un('ready', handleReady);
+      wavesurfer.un('play', handlePlay);
+      wavesurfer.un('pause', handlePause);
+      wavesurfer.un('audioprocess', handleAudioProcess);
+      wavesurfer.un('error', handleError);
+      wavesurfer.un('finish', handleFinish);
     };
-  }, [wavesurfer, onReady, onPlayPause, onTimeUpdate, onError, onFinish, volume]);
+  }, [wavesurfer]);
 
   return <div ref={containerRef} style={{ display: 'none' }} />;
 };
@@ -342,96 +342,29 @@ export default function MediaPlayer({
     [tracks, isPlaying, userPaused, currentTrackIndex]
   );
 
-  // helper function that polls for a valid duration
-  const waitForValidDuration = useCallback(
-    (timeout: number = 10000, interval: number = 100): Promise<number> => {
-      return new Promise((resolve, reject) => {
-        const startTime = Date.now();
-
-        // check duration repeatedly
-        const checkDuration = () => {
-          if (!wavesurferRef.current) {
-            reject(new Error('WaveSurfer instance is null'));
-            return;
-          }
-
-          try {
-            const ws = wavesurferRef.current as WaveSurferType;
-            const currentDuration = ws.getDuration();
-
-            // check if duration is valid
-            if (currentDuration > 0 && !isNaN(currentDuration)) {
-              resolve(currentDuration);
-              return;
-            }
-
-            // check if we've exceeded timeout
-            if (Date.now() - startTime >= timeout) {
-              reject(new Error('Timeout waiting for audio metadata'));
-              return;
-            }
-
-            setTimeout(checkDuration, interval);
-          } catch (err) {
-            console.error('Error during duration polling:', err);
-            reject(err);
-          }
-        };
-
-        checkDuration();
-      });
-    },
-    []
-  );
-
   const handleReady = useCallback(
     (audioDuration: number) => {
-      setDuration(audioDuration);
-
-      if (!wavesurferRef.current) {
-        console.error('WaveSurfer instance not available in handleReady');
+      // wavesurfer fires 'ready' only once the asset is decoded, so the
+      // duration here is authoritative. No need to re-poll.
+      if (!audioDuration || audioDuration <= 0 || isNaN(audioDuration)) {
+        console.error('Got invalid duration from wavesurfer:', audioDuration);
         setIsBuffering(false);
         setIsTrackReady(false);
+        setError('Track failed to load. Try skipping.');
         return;
       }
 
-      setIsBuffering(true);
+      setDuration(audioDuration);
+      setIsBuffering(false);
+      setIsTrackReady(true);
 
-      waitForValidDuration()
-        .then((validDuration) => {
-          setDuration(validDuration);
-          setIsBuffering(false);
-          setIsTrackReady(true);
-
-          if (shouldAutoPlay && !userPaused && wavesurferRef.current) {
-            try {
-              const ws = wavesurferRef.current as WaveSurferType;
-              ws.play();
-              setIsPlaying(true);
-            } catch (e) {
-              console.error('Error playing audio after valid duration found:', e);
-            }
-          }
-        })
-        .catch((error) => {
-          console.error('Failed to get valid duration:', error);
-
-          try {
-            if (wavesurferRef.current) {
-              const currentDuration = (wavesurferRef.current as WaveSurferType).getDuration();
-              setDuration(currentDuration);
-              setIsTrackReady(currentDuration > 0);
-            } else {
-              setIsTrackReady(false);
-            }
-          } catch (e) {
-            console.error('Error getting fallback duration:', e);
-            setIsTrackReady(false);
-          }
-          setIsBuffering(false);
-        });
+      if (shouldAutoPlay && !userPaused && wavesurferRef.current) {
+        const ws = wavesurferRef.current as WaveSurferType;
+        setIsPlaying(true);
+        safePlay(ws, () => setIsPlaying(false));
+      }
     },
-    [waitForValidDuration, shouldAutoPlay, userPaused]
+    [shouldAutoPlay, userPaused]
   );
 
   const handlePlayPauseChange = useCallback((isPlaying: boolean) => {
@@ -450,19 +383,19 @@ export default function MediaPlayer({
 
   const handleTimeUpdate = useCallback(
     (time: number) => {
-      if (
-        wavesurferRef.current &&
-        (wavesurferRef.current as WaveSurferType).isPlaying() &&
-        duration > 0
-      ) {
-        setCurrentTime(time);
-
-        if (time > duration && duration > 0) {
-          handleNextTrack();
+      if (!wavesurferRef.current || duration <= 0) return;
+      // isPlaying() can throw if wavesurfer is mid-teardown between tracks.
+      // The 'finish' event is the single source of truth for advancing; we
+      // intentionally don't double-check time >= duration here.
+      try {
+        if ((wavesurferRef.current as WaveSurferType).isPlaying()) {
+          setCurrentTime(time);
         }
+      } catch {
+        // wavesurfer is being destroyed — ignore this tick
       }
     },
-    [duration, handleNextTrack]
+    [duration]
   );
 
   const handleAudioError = useCallback((error: Error) => {
@@ -530,6 +463,26 @@ export default function MediaPlayer({
     };
   }, []);
 
+  // If a track never reports 'ready' (network hang, decode failure, audio
+  // context suspended after tab was backgrounded), we'd otherwise sit on a
+  // "Loading..." forever and the user has to refresh. Auto-skip to the next
+  // track so playback recovers on its own.
+  useEffect(() => {
+    if (!audioUrl || isTrackReady || error) return;
+    const timer = setTimeout(() => {
+      if (isTrackReady) return;
+      console.error('Track load timed out after 15s, auto-skipping:', audioUrl);
+      if (tracks.length > 1) {
+        const nextIndex = (currentTrackIndex + 1) % tracks.length;
+        loadTrack(nextIndex, true);
+      } else {
+        setError('Track took too long to load. Try refreshing.');
+        setIsBuffering(false);
+      }
+    }, 15000);
+    return () => clearTimeout(timer);
+  }, [audioUrl, isTrackReady, error, tracks.length, currentTrackIndex, loadTrack]);
+
   // handle playback control
   const handlePlayPause = useCallback(() => {
     if (isBuffering || !isTrackReady || !duration || duration <= 0) return;
@@ -538,20 +491,20 @@ export default function MediaPlayer({
       return;
     }
 
-    try {
-      const ws = wavesurferRef.current as WaveSurferType;
+    const ws = wavesurferRef.current as WaveSurferType;
 
-      if (isPlaying) {
+    if (isPlaying) {
+      try {
         ws.pause();
-        setIsPlaying(false);
-        setUserPaused(true); // mark that user manually paused
-      } else {
-        ws.play();
-        setIsPlaying(true);
-        setUserPaused(false); // clear user paused flag when manually playing
+      } catch (e) {
+        console.error('Error pausing:', e);
       }
-    } catch (e) {
-      console.error('Error in handlePlayPause:', e);
+      setIsPlaying(false);
+      setUserPaused(true);
+    } else {
+      setIsPlaying(true);
+      setUserPaused(false);
+      safePlay(ws, () => setIsPlaying(false));
     }
   }, [isPlaying, isBuffering, isTrackReady, duration]);
 
