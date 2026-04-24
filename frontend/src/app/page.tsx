@@ -134,55 +134,60 @@ function AppContent() {
     }, 1000);
   };
 
-  return isMobile ? (
-    <MobileFallback />
-  ) : (
-    <main
-      className={`flex min-h-screen flex-col items-center relative main-container ${isMounted && isMobile ? 'mobile-main' : ''}`}
-    >
-      <div className="main-content">
-        {showMobileAlert && <MobileAlert onClose={() => setShowMobileAlert(false)} />}
-        {isLoading ? (
-          <Loader onComplete={handleLoaderComplete} />
-        ) : (
-          <>
-            <MediaPlayer
-              onAboutMeClick={handleAboutMeClick}
-              onContactClick={handleContactClick}
-              onProjectListClick={handleProjectListClick}
-              onResumeClick={handleResumeClick}
-              onExperienceClick={handleExperienceClick}
-            />
-            <InfoPanel isVisible={showInfoPanel} onVisibilityChange={setShowInfoPanel} />
-            <AboutMe isVisible={showAboutMe} onVisibilityChange={setShowAboutMe} />
-            <Contact isVisible={showContact} onVisibilityChange={setShowContact} />
-            <ProjectList isVisible={showProjectList} onVisibilityChange={setShowProjectList} />
-            <Resume isVisible={showResume} onVisibilityChange={setShowResume} />
-            <ExperienceList isVisible={showExperience} onVisibilityChange={setShowExperience} />
-            <StatusBar
-              onInfoClick={handleInfoClick}
-              onAboutMeClick={handleAboutMeClick}
-              onContactClick={handleContactClick}
-              onProjectListClick={handleProjectListClick}
-              onResumeClick={handleResumeClick}
-              onExperienceClick={handleExperienceClick}
-              showInfoPanel={showInfoPanel}
-              showAboutMe={showAboutMe}
-              showContact={showContact}
-              showProjectList={showProjectList}
-              showResume={showResume}
-              showExperience={showExperience}
-              onMinimizeInfoPanel={() => setShowInfoPanel(false)}
-              onMinimizeAboutMe={() => setShowAboutMe(false)}
-              onMinimizeContact={() => setShowContact(false)}
-              onMinimizeProjectList={() => setShowProjectList(false)}
-              onMinimizeResume={() => setShowResume(false)}
-              onMinimizeExperience={() => setShowExperience(false)}
-            />
-          </>
-        )}
-      </div>
-    </main>
+  // Always keep the desktop tree mounted so MediaPlayer stays alive across
+  // mobile↔desktop resizes. CSS hides it on narrow viewports; MobileFallback
+  // renders on top. This prevents the current track from resetting on resize.
+  return (
+    <>
+      {isMobile && <MobileFallback />}
+      <main
+        className="flex min-h-screen flex-col items-center relative main-container"
+        style={{ display: isMobile ? 'none' : undefined }}
+      >
+        <div className="main-content">
+          {showMobileAlert && <MobileAlert onClose={() => setShowMobileAlert(false)} />}
+          {isLoading ? (
+            <Loader onComplete={handleLoaderComplete} />
+          ) : (
+            <>
+              <MediaPlayer
+                onAboutMeClick={handleAboutMeClick}
+                onContactClick={handleContactClick}
+                onProjectListClick={handleProjectListClick}
+                onResumeClick={handleResumeClick}
+                onExperienceClick={handleExperienceClick}
+              />
+              <InfoPanel isVisible={showInfoPanel} onVisibilityChange={setShowInfoPanel} />
+              <AboutMe isVisible={showAboutMe} onVisibilityChange={setShowAboutMe} />
+              <Contact isVisible={showContact} onVisibilityChange={setShowContact} />
+              <ProjectList isVisible={showProjectList} onVisibilityChange={setShowProjectList} />
+              <Resume isVisible={showResume} onVisibilityChange={setShowResume} />
+              <ExperienceList isVisible={showExperience} onVisibilityChange={setShowExperience} />
+              <StatusBar
+                onInfoClick={handleInfoClick}
+                onAboutMeClick={handleAboutMeClick}
+                onContactClick={handleContactClick}
+                onProjectListClick={handleProjectListClick}
+                onResumeClick={handleResumeClick}
+                onExperienceClick={handleExperienceClick}
+                showInfoPanel={showInfoPanel}
+                showAboutMe={showAboutMe}
+                showContact={showContact}
+                showProjectList={showProjectList}
+                showResume={showResume}
+                showExperience={showExperience}
+                onMinimizeInfoPanel={() => setShowInfoPanel(false)}
+                onMinimizeAboutMe={() => setShowAboutMe(false)}
+                onMinimizeContact={() => setShowContact(false)}
+                onMinimizeProjectList={() => setShowProjectList(false)}
+                onMinimizeResume={() => setShowResume(false)}
+                onMinimizeExperience={() => setShowExperience(false)}
+              />
+            </>
+          )}
+        </div>
+      </main>
+    </>
   );
 }
 
