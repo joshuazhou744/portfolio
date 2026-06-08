@@ -614,7 +614,7 @@ export default function MediaPlayer({
             onClick={handleMenuClick(onAboutMeClick, 'about-me')}
             style={{ cursor: 'pointer' }}
           >
-            <u>A</u>bout Me
+            About Me
           </li>
           <li
             role="menuitem"
@@ -622,7 +622,7 @@ export default function MediaPlayer({
             onClick={handleMenuClick(onContactClick, 'contact')}
             style={{ cursor: 'pointer' }}
           >
-            <u>C</u>ontact
+            Contact
           </li>
           <li
             role="menuitem"
@@ -630,7 +630,7 @@ export default function MediaPlayer({
             onClick={handleMenuClick(onProjectListClick, 'project-list')}
             style={{ cursor: 'pointer' }}
           >
-            <u>P</u>rojects
+            Projects
           </li>
           <li
             role="menuitem"
@@ -638,7 +638,7 @@ export default function MediaPlayer({
             onClick={handleMenuClick(onExperienceClick, 'experience')}
             style={{ cursor: 'pointer' }}
           >
-            <u>E</u>xperiences
+            Experiences
           </li>
           <li
             role="menuitem"
@@ -646,7 +646,7 @@ export default function MediaPlayer({
             onClick={handleMenuClick(onResumeClick, 'resume')}
             style={{ cursor: 'pointer' }}
           >
-            <u>R</u>esume
+            Resume
           </li>
         </menu>
         <div
