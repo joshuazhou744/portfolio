@@ -28,16 +28,11 @@ YDL_OPTS = {
     # URL, which looks like the script is downloading the same song forever.
     "noplaylist": True,
     "cookiefile": "cookies.txt",
-    "user_agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-    ),
     "extractor_retries": 3,
     "ignoreerrors": True,
-    "no_check_certificate": True,
-    "prefer_insecure": True,
-    "format_sort": ["ext:mp4:m4a", "res:720", "codec:h264", "codec:aac"],
-    "format_sort_force": True,
+    # yt-dlp needs deno (installed) + the solver script to decipher YouTube's
+    # JS signature challenges; ejs:github downloads/caches it automatically.
+    "remote_components": "ejs:github",
 }
 
 
