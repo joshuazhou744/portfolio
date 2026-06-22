@@ -357,6 +357,7 @@ export default function MediaPlayer({
       setDuration(audioDuration);
       setIsBuffering(false);
       setIsTrackReady(true);
+      setError(null); // a track that decoded successfully is not in an error state
 
       if (shouldAutoPlay && !userPaused && wavesurferRef.current) {
         const ws = wavesurferRef.current as WaveSurferType;
@@ -398,12 +399,39 @@ export default function MediaPlayer({
     [duration]
   );
 
-  const handleAudioError = useCallback((error: Error) => {
-    console.error('Audio error:', error);
-    setError('Failed to load audio. Please try another track.');
-    setIsBuffering(false);
-    setIsTrackReady(false);
+  // Hard-stop: halt the active wavesurfer and make sure nothing auto-resumes.
+  // Used on load failure/timeout so a dead or pending track can't keep playing.
+  const stopPlayback = useCallback(() => {
+    setShouldAutoPlay(false);
+    setIsPlaying(false);
+    if (wavesurferRef.current) {
+      try {
+        const ws = wavesurferRef.current as WaveSurferType;
+        ws.pause();
+        ws.empty();
+      } catch (e) {
+        console.error('Error stopping playback:', e);
+      }
+    }
   }, []);
+
+  const handleAudioError = useCallback(
+    (error: Error) => {
+      // AbortErrors fire when we intentionally swap/tear down a track (e.g. the
+      // previous request was still in flight when we moved on). They are NOT
+      // real playback failures — ignoring them stops a stale abort from the old
+      // track bleeding a "Failed to load" error onto whatever is playing now.
+      if (error?.name === 'AbortError') {
+        return;
+      }
+      console.error('Audio error:', error);
+      stopPlayback();
+      setError('Failed to load audio. Playback stopped.');
+      setIsBuffering(false);
+      setIsTrackReady(false);
+    },
+    [stopPlayback]
+  );
 
   const handleTrackFinish = useCallback(() => {
     if (tracks.length > 1) {
@@ -472,17 +500,15 @@ export default function MediaPlayer({
     if (!audioUrl || isTrackReady || error) return;
     const timer = setTimeout(() => {
       if (isTrackReady) return;
-      console.error(`Track load timed out after ${LOAD_TIMEOUT_MS / 1000}s, auto-skipping:`, audioUrl);
-      if (tracks.length > 1) {
-        const nextIndex = (currentTrackIndex + 1) % tracks.length;
-        loadTrack(nextIndex, true);
-      } else {
-        setError('Track took too long to load. Try refreshing.');
-        setIsBuffering(false);
-      }
+      console.error(`Track load timed out after ${LOAD_TIMEOUT_MS / 1000}s, stopping:`, audioUrl);
+      // Stop everything rather than auto-advancing — a failed load should not
+      // start another song behind a "failed" UI.
+      stopPlayback();
+      setError('Track took too long to load. Playback stopped.');
+      setIsBuffering(false);
     }, LOAD_TIMEOUT_MS);
     return () => clearTimeout(timer);
-  }, [audioUrl, isTrackReady, error, tracks.length, currentTrackIndex, loadTrack]);
+  }, [audioUrl, isTrackReady, error, stopPlayback]);
 
   // handle playback control
   const handlePlayPause = useCallback(() => {
