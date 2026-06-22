@@ -89,6 +89,14 @@
   height: 500px;
 }
 
+.resume-scroll::-webkit-scrollbar-button:vertical:start:increment,
+.resume-scroll::-webkit-scrollbar-button:vertical:end:decrement,
+.resume-scroll::-webkit-scrollbar-button:horizontal:start:increment,
+.resume-scroll::-webkit-scrollbar-button:horizontal:end:decrement {
+  display: none;
+}
+
+
 /* Tablet responsive styles */
 @media screen and (max-width: 768px) {
   .about-me-window {
