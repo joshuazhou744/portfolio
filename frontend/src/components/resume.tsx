@@ -1,8 +1,11 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { Document, Page, pdfjs } from 'react-pdf';
 import '../styles/window.css';
 import { useWindow } from '../contexts/WindowContext';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 interface WindowPosition {
   x: number;
@@ -32,6 +35,7 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
   const [dragOffset, setDragOffset] = useState<WindowPosition>({ x: 0, y: 0 });
   const [resumeMetadata, setResumeMetadata] = useState<ResumeMetadata | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [numPages, setNumPages] = useState(0);
   const [size, setSize] = useState({ width: 600, height: 500 });
   const [isResizing, setIsResizing] = useState(false);
   const [activeResizeHandle, setActiveResizeHandle] = useState<'se' | 'sw' | null>(null);
@@ -42,30 +46,39 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
   const { bringToFront, getZIndex } = useWindow();
 
   const windowRef = useRef<HTMLDivElement>(null);
+  const observerRef = useRef<ResizeObserver | null>(null);
+  const [containerWidth, setContainerWidth] = useState(0);
+
+  const scrollRefCallback = useCallback((node: HTMLDivElement | null) => {
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+      observerRef.current = null;
+    }
+    if (node) {
+      setContainerWidth(node.clientWidth);
+      observerRef.current = new ResizeObserver(() => setContainerWidth(node.clientWidth));
+      observerRef.current.observe(node);
+    }
+  }, []);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const handleZoomIn = useCallback(() => {
-    setZoomLevel((prevZoom) => Math.min(prevZoom + 25, 300));
+    setZoomLevel((prev) => Math.min(prev + 25, 300));
   }, []);
 
   const handleZoomOut = useCallback(() => {
-    setZoomLevel((prevZoom) => Math.max(prevZoom - 25, 50));
+    setZoomLevel((prev) => Math.max(prev - 25, 50));
   }, []);
-
-  const scale = zoomLevel / 100;
 
   useEffect(() => {
     if (isVisible) {
-      setTimeout(() => {
-        bringToFront('resume');
-      }, 0);
+      setTimeout(() => bringToFront('resume'), 0);
     }
   }, [isVisible, bringToFront]);
 
   useEffect(() => {
     if (!isVisible) return;
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey) {
         if (e.key === '+' || e.key === '=') {
@@ -77,29 +90,24 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
         }
       }
     };
-
     window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isVisible, handleZoomIn, handleZoomOut]);
 
   useEffect(() => {
     if (isVisible && !resumeMetadata) {
       setIsLoading(true);
       fetch(`${API_URL}/resume`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Resume not found');
-          }
-          return response.json();
+        .then((res) => {
+          if (!res.ok) throw new Error('Resume not found');
+          return res.json();
         })
         .then((data) => {
           setResumeMetadata(data);
           setIsLoading(false);
         })
-        .catch((error) => {
-          console.error('Error fetching resume:', error);
+        .catch((err) => {
+          console.error('Error fetching resume:', err);
           setIsLoading(false);
         });
     }
@@ -111,22 +119,13 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
         setIsDragging(true);
         const rect = windowRef.current?.getBoundingClientRect();
         if (rect) {
-          setDragOffset({
-            x: e.clientX - rect.left,
-            y: e.clientY - rect.top,
-          });
+          setDragOffset({ x: e.clientX - rect.left, y: e.clientY - rect.top });
         }
       } else if (e.target.closest('.resize-handle')) {
         setIsResizing(true);
-        const rect = windowRef.current?.getBoundingClientRect();
-        if (rect) {
-          const targetEl = e.target as HTMLElement;
-          if (targetEl.classList.contains('se-handle')) {
-            setActiveResizeHandle('se');
-          } else if (targetEl.classList.contains('sw-handle')) {
-            setActiveResizeHandle('sw');
-          }
-        }
+        const targetEl = e.target as HTMLElement;
+        if (targetEl.classList.contains('se-handle')) setActiveResizeHandle('se');
+        else if (targetEl.classList.contains('sw-handle')) setActiveResizeHandle('sw');
       }
     }
   };
@@ -134,65 +133,33 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
       if (isDragging) {
-        const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 500;
-        const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 500;
-
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
         const newX = e.clientX - dragOffset.x;
         const newY = e.clientY - dragOffset.y;
-
         const width = windowRef.current?.offsetWidth || 600;
-
-        const constrainedX = Math.min(Math.max(newX, -width + 400), windowWidth - 400);
-        const constrainedY = Math.min(Math.max(newY, 0), windowHeight - 300);
-
         setPosition({
-          x: constrainedX,
-          y: constrainedY,
+          x: Math.min(Math.max(newX, -width + 400), windowWidth - 400),
+          y: Math.min(Math.max(newY, 0), windowHeight - 300),
         });
       } else if (isResizing) {
-        const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 500;
-        const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 500;
-
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
         if (activeResizeHandle === 'se') {
-          let newWidth = Math.max(400, e.clientX - position.x);
-          let newHeight = Math.max(300, e.clientY - position.y);
-
-          newWidth = Math.min(newWidth, windowWidth - position.x);
-          newHeight = Math.min(newHeight, windowHeight - position.y);
-
           setSize({
-            width: newWidth,
-            height: newHeight,
+            width: Math.min(Math.max(400, e.clientX - position.x), windowWidth - position.x),
+            height: Math.min(Math.max(300, e.clientY - position.y), windowHeight - position.y),
           });
         } else if (activeResizeHandle === 'sw') {
-          const rect = windowRef.current?.getBoundingClientRect();
-          if (rect) {
-            const rightEdgeX = position.x + size.width;
-            let newWidth = Math.max(400, rightEdgeX - e.clientX);
-            let newHeight = Math.max(300, e.clientY - position.y);
-
-            let newX = rightEdgeX - newWidth;
-
-            newX = Math.max(0, newX);
-            newWidth = Math.min(newWidth, rightEdgeX);
-            newHeight = Math.min(newHeight, windowHeight - position.y);
-
-            if (newWidth >= 400 && newWidth <= windowWidth) {
-              setPosition((prev) => ({
-                ...prev,
-                x: newX,
-              }));
-              setSize((prev) => ({
-                ...prev,
-                width: newWidth,
-                height: newHeight,
-              }));
-            } else {
-              setSize((prev) => ({
-                ...prev,
-                height: newHeight,
-              }));
-            }
+          const rightEdgeX = position.x + size.width;
+          const newWidth = Math.min(Math.max(400, rightEdgeX - e.clientX), rightEdgeX);
+          const newHeight = Math.min(Math.max(300, e.clientY - position.y), windowHeight - position.y);
+          const newX = Math.max(0, rightEdgeX - newWidth);
+          if (newWidth >= 400 && newWidth <= windowWidth) {
+            setPosition((prev) => ({ ...prev, x: newX }));
+            setSize({ width: newWidth, height: newHeight });
+          } else {
+            setSize((prev) => ({ ...prev, height: newHeight }));
           }
         }
       }
@@ -211,20 +178,14 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
       window.addEventListener('mousemove', handleMouseMove);
       window.addEventListener('mouseup', handleMouseUp);
     }
-
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isDragging, isResizing, handleMouseMove]);
 
-  const handleClose = () => {
-    onVisibilityChange(false);
-  };
-
-  const handleMinimize = () => {
-    onVisibilityChange(false);
-  };
+  const handleClose = () => onVisibilityChange(false);
+  const handleMinimize = () => onVisibilityChange(false);
 
   const handleMaximize = () => {
     if (!isMaximized) {
@@ -241,9 +202,8 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
 
   const handleDownload = () => {
     if (!resumeMetadata) return;
-
     fetch(`${API_URL}/resume/download`)
-      .then((response) => response.blob())
+      .then((res) => res.blob())
       .then((blob) => {
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
@@ -254,14 +214,10 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
       })
-      .catch((error) => {
-        console.error('Error downloading resume:', error);
-      });
+      .catch((err) => console.error('Error downloading resume:', err));
   };
 
-  if (!isVisible) {
-    return null;
-  }
+  if (!isVisible) return null;
 
   return (
     <div
@@ -295,6 +251,7 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
         className="window-body"
         style={{
           padding: '0px 10px',
+          marginBottom: 0,
           height: 'calc(100% - 55px)',
           display: 'flex',
           flexDirection: 'column',
@@ -315,17 +272,10 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
         </div>
         <div
           className="resume-container"
-          style={{ flex: 1, border: '2px inset #c0c0c0', padding: '1px', overflow: 'auto' }}
+          style={{ flex: 1, border: '2px inset #c0c0c0', padding: '1px', overflow: 'hidden' }}
         >
           {isLoading ? (
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '100%',
-              }}
-            >
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
               Loading...
             </div>
           ) : !resumeMetadata ? (
@@ -334,37 +284,37 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
             </div>
           ) : (
             <div
-              style={{
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'flex-start',
-                overflow: 'auto',
-                position: 'relative',
-              }}
+              ref={scrollRefCallback}
+              className="resume-scroll"
+              style={{ width: '100%', height: '100%', overflow: 'auto' }}
             >
               <div
                 style={{
-                  transformOrigin: 'top center',
-                  transform: `scale(${scale})`,
-                  width: `${100 / scale}%`,
-                  height: `${100 / scale}%`,
-                  display: 'flex',
-                  justifyContent: 'center',
-                  marginTop: '10px',
+                  minWidth: '100%',
+                  display: 'inline-flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  padding: 0,
+                  boxSizing: 'border-box',
                 }}
               >
-                <iframe
-                  src={`${API_URL}/resume/view#toolbar=0&navpanes=0&scrollbar=0&statusbar=0`}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    border: 'none',
-                    background: 'white',
-                  }}
-                  title="Resume"
-                />
+                <Document
+                  file={`${API_URL}/resume/view`}
+                  onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+                  loading={<div style={{ padding: '10px' }}>Loading PDF...</div>}
+                  error={<div style={{ padding: '10px' }}>Failed to load PDF.</div>}
+                >
+                  {Array.from({ length: numPages }, (_, i) => (
+                    <div key={i + 1} style={{ marginBottom: i < numPages - 1 ? '8px' : 0 }}>
+                      <Page
+                        pageNumber={i + 1}
+                        width={containerWidth > 0 ? containerWidth * (zoomLevel / 100) : undefined}
+                        renderTextLayer={false}
+                        renderAnnotationLayer={false}
+                      />
+                    </div>
+                  ))}
+                </Document>
               </div>
             </div>
           )}
@@ -373,25 +323,11 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
       <div className="resizer-container">
         <div
           className="resize-handle se-handle"
-          style={{
-            position: 'absolute',
-            right: 0,
-            bottom: 0,
-            width: '20px',
-            height: '20px',
-            cursor: 'se-resize',
-          }}
+          style={{ position: 'absolute', right: 0, bottom: 0, width: '20px', height: '20px', cursor: 'se-resize' }}
         />
         <div
           className="resize-handle sw-handle"
-          style={{
-            position: 'absolute',
-            left: 0,
-            bottom: 0,
-            width: '20px',
-            height: '20px',
-            cursor: 'sw-resize',
-          }}
+          style={{ position: 'absolute', left: 0, bottom: 0, width: '20px', height: '20px', cursor: 'sw-resize' }}
         />
       </div>
     </div>

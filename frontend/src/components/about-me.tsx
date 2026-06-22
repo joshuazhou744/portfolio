@@ -25,7 +25,7 @@ export function AboutMe({ isVisible, onVisibilityChange }: AboutMeProps) {
         <br />
         <ul>
           <li>I am a Software Engineering (Co-op) student at McGill University.</li>
-          <li>I have worked at IBM as a Data Scientist Intern.</li>
+          <li>I have worked at IBM and Intact for Software Engineering and Data Science.</li>
           <li>My favorite artists are Gorillaz, Malcolm Todd, and Sonder.</li>
         </ul>
       </div>
