@@ -301,7 +301,7 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
                 <Document
                   file={`${API_URL}/resume/view`}
                   onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-                  loading={<div style={{ padding: '10px' }}>Loading PDF...</div>}
+                  loading={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', position: 'absolute', inset: 0 }}>Loading...</div>}
                   error={<div style={{ padding: '10px' }}>Failed to load PDF.</div>}
                 >
                   {Array.from({ length: numPages }, (_, i) => (

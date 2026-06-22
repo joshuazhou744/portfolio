@@ -31,7 +31,7 @@ export function InfoPanel({ isVisible, onVisibilityChange }: InfoPanelProps) {
       <BaseWindow
         isVisible={isVisible}
         onVisibilityChange={onVisibilityChange}
-        title="Enjoy your stay"
+        title="Enjoy"
         width={windowWidth}
         height="auto"
         windowId="info-panel"
