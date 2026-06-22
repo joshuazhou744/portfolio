@@ -4,6 +4,7 @@ import { useState, useRef, useCallback, useEffect, ReactNode } from 'react';
 import '../styles/window.css';
 import { useWindow } from '../contexts/WindowContext';
 import { useWindowDimensions } from '../hooks/useWindowDimensions';
+import { constrainWindowPosition } from '../lib/window-bounds';
 
 interface WindowPosition {
   x: number;
@@ -103,25 +104,12 @@ export function BaseWindow({
         const newX = clientX - dragOffset.x;
         const newY = clientY - dragOffset.y;
 
-        const windowElementWidth = windowRef.current?.offsetWidth || parseInt(width) || 300;
+        const elW = windowRef.current?.offsetWidth || parseInt(width) || 300;
+        const elH = windowRef.current?.offsetHeight || 300;
 
-        // More generous constraints for mobile
-        const minVisibleWidth = isMobile ? 50 : 200;
-        const minVisibleHeight = isMobile ? 100 : 150;
-
-        const constrainedX = Math.min(
-          Math.max(newX, -windowElementWidth + minVisibleWidth),
-          windowDimensions.width - minVisibleWidth
+        setPosition(
+          constrainWindowPosition(newX, newY, elW, elH, windowDimensions.width, windowDimensions.height)
         );
-        const constrainedY = Math.min(
-          Math.max(newY, 0),
-          windowDimensions.height - minVisibleHeight
-        );
-
-        setPosition({
-          x: constrainedX,
-          y: constrainedY,
-        });
       }
     },
     [isDragging, dragOffset, width, height, isMobile, isMounted, windowDimensions]
@@ -210,7 +198,7 @@ export function BaseWindow({
         width,
         height: height || 'auto',
         position: 'fixed',
-        left: Math.max(5, Math.min(position.x, windowDimensions.width - 50)),
+        left: position.x,
         top: position.y,
         zIndex: getZIndex(windowId),
         display: isVisible ? 'block' : 'none',
