@@ -467,11 +467,12 @@ export default function MediaPlayer({
   // context suspended after tab was backgrounded), we'd otherwise sit on a
   // "Loading..." forever and the user has to refresh. Auto-skip to the next
   // track so playback recovers on its own.
+  const LOAD_TIMEOUT_MS = 45000;
   useEffect(() => {
     if (!audioUrl || isTrackReady || error) return;
     const timer = setTimeout(() => {
       if (isTrackReady) return;
-      console.error('Track load timed out after 15s, auto-skipping:', audioUrl);
+      console.error(`Track load timed out after ${LOAD_TIMEOUT_MS / 1000}s, auto-skipping:`, audioUrl);
       if (tracks.length > 1) {
         const nextIndex = (currentTrackIndex + 1) % tracks.length;
         loadTrack(nextIndex, true);
@@ -479,7 +480,7 @@ export default function MediaPlayer({
         setError('Track took too long to load. Try refreshing.');
         setIsBuffering(false);
       }
-    }, 15000);
+    }, LOAD_TIMEOUT_MS);
     return () => clearTimeout(timer);
   }, [audioUrl, isTrackReady, error, tracks.length, currentTrackIndex, loadTrack]);
 

@@ -309,21 +309,16 @@ async def get_song_audio(collection_name: str, song_id: str):
             logger.error(f"Failed to open GridFS stream for {audio_file_id}: {e}", exc_info=True)
             raise HTTPException(status_code=404, detail="Audio file not found")
 
-        media_type = getattr(grid_out, "content_type", None) or "application/octet-stream"
-        filename = getattr(grid_out, "filename", None) or f"{song['title']}.mp3"
+        stored_type = getattr(grid_out, "content_type", None) or ""
+        media_type = stored_type if stored_type.startswith("audio/") else "audio/mpeg"
 
         try:
-            # Ensure Content-Disposition header is ASCII-safe to avoid latin-1 encoding issues
-            headers = {}
-            if filename:
-                try:
-                    ascii_filename = filename.encode("latin-1").decode("latin-1")
-                    headers["Content-Disposition"] = f'attachment; filename="{ascii_filename}"'
-                except Exception:
-                    headers["Content-Disposition"] = f"attachment; filename*=UTF-8''{urllib.parse.quote(filename)}"
-            else:
-                headers["Content-Disposition"] = 'attachment; filename="audio.mp3"'
-
+            # Content-Length lets the browser show real download progress and
+            # decode reliably (vs. open-ended chunked transfer).
+            headers = {
+                "Content-Disposition": "inline",
+                "Content-Length": str(grid_out.length),
+            }
             return StreamingResponse(grid_out, media_type=media_type, headers=headers)
         except Exception as e:
             logger.error(f"Failed to stream GridFS file {audio_file_id}: {e}", exc_info=True)
