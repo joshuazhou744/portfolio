@@ -6,6 +6,7 @@ import { useWavesurfer } from '@wavesurfer/react';
 import Image from 'next/image';
 import { useWindow } from '../contexts/WindowContext';
 import { useWindowDimensions } from '../hooks/useWindowDimensions';
+import { constrainWindowPosition } from '../lib/window-bounds';
 
 interface WaveSurferType {
   play: () => Promise<void> | void;
@@ -241,15 +242,12 @@ export default function MediaPlayer({
       const newX = e.clientX - dragOffset.x;
       const newY = e.clientY - dragOffset.y;
 
-      const width = windowRef.current?.offsetWidth || 500;
+      const elW = windowRef.current?.offsetWidth || 500;
+      const elH = windowRef.current?.offsetHeight || 300;
 
-      const constrainedX = Math.min(Math.max(newX, -width + 80), windowWidth - 80);
-      const constrainedY = Math.min(Math.max(newY, 0), windowHeight - 50);
-
-      setPosition({
-        x: constrainedX,
-        y: constrainedY,
-      });
+      setPosition(
+        constrainWindowPosition(newX, newY, elW, elH, windowWidth, windowHeight)
+      );
     },
     [isDragging, dragOffset]
   );

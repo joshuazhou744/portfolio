@@ -21,8 +21,8 @@ env/
 develop-eggs/
 downloads/
 eggs/
-lib/
-lib64/
+backend/lib/
+backend/lib64/
 parts/
 sdist/
 var/

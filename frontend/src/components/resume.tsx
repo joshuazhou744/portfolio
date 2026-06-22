@@ -4,6 +4,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import '../styles/window.css';
 import { useWindow } from '../contexts/WindowContext';
+import { constrainWindowPosition } from '../lib/window-bounds';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -137,11 +138,11 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
         const windowHeight = window.innerHeight;
         const newX = e.clientX - dragOffset.x;
         const newY = e.clientY - dragOffset.y;
-        const width = windowRef.current?.offsetWidth || 600;
-        setPosition({
-          x: Math.min(Math.max(newX, -width + 400), windowWidth - 400),
-          y: Math.min(Math.max(newY, 0), windowHeight - 300),
-        });
+        const elW = windowRef.current?.offsetWidth || size.width;
+        const elH = windowRef.current?.offsetHeight || size.height;
+        setPosition(
+          constrainWindowPosition(newX, newY, elW, elH, windowWidth, windowHeight)
+        );
       } else if (isResizing) {
         const windowWidth = window.innerWidth;
         const windowHeight = window.innerHeight;
@@ -164,7 +165,7 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
         }
       }
     },
-    [isDragging, isResizing, dragOffset, position, activeResizeHandle, size.width]
+    [isDragging, isResizing, dragOffset, position, activeResizeHandle, size.width, size.height]
   );
 
   const handleMouseUp = () => {
