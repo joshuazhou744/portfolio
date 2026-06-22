@@ -96,7 +96,7 @@ export function MobileFallback() {
           boxSizing: 'border-box',
         }}
       >
-        <h2 style={{ margin: '0 0 8px 0' }}>Desktop Site Recommended</h2>
+        <h2 style={{ margin: '0 0 8px 0', fontSize: '1.5rem', fontWeight: 700, lineHeight: 1.2 }}>Desktop Site Recommended</h2>
         <p style={{ margin: 0 }}>
           This portfolio is built with a Windows 98 desktop experience. For the full effect, please
           view on a laptop or desktop. In the meantime, here are the essentials.
@@ -114,7 +114,7 @@ export function MobileFallback() {
           boxSizing: 'border-box',
         }}
       >
-        <h3 style={{ marginTop: 0, marginBottom: '8px' }}>About Me</h3>
+        <h3 style={{ marginTop: 0, marginBottom: '8px', fontSize: '1.5rem', fontWeight: 700, lineHeight: 1.2 }}>About Me</h3>
         Joshua Zhou <br />
         Software Engineering (Co-op) student at McGill University
       </div>
@@ -133,7 +133,7 @@ export function MobileFallback() {
           gap: '8px',
         }}
       >
-        <h3 style={{ margin: 0 }}>Resume</h3>
+        <h3 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 700, lineHeight: 1.2 }}>Resume</h3>
         <button
           onClick={handleDownloadResume}
           disabled={!resumeMetadata}
@@ -165,7 +165,7 @@ export function MobileFallback() {
           gap: '8px',
         }}
       >
-        <h3 style={{ margin: 0 }}>Contact & Links</h3>
+        <h3 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 700, lineHeight: 1.2 }}>Contact & Links</h3>
         <div>
           <strong>Email:</strong> <a href={`mailto:${email}`}>{email}</a>
         </div>
