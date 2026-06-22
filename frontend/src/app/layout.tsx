@@ -8,7 +8,7 @@ import '98.css/dist/98.css';
 import { ClientBody } from './ClientBody';
 import { Analytics } from '@vercel/analytics/next';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'], weight: ['400', '500'] });
 
 export const metadata: Metadata = {
   title: 'Joshua Zhou',

@@ -211,7 +211,7 @@ export function BaseWindow({
         height: height || 'auto',
         position: 'fixed',
         left: Math.max(5, Math.min(position.x, windowDimensions.width - 50)),
-        top: Math.max(10, position.y),
+        top: position.y,
         zIndex: getZIndex(windowId),
         display: isVisible ? 'block' : 'none',
         userSelect: 'none',
