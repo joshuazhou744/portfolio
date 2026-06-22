@@ -11,8 +11,13 @@ interface ContactInfo {
   github: string;
 }
 
+interface ResumeMetadata {
+  filename: string;
+}
+
 export function MobileFallback() {
   const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
+  const [resumeMetadata, setResumeMetadata] = useState<ResumeMetadata | null>(null);
 
   useEffect(() => {
     if (!API_URL) return;
@@ -28,6 +33,36 @@ export function MobileFallback() {
         console.error('Error fetching contact info (mobile fallback):', err);
       });
   }, []);
+
+  useEffect(() => {
+    if (!API_URL) return;
+    fetch(`${API_URL}/resume`)
+      .then((res) => {
+        if (!res.ok) throw new Error('Resume not found');
+        return res.json();
+      })
+      .then((data: ResumeMetadata) => setResumeMetadata(data))
+      .catch((err) => {
+        console.error('Error fetching resume (mobile fallback):', err);
+      });
+  }, []);
+
+  const handleDownloadResume = () => {
+    if (!resumeMetadata) return;
+    fetch(`${API_URL}/resume/download`)
+      .then((res) => res.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = resumeMetadata.filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((err) => console.error('Error downloading resume:', err));
+  };
 
   const email = contactInfo?.email || '';
   const phone = contactInfo?.phone || '';
@@ -82,6 +117,38 @@ export function MobileFallback() {
         <h3 style={{ marginTop: 0, marginBottom: '8px' }}>About Me</h3>
         Joshua Zhou <br />
         Software Engineering (Co-op) student at McGill University
+      </div>
+
+      <div
+        style={{
+          width: '100%',
+          maxWidth: '640px',
+          background: '#f2f2f2',
+          border: '2px solid #000',
+          boxShadow: '4px 4px 0 #555',
+          padding: '16px',
+          boxSizing: 'border-box',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px',
+        }}
+      >
+        <h3 style={{ margin: 0 }}>Resume</h3>
+        <button
+          onClick={handleDownloadResume}
+          disabled={!resumeMetadata}
+          style={{
+            alignSelf: 'flex-start',
+            padding: '8px 16px',
+            background: '#c0c0c0',
+            border: '2px solid #000',
+            boxShadow: '2px 2px 0 #555',
+            cursor: resumeMetadata ? 'pointer' : 'not-allowed',
+            fontSize: '14px',
+          }}
+        >
+          {resumeMetadata ? 'Download Resume' : 'Resume unavailable'}
+        </button>
       </div>
 
       <div
