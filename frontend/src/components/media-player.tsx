@@ -335,7 +335,7 @@ export default function MediaPlayer({
       // set autoplay state before loading new audio
       setShouldAutoPlay(autoPlay);
 
-      const url = `${API_URL}/songs/${COLLECTION_NAME}/${track.id}/audio?t=${Date.now()}`;
+      const url = `/api/songs/${COLLECTION_NAME}/${track.id}/audio?t=${Date.now()}`;
       setAudioKey(`${track.id}-${Date.now()}`);
       setAudioUrl(url);
     },

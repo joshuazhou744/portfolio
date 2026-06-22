@@ -11,7 +11,7 @@ from typing import Any
 import spotipy
 from bson import ObjectId
 from dotenv import load_dotenv
-from fastapi import FastAPI, File, HTTPException, Query, UploadFile
+from fastapi import Depends, FastAPI, File, HTTPException, Query, Security, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 from googleapiclient.discovery import build
@@ -125,11 +125,10 @@ async def check_collection_exists(collection_name: str) -> tuple[bool, str]:
     except Exception as e:
         return False, f"Error checking collection: {str(e)}"
 
-<<<<<<< HEAD
 def verify_api_key(api_key: str = Security(api_key_header)):
     if not api_key or api_key != API_KEY:
         raise HTTPException(status_code=403, detail="Not authenticated")
-=======
+
 
 def _strip_mongo_id(doc: dict) -> dict:
     """Convert Mongo's _id ObjectId field to a string `id` field in-place."""
@@ -151,39 +150,25 @@ async def _fetch_by_object_id(collection, id_str: str, not_found_msg: str) -> di
 def _project_sort_key(project: dict) -> tuple:
     """Sort key for /projects: explicit `level` ascending, then year descending."""
     level = project.get("level")
-    # None means no priority; push to end by using large sentinel
     return (level if level is not None else float("inf"), -(project.get("year") or 0))
 
 
 _MONTH_MAP = {
-    "Jan": 1,
-    "Feb": 2,
-    "Mar": 3,
-    "Apr": 4,
-    "May": 5,
-    "Jun": 6,
-    "Jul": 7,
-    "Aug": 8,
-    "Sep": 9,
-    "Oct": 10,
-    "Nov": 11,
-    "Dec": 12,
+    "Jan": 1, "Feb": 2, "Mar": 3, "Apr": 4,
+    "May": 5, "Jun": 6, "Jul": 7, "Aug": 8,
+    "Sep": 9, "Oct": 10, "Nov": 11, "Dec": 12,
 }
 
 
 def _parse_experience_date(date_str: str) -> tuple[int, int]:
     """Parse 'Month YYYY' or 'Present' into a sortable (year, month) tuple."""
     if date_str == "Present":
-        # Give "Present" the highest priority (most recent)
         return (9999, 12)
     try:
         month_str, year_str = date_str.split()
         return (int(year_str), _MONTH_MAP.get(month_str, 1))
     except (ValueError, KeyError):
-        # If parsing fails, put at the end
         return (0, 0)
-
->>>>>>> fc5842a (cleanup)
 
 class Song(BaseModel):
     title: str
@@ -263,14 +248,9 @@ async def health_check():
     except Exception as e:
         return JSONResponse(status_code=503, content={"status": "unhealthy", "error": str(e)})
 
-<<<<<<< HEAD
-@app.get("/songs/{collection_name}", response_model=List[SongResponse])
-async def get_songs(collection_name: str, noshuffle: bool = False, api_key: str = Depends(verify_api_key)):
-=======
 
 @app.get("/songs/{collection_name}", response_model=list[SongResponse])
 async def get_songs(collection_name: str, noshuffle: bool = False):
->>>>>>> fc5842a (cleanup)
     try:
         exists, error_message = await check_collection_exists(collection_name)
         if not exists:
@@ -372,16 +352,10 @@ async def delete_song(collection_name: str, song_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to delete song: {str(e)}")
 
-<<<<<<< HEAD
-@app.get("/spotify/playlist/{playlist_id}", response_model=List[SpotifyTrack])
-async def get_spotify_playlist(playlist_id: str, collection: str = "study", api_key: str = Depends(verify_api_key)):
-    try:    
-=======
 
 @app.get("/spotify/playlist/{playlist_id}", response_model=list[SpotifyTrack])
 async def get_spotify_playlist(playlist_id: str, collection: str = "study"):
     try:
->>>>>>> fc5842a (cleanup)
         # Use the get_spotify_client() function instead of global variable
         spotify_client = get_spotify_client()
         results = spotify_client.playlist_tracks(playlist_id)
@@ -595,14 +569,9 @@ async def upload_resume(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to upload resume: {str(e)}")
 
-<<<<<<< HEAD
-@app.get("/resume", response_model=Optional[ResumeMetadata])
-async def get_resume(api_key: str = Depends(verify_api_key)):
-=======
 
 @app.get("/resume", response_model=ResumeMetadata | None)
 async def get_resume():
->>>>>>> fc5842a (cleanup)
     try:
         resume = await db.resume.find_one()
         if not resume:
@@ -692,14 +661,9 @@ async def add_projects(projects: list[Project]):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to add projects: {str(e)}")
 
-<<<<<<< HEAD
-@app.get("/projects", response_model=List[ProjectResponse])
-async def get_projects(api_key: str = Depends(verify_api_key)):
-=======
 
 @app.get("/projects", response_model=list[ProjectResponse])
 async def get_projects():
->>>>>>> fc5842a (cleanup)
     try:
         projects = []
         cursor = db.projects.find()
@@ -784,14 +748,9 @@ async def add_experiences(experiences: list[Experience]):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to add experiences: {str(e)}")
 
-<<<<<<< HEAD
-@app.get("/experiences", response_model=List[ExperienceResponse])
-async def get_experiences(api_key: str = Depends(verify_api_key)):
-=======
 
 @app.get("/experiences", response_model=list[ExperienceResponse])
 async def get_experiences():
->>>>>>> fc5842a (cleanup)
     try:
         experiences = []
         cursor = db.experiences.find()

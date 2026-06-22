@@ -63,7 +63,6 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
->>>>>>> fc5842a (cleanup)
   const handleZoomIn = useCallback(() => {
     setZoomLevel((prev) => Math.min(prev + 25, 300));
   }, []);
@@ -98,11 +97,7 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
   useEffect(() => {
     if (isVisible && !resumeMetadata) {
       setIsLoading(true);
-<<<<<<< HEAD
       fetch(`/api/resume`)
-        .then(response => {
-=======
-      fetch(`${API_URL}/resume`)
         .then((res) => {
           if (!res.ok) throw new Error('Resume not found');
           return res.json();
@@ -207,10 +202,9 @@ export function Resume({ isVisible, onVisibilityChange }: ResumeProps) {
 
   const handleDownload = () => {
     if (!resumeMetadata) return;
-    fetch(`${API_URL}/resume/download`)
+    fetch(`/api/resume/download`)
       .then((res) => res.blob())
       .then((blob) => {
->>>>>>> fc5842a (cleanup)
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;

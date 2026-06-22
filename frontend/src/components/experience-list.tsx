@@ -39,22 +39,14 @@ export function ExperienceList({ isVisible, onVisibilityChange }: ExperienceList
 
   const windowRef = useRef<HTMLDivElement>(null);
   const { bringToFront, getZIndex } = useWindow();
-<<<<<<< HEAD
-=======
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
->>>>>>> fc5842a (cleanup)
+
 
   useEffect(() => {
     if (isVisible) {
       setIsLoading(true);
-<<<<<<< HEAD
       fetch(`/api/experiences`)
-        .then(response => {
-=======
-      fetch(`${API_URL}/experiences`)
         .then((response) => {
->>>>>>> fc5842a (cleanup)
           if (!response.ok) {
             throw new Error('Failed to fetch experiences');
           }

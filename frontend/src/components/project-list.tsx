@@ -41,22 +41,14 @@ export function ProjectList({ isVisible, onVisibilityChange }: ProjectListProps)
 
   const windowRef = useRef<HTMLDivElement>(null);
   const { bringToFront, getZIndex } = useWindow();
-<<<<<<< HEAD
-=======
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
->>>>>>> fc5842a (cleanup)
+
 
   useEffect(() => {
     if (isVisible) {
       setIsLoading(true);
-<<<<<<< HEAD
       fetch(`/api/projects`)
-        .then(response => {
-=======
-      fetch(`${API_URL}/projects`)
         .then((response) => {
->>>>>>> fc5842a (cleanup)
           if (!response.ok) {
             throw new Error('Failed to fetch projects');
           }
